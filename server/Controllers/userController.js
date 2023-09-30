@@ -1,10 +1,14 @@
+// USING MODEL
+const User = require("../Models/userModel")
+
 async function getAllUser(req, res) {
-    let user = {
-        firstname: "Chanakan",
-        lastname: "Srisarutiporn",
-        age: 22
+    const responseData = await User.getAllUser();
+    let response = {
+        message: responseData.message,
+        data: responseData.data,
+        status: responseData.status
     }
-    res.json(user);
+    res.json(response);
 }
 
 module.exports = {

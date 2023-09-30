@@ -4,7 +4,6 @@ const bodyParser = require('body-parser')
 const app = express()
 const port = 8000
 
-
 // app Use
 app.use(bodyParser.json()) // For JSON body | POST Method
 
@@ -12,7 +11,7 @@ app.use(bodyParser.json()) // For JSON body | POST Method
 const userRouter = require('./Routes/userRoute')
 
 // Example
-app.use('/api/user', userRouter);
+app.use('/api/users', userRouter);
 
 app.listen(port, (req, res) => {
     console.log(`Http server run at ${port}`)
