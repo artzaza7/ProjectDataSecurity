@@ -8,6 +8,7 @@ import './Login.css';
 // import library
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { login } from '../../../services/UserService';
 
 const colorTextLink = {
     textDecoration: "none",
@@ -22,16 +23,31 @@ function Login() {
     // useNavigate
     const navigate = useNavigate();
 
-    function handleSubmit(e) {
+    async function handleSubmit(e) {
         e.preventDefault();
-        var json = {
+        var data = {
             username,
             password
         }
-        console.log(json);
+        // console.log(data);
+        try {
 
-        // Not WithOut Checking Login & Authentication
-        navigate('/index')
+            const response = await login(data);
+            // console.log(response);
+            // Success
+            console.log("Login successful : " + response.message);
+
+            // localStorage Token
+            const token = response.data.token;
+            // console.log(token);
+            localStorage.setItem("token", token);
+
+            // Not WithOut Checking Login & Authentication
+            navigate('/index')
+        } catch (error) {
+            console.log(error);
+            console.log("Login not successful");
+        }
     }
 
     return (
@@ -51,11 +67,11 @@ function Login() {
                                     </div>
                                     <div className="col-12 my-2 d-flex justify-content-center align-items-center">
                                         {/* Username */}
-                                        <input type="text" className="form-control w-75 py-2" placeholder="Username" onChange={(e) => setUsername(e.target.value)}/>
+                                        <input type="text" className="form-control w-75 py-2" placeholder="Username" onChange={(e) => setUsername(e.target.value)} />
                                     </div>
                                     <div className="col-12 my-2 d-flex justify-content-center align-items-center">
                                         {/* Password */}
-                                        <input type="password" className="form-control w-75 py-2" placeholder="Password" onChange={(e) => setPassword(e.target.value)}/>
+                                        <input type="password" className="form-control w-75 py-2" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
                                     </div>
                                     <div className="col-12 my-2 d-flex justify-content-center align-items-center">
                                         {/* Link */}

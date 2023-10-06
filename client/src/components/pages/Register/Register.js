@@ -2,13 +2,12 @@
 // Import Bootstrap 5
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-
-// import components
-// import Register from './components/Register';
-
 // import library
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+
+// Import Service
+import { register } from '../../../services/UserService';
 
 const colorTextLink = {
     textDecoration: "none",
@@ -21,26 +20,44 @@ function Register() {
     const [password, setPassword] = useState('')
     const [cPassword, setCPassword] = useState('')
     const [email, setEmail] = useState('')
-    const [fristname, setFristname] = useState('')
+    const [firstname, setFirstname] = useState('')
     const [lastname, setLastname] = useState('')
 
     // useNavigate
     const navigate = useNavigate();
 
-    function handleSubmit(e) {
+    async function handleSubmit(e) {
         e.preventDefault();
-        var json = {
-            username,
-            password,
-            cPassword,
-            email,
-            fristname,
-            lastname
-        }
-        console.log(json);
 
-        // Success Register
-        navigate('/')
+        // checking cPassword === Password ??
+        if (cPassword === password) {
+            // Valid
+            var data = {
+                username,
+                password,
+                email,
+                firstname,
+                lastname
+            }
+            // console.log(data);
+
+            try {
+                const response = await register(data);
+                // console.log(response);
+                // Success
+                console.log("Register successful : " + response.message);
+                // Success Register
+                navigate('/')
+            } catch (error) {
+                console.log(error.response.data.message);
+                console.log("Register not successful");
+            }
+
+        } else {
+            // Invalid (cPassword !== password)
+            console.log("cPassword !== password");
+            console.log("Register not successful");
+        }
     }
 
     return (
@@ -60,30 +77,30 @@ function Register() {
                                     </div>
                                     <div className="col-12 my-2 d-flex justify-content-center align-items-center">
                                         {/* Username */}
-                                        <input type="text" className="form-control w-75 py-2" placeholder="Username" onChange={(e) => setUsername(e.target.value)}/>
+                                        <input type="text" className="form-control w-75 py-2" placeholder="Username" onChange={(e) => setUsername(e.target.value)} />
                                     </div>
                                     <div className="col-12 my-2 d-flex justify-content-center align-items-center">
                                         {/* Password */}
-                                        <input type="password" className="form-control w-75 py-2" placeholder="Password" onChange={(e) => setPassword(e.target.value)}/>
+                                        <input type="password" className="form-control w-75 py-2" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
                                     </div>
                                     <div className="col-12 my-2 d-flex justify-content-center align-items-center">
                                         {/* C_Password */}
-                                        <input type="password" className="form-control w-75 py-2" placeholder="Confirm password" onChange={(e) => setCPassword(e.target.value)}/>
+                                        <input type="password" className="form-control w-75 py-2" placeholder="Confirm password" onChange={(e) => setCPassword(e.target.value)} />
                                     </div>
                                     <div className="col-12 my-2 d-flex justify-content-center align-items-center">
                                         {/* Email */}
-                                        <input type="email" className="form-control w-75 py-2" placeholder="Email" onChange={(e) => setEmail(e.target.value)}/>
+                                        <input type="email" className="form-control w-75 py-2" placeholder="Email" onChange={(e) => setEmail(e.target.value)} />
                                     </div>
                                     <div className="col-12 my-2 d-flex justify-content-center align-items-center">
                                         {/* Email */}
                                         <div className='row w-75'>
                                             <div className="col-6 ps-0 d-flex justify-content-center align-items-center">
                                                 {/* Firstname */}
-                                                <input type="text" className="form-control py-2" placeholder="Firstname" onChange={(e) => setFristname(e.target.value)}/>
+                                                <input type="text" className="form-control py-2" placeholder="Firstname" onChange={(e) => setFirstname(e.target.value)} />
                                             </div>
                                             <div className="col-6 pe-0 d-flex justify-content-center align-items-center">
                                                 {/* Lastname */}
-                                                <input type="text" className="form-control py-2" placeholder="Lastname" onChange={(e) => setLastname(e.target.value)}/>
+                                                <input type="text" className="form-control py-2" placeholder="Lastname" onChange={(e) => setLastname(e.target.value)} />
                                             </div>
                                         </div>
                                     </div>
