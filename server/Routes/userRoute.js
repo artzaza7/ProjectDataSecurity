@@ -211,11 +211,7 @@ router.post('/register', userController.registerUser);
  *             example:
  *               message: "Login successful"
  *               data: {
- *                 username: "username",
- *                 password: "password",
- *                 email: "email",
- *                 firstname: "firstname",
- *                 lastname: "lastname"
+ *                 token: "token"
  *               }
  *               "status": 200
  *       401:

@@ -1,12 +1,14 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
+const cors = require('cors')
 const port = 8000;
 
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./swagger');
 
 app.use(bodyParser.json());
+app.use(cors())
 
 // Adding routes
 const userRouter = require('./Routes/userRoute');

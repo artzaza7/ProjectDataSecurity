@@ -1,6 +1,9 @@
 // USING MODEL
 const User = require("../Models/userModel")
 
+// Using jwt
+const jwt = require("jsonwebtoken")
+
 async function getAllUsers(req, res) {
     try {
         const responseData = await User.getAllUsers();
@@ -67,9 +70,16 @@ async function loginUser(req, res) {
         } else if (responseData.status === 401) {
             return res.status(401).json({ error: responseData.message });
         }
+        const usernameData = responseData.data.username;
+        // create Secret 
+        const secret = 'DataSecuritySystem'
+        // create token
+        const token = jwt.sign({ username: usernameData }, secret, { expiresIn: '2h' })
         let response = {
             message: responseData.message,
-            data: responseData.data,
+            data: {
+                token
+            },
             status: responseData.status
         }
         res.status(responseData.status).json(response);
