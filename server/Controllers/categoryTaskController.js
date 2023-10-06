@@ -4,9 +4,6 @@ const CategoryTask = require("../Models/categoryTaskModel")
 async function getAllCategoryTasks(req, res) {
     try {
         const responseData = await CategoryTask.getAllCategoryTasks();
-        if (responseData.status === 404) {
-            return res.status(404).json({ error: 'Categories not found' });
-        }
         let response = {
             message: responseData.message,
             data: responseData.data,

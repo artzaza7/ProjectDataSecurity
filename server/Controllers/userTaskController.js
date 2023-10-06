@@ -9,10 +9,6 @@ async function getAlluserTask(req, res) {
         const responseData = await UserTask.getAllUserTasks();
         const userTasks = responseData.data;
 
-        if (responseData.status === 404) {
-            return res.status(404).json({ error: 'User Tasks not found' });
-        }
-
         const userTasksWithCategoryNStatus = [];
 
         for (const userTask of userTasks) {
@@ -227,8 +223,16 @@ async function deleteUserTask(req, res) {
     try {
         const responseData = await UserTask.deleteUserTask(username, taskId);
 
+        if (responseData.status === 404) {
+            return res.status(404).json({ error: 'User task not found' });
+        }
+
         if (responseData.status === 200) {
             const task = await Task.deleteTask(taskId);
+
+            if (task.status === 404) {
+                return res.status(404).json({ error: 'Task not found' });
+            }
         }
 
         res.status(responseData.status).json({

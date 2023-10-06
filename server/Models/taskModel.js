@@ -181,7 +181,7 @@ class Task {
     static async deleteTask(taskId) {
         try {
             const conn = await initMySQL();
-            const deleteResult = await conn.query('DELETE FROM tasks WHERE id = ?', [taskId]);
+            const [deleteResult] = await conn.query('DELETE FROM tasks WHERE id = ?', [taskId]);
 
             if (deleteResult.affectedRows === 1) {
                 const message = 'Task deleted successfully';
@@ -189,9 +189,9 @@ class Task {
                 const statusCode = 200;
                 return { message, data, status: statusCode };
             } else {
-                const message = 'Failed to delete task';
+                const message = 'Task not found';
                 const data = null;
-                const statusCode = 500;
+                const statusCode = 404;
                 return { message, data, status: statusCode };
             }
         } catch (error) {

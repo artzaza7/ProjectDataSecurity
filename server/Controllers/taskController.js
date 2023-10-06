@@ -7,10 +7,6 @@ async function getAllTasks(req, res) {
         const responseData = await Task.getAllTasks();
         const tasks = responseData.data;
 
-        if (responseData.status === 404) {
-            return res.status(404).json({ error: 'Tasks not found' });
-        }
-
         const tasksWithCategory = [];
 
         for (const task of tasks) {

@@ -188,9 +188,9 @@ class UserTask {
                 const statusCode = 200;
                 return { message, data, status: statusCode };
             } else {
-                const message = 'Failed to delete user task';
+                const message = 'User task not found';
                 const data = null;
-                const statusCode = 500;
+                const statusCode = 404;
                 return { message, data, status: statusCode };
             }
         } catch (error) {

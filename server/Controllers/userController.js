@@ -4,9 +4,6 @@ const User = require("../Models/userModel")
 async function getAllUsers(req, res) {
     try {
         const responseData = await User.getAllUsers();
-        if (responseData.status === 404) {
-            return res.status(404).json({ error: 'Users not found' });
-        }
         let response = {
             message: responseData.message,
             data: responseData.data,

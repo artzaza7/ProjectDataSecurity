@@ -4,9 +4,6 @@ const Status = require("../Models/statusModel")
 async function getAllStatuses(req, res) {
     try {
         const responseData = await Status.getAllStatuses();
-        if (responseData.status === 404) {
-            return res.status(404).json({ error: 'Statuses not found' });
-        }
         let response = {
             message: responseData.message,
             data: responseData.data,
