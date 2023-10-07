@@ -13,6 +13,7 @@ import ForgotPassword from './components/pages/ForgotPassword/ForgotPassword';
 import Index from './components/pages/Index/Index';
 import AddTask from './components/pages/AddTask/AddTask';
 import Navbar from './components/pages/Navbar/Navbar';
+import MainScreen from './components/pages/MainScreen/MainScreen';
 
 const router = createBrowserRouter([
   {
@@ -38,7 +39,11 @@ const router = createBrowserRouter([
   {
     path: "/navbar",
     element: <Navbar />
-  }
+  },
+  {
+    path: "/mainscreen",
+    element: <MainScreen />
+  },
   
 ])
 
