@@ -1,0 +1,27 @@
+body {
+  background-color: #ffffff;
+  font-family: "IBM Plex Sans Thai", sans-serif;
+}
+.btn {
+  align-items: baseline;
+}
+.btn-type1 {
+  border-color: #ff8080;
+  background-color: #ff8080;
+  color: white;
+}
+.btn-type2 {
+  border-color: #7ecf77;
+  background-color: #7ecf77;
+  color: white;
+}
+.btn-type3 {
+  border-color: #ac4da3;
+  background-color: #ac4da3;
+  color: white;
+}
+.btn-type4 {
+  border-color: #ddd626;
+  background-color: #ddd626;
+  color: white;
+}

@@ -1,0 +1,47 @@
+body {
+    background-color: #4070F4;
+    font-family: 'IBM Plex Sans Thai', sans-serif;
+}
+.btn {
+    align-items: baseline;
+}
+/* ปรับแต่งกล่อง input ของ DatePicker */
+#end-datepicker {
+    /* เพิ่มสไตล์ที่คุณต้องการเข้าไปที่นี่ */
+    border: 1px solid #ccc; /* เส้นขอบ */
+    font-size: 16px; /* ขนาดตัวอักษร */
+    border-radius: 0.3rem;
+    padding: 0.5rem;
+    /* เพิ่มสไตล์เพิ่มเติมตามความต้องการ */
+  }
+#start-datepicker {
+    /* เพิ่มสไตล์ที่คุณต้องการเข้าไปที่นี่ */
+    border: 1px solid #ccc; /* เส้นขอบ */
+    font-size: 16px; /* ขนาดตัวอักษร */
+    border-radius: 0.3rem;
+    padding: 0.5rem;
+    /* เพิ่มสไตล์เพิ่มเติมตามความต้องการ */
+  }
+  
+  /* ปรับแต่งกล่อง input ของ TimePicker */
+  #start-time {
+    /* เพิ่มสไตล์ที่คุณต้องการเข้าไปที่นี่ */
+    border: 1px solid #ccc; /* เส้นขอบ */
+    font-size: 16px; /* ขนาดตัวอักษร */
+    border-radius: 0.3rem;
+    padding: 0.5rem;
+    /* เพิ่มสไตล์เพิ่มเติมตามความต้องการ */
+  }
+
+  /* ปรับแต่งกล่อง input ของ TimePicker */
+  #end-time {
+    /* เพิ่มสไตล์ที่คุณต้องการเข้าไปที่นี่ */
+    border: 1px solid #ccc; /* เส้นขอบ */
+    font-size: 16px; /* ขนาดตัวอักษร */
+    border-radius: 0.3rem;
+    padding: 0.5rem;
+    /* เพิ่มสไตล์เพิ่มเติมตามความต้องการ */
+  }
+  
+  
+  

@@ -11,6 +11,8 @@ import Login from './components/pages/Login/Login'
 import Register from './components/pages/Register/Register';
 import ForgotPassword from './components/pages/ForgotPassword/ForgotPassword';
 import Index from './components/pages/Index/Index';
+import AddTask from './components/pages/AddTask/AddTask';
+import Navbar from './components/pages/Navbar/Navbar';
 
 const router = createBrowserRouter([
   {
@@ -28,7 +30,16 @@ const router = createBrowserRouter([
   {
     path: "/index",
     element: <Index />
+  },
+  {
+    path: "/addtask",
+    element: <AddTask />
+  },
+  {
+    path: "/navbar",
+    element: <Navbar />
   }
+  
 ])
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
