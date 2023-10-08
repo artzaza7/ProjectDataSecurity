@@ -1,26 +1,89 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import TimePicker from "react-time-picker";
 import "react-time-picker/dist/TimePicker.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./AddTask.css";
 import Navbar from "../Navbar/Navbar";
+import Form from 'react-bootstrap/Form';
+
+// Import Library
+import jwtDecode from "jwt-decode"
+
+// Import API
+import { getAllCategoryTasks } from "../../../services/CategoryTaskService"
+import { createUserTask } from "../../../services/UserTaskService"
 
 function AddTask() {
+  const [name, setName] = useState("")
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
+  const [category_task_id, setCategory_task_id] = useState(1);
   const colorTextLink = {
     textDecoration: "none",
     color: "#FFFFFF",
   };
 
+  // for call API
+  const [categoryTasks, setCategoryTasks] = useState([]);
+
+  // useNavigate
+  const navigate = useNavigate();
+
+  async function getInitData() {
+    try {
+      const response = await getAllCategoryTasks();
+      setCategoryTasks(response.data)
+    }
+    catch (error) {
+      console.log(error.message)
+    }
+  }
+
+  useEffect(() => {
+    getInitData()
+  }, []);
+
+  async function submitCreateTask(e) {
+    e.preventDefault();
+    const token = localStorage.getItem("token")
+    if (token) {
+      const username = jwtDecode(token).username
+      try {
+        var data = {
+          "name": name,
+          "startDay": startDate,
+          "startHour": startTime,
+          "endDay": endDate,
+          "endHour": endTime,
+          "category_task_id": Number(category_task_id)
+        }
+        const response = await createUserTask(username, data);
+        console.log(response)
+      }
+      catch (error) {
+        console.log(error.message)
+      }
+    }
+    else {
+      console.log("Don't have token")
+      navigate("/")
+    }
+  }
+
+  const categoryOptions = categoryTasks.map((item) => (
+    <option key={item.id} value={item.id}>
+      {item.name}
+    </option>
+  ))
+
   return (
     <div>
-        <Navbar />
+      <Navbar />
       {/* Content */}
       <div className="container vh-100 d-flex justify-content-center align-items-center box-bg">
         {/* Box White */}
@@ -45,6 +108,7 @@ function AddTask() {
                       type="text"
                       className="form-control py-2"
                       placeholder="กรุณากรอกชื่อกิจกรรม"
+                      onChange={(e) => setName(e.target.value)}
                     />
                   </div>
                 </div>
@@ -113,13 +177,34 @@ function AddTask() {
                   </div>
                 </div>
                 <div className="row">
-                  <div className="col-12 my-2 d-flex justify-content-center align-items-center">
+                  <p>ประเภทกิจกรรม</p>
+                </div>
+                <div className="row pb-3">
+                  <div className="col-12 d-flex justify-content-start align-items-center">
+                    <Form.Select aria-label="Default select example" onChange={(e) => setCategory_task_id(e.target.value)}>
+                      {categoryOptions}
+                    </Form.Select>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-6 my-2 d-flex justify-content-center align-items-center">
+                    {/* add task button */}
+                    <button
+                      type="button"
+                      className="btn btn-warning px-5 mx-2"
+                    >
+                      <Link to="/index" style={colorTextLink}>กลับหน้าหลัก</Link>
+                    </button>
+                  </div>
+                  <div className="col-6 my-2 d-flex justify-content-center align-items-center">
                     {/* add task button */}
                     <button
                       type="button"
                       className="btn btn-primary px-5 mx-2"
+                      style={colorTextLink}
+                      onClick={(e) => submitCreateTask(e)}
                     >
-                      <Link to="/index" style={colorTextLink}>เพิ่มกิจกรรม</Link>
+                      เพิ่มกิจกรรม
                     </button>
                   </div>
                 </div>
