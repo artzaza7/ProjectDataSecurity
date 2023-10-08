@@ -460,4 +460,93 @@ router.post('/users/:user_username/tasks', userTaskController.postUserTask);
 
 router.delete('/users/:user_username/tasks/:taskId', userTaskController.deleteUserTask);
 
+/**
+ * @swagger
+ * /api/userTasks/users/{user_username}/categoryTasks/tasks:
+ *   get:
+ *     summary: Get user task counts by category.
+ *     tags: [User Task]
+ *     parameters:
+ *       - in: path
+ *         name: user_username
+ *         required: true
+ *         description: The username of the user.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Successful response.
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: "User task counts by category retrieved successfully"
+ *               data: [
+ *                 0,
+ *                 0,
+ *                 0,
+ *                 0,
+ *               ]
+ *       404:
+ *         description: No user tasks found for the specified user.
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: "No user tasks found for the specified user"
+ *       500:
+ *         description: Internal Server Error.
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: "Internal Server Error"
+ */
+
+router.get('/users/:user_username/categoryTasks/tasks', userTaskController.countUserTasksByCategory);
+
+/**
+ * @swagger
+ * /api/userTasks/users/{user_username}/categoryTasks/tasks/status/{statusId}:
+ *   get:
+ *     summary: Get user task counts by category and status.
+ *     tags: [User Task]
+ *     parameters:
+ *       - in: path
+ *         name: user_username
+ *         required: true
+ *         description: The username of the user.
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: statusId
+ *         required: true
+ *         type: integer
+ *         description: The status ID to filter tasks.
+ *     responses:
+ *       200:
+ *         description: Successful response.
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: "User task counts by category and status retrieved successfully"
+ *               data: [
+ *                 0,
+ *                 0,
+ *                 0,
+ *                 0,
+ *               ]
+ *       404:
+ *         description: No user tasks found for the specified user or status.
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: "No user tasks found for the specified user or status"
+ *       500:
+ *         description: Internal Server Error.
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: "Internal Server Error"
+ */
+
+router.get('/users/:user_username/categoryTasks/tasks/status/:statusId', userTaskController.countUserTasksByCategoryAndStatus);
+
 module.exports = router;

@@ -245,6 +245,95 @@ async function deleteUserTask(req, res) {
     }
 }
 
+async function countUserTasksByCategory(req, res) {
+    const username = req.params.user_username;
+
+    try {
+        const countResponse = await UserTask.countUserTasksByCategory(username);
+
+        if (countResponse.status === 404) {
+            return res.status(404).json({ error: 'No user tasks found for the specified user' });
+        }
+
+        if (countResponse.status === 500) {
+            return res.status(500).json({ error: 'Internal Server Error' });
+        }
+
+        const categoryCounts = {};
+
+        countResponse.data[0].forEach(entry => {
+            categoryCounts[entry.category_task_id] = entry.task_count;
+        });
+
+        const categories = {
+            1: 'งาน',
+            2: 'ครอบครัว',
+            3: 'ออกกำลังกาย',
+            4: 'ทำงาน'
+        };
+
+        const result = [];
+
+        for (const categoryId of Object.keys(categories)) {
+            const count = categoryCounts[categoryId] || 0;
+            result.push(count);
+        }
+
+        res.status(countResponse.status).json({
+            message: countResponse.message,
+            data: result,
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+async function countUserTasksByCategoryAndStatus(req, res) {
+    const username = req.params.user_username;
+    const status = req.params.statusId;
+
+    try {
+        const countResponse = await UserTask.countUserTasksByCategoryAndStatus(username, status);
+
+        if (countResponse.status === 404) {
+            return res.status(404).json({ error: 'No user tasks found for the specified user' });
+        }
+
+        if (countResponse.status === 500) {
+            return res.status(500).json({ error: 'Internal Server Error' });
+        }
+
+        const categoryCounts = {};
+
+        countResponse.data[0].forEach(entry => {
+            categoryCounts[entry.category_task_id] = entry.task_count;
+        });
+
+        const categories = {
+            1: 'งาน',
+            2: 'ครอบครัว',
+            3: 'ออกกำลังกาย',
+            4: 'ทำงาน'
+        };
+
+        const result = [];
+
+        for (const categoryId of Object.keys(categories)) {
+            const count = categoryCounts[categoryId] || 0;
+            result.push(count);
+        }
+
+        res.status(countResponse.status).json({
+            message: countResponse.message,
+            data: result,
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
 module.exports = {
     getAlluserTask,
     getUserTaskById,
@@ -252,4 +341,6 @@ module.exports = {
     getUserTasksByTaskId,
     postUserTask,
     deleteUserTask,
+    countUserTasksByCategory,
+    countUserTasksByCategoryAndStatus,
 };

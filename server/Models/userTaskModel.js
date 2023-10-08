@@ -124,6 +124,65 @@ class UserTask {
         }
     }
 
+    static async countUserTasksByCategory(username) {
+        try {
+            const conn = await initMySQL();
+            const query = `SELECT category_task_id, COUNT(*) AS task_count FROM user_task INNER JOIN tasks ON user_task.task_id = tasks.id WHERE user_task.user_username = ? GROUP BY category_task_id;`;
+            const results = await conn.query(query, [username]);
+
+            if (results.length === 0) {
+                const message = 'No user tasks found for the specified user';
+                const data = [];
+                const statusCode = 404;
+                return { message, data, status: statusCode };
+            }
+
+            const message = 'Count user tasks by category, Successful';
+            const data = results;
+            const statusCode = 200;
+            return { message, data, status: statusCode };
+        } catch (error) {
+            console.error(error);
+            const message = error.message;
+            const data = null;
+            const statusCode = 500;
+            return { message, data, status: statusCode };
+        }
+    }
+
+    static async countUserTasksByCategoryAndStatus(username, statusId) {
+        try {
+            const conn = await initMySQL();
+            const query = `
+                SELECT category_task_id, COUNT(*) AS task_count
+                FROM user_task
+                INNER JOIN tasks ON user_task.task_id = tasks.id
+                WHERE user_task.user_username = ? AND user_task.status_id = ?
+                GROUP BY category_task_id;
+            `;
+            const results = await conn.query(query, [username, statusId]);
+
+            if (results.length === 0) {
+                const message = 'No user tasks found for the specified user and status';
+                const data = [];
+                const statusCode = 404;
+                return { message, data, status: statusCode };
+            }
+
+            const message = 'Count user tasks by category and status, Successful';
+            const data = results;
+            const statusCode = 200;
+            return { message, data, status: statusCode };
+        } catch (error) {
+            console.error(error);
+            const message = error.message;
+            const data = null;
+            const statusCode = 500;
+            return { message, data, status: statusCode };
+        }
+    }
+
+
     static async getUserTasksByTaskId(username, taskId) {
         console.log('Task ID data type:', typeof taskId);
         try {
