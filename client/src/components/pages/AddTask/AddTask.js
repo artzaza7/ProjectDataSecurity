@@ -22,7 +22,7 @@ function AddTask() {
     <div>
         <Navbar />
       {/* Content */}
-      <div className="container vh-100 d-flex justify-content-center align-items-center">
+      <div className="container vh-100 d-flex justify-content-center align-items-center box-bg">
         {/* Box White */}
         <div className="container bg-white w-50 py-3 rounded">
           <div className="row h-100">

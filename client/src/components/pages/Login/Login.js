@@ -51,7 +51,7 @@ function Login() {
     }
 
     return (
-        <div>
+        <div className="login-bg">
             {/* Content */}
             <div className="container vh-100 d-flex justify-content-center align-items-center">
                 {/* Box White */}

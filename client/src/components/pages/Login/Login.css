@@ -1,4 +1,7 @@
 body {
-  background-color: #4070F4;
+  background-color: #ffffff;
   font-family: 'IBM Plex Sans Thai', sans-serif;
+}
+.login-bg{
+  background-color: #4070F4;
 }

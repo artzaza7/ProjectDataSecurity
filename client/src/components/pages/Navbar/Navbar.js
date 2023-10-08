@@ -1,17 +1,13 @@
 import React from "react";
+import './Navbar.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
+
 function Navbar() {
   return (
-    <nav className="navbar navbar-expand-lg bg-body-tertiary">
-      <div className="container-fluid">
-        <a>
-          Navbar
-        </a>
-      </div>
+    <nav className="navbar">
+      <i className="bi bi-person-circle bi-2x"></i>
+      ชนกานต์ ศรีศรุติพร
     </nav>
-    // <nav className="bg-secondary navh">
-    //     Hi
-    // </nav>
-    // <div className="container bg-secondary" > hi</div>
   );
 }
 

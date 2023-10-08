@@ -1,9 +1,12 @@
 body {
-    background-color: #4070F4;
+    background-color: #ffffff;
     font-family: 'IBM Plex Sans Thai', sans-serif;
 }
 .btn {
     align-items: baseline;
+}
+.box-bg{
+  background-color: #EEEEEE;
 }
 /* ปรับแต่งกล่อง input ของ DatePicker */
 #end-datepicker {
