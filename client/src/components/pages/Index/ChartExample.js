@@ -7,8 +7,7 @@ import jwtDecode from "jwt-decode"
 
 // Import API
 import { getAllCategoryTasks } from "../../../services/CategoryTaskService"
-import { getAllUserTasksByStatusId } from "../../../services/UserTaskService"
-import { getAllStatus, } from "../../../services/StatusService"
+import { getUserTasksCount } from "../../../services/UserTaskService"
 
 function ChartExample() {
   // useNavigate
@@ -20,8 +19,6 @@ function ChartExample() {
   // for call API
   const [loading, setLoading] = useState(true)
   const [categoryTasks, setCategoryTasks] = useState([])
-
-  // without Service
   const [countAllTask, setCountAllTask] = useState([0, 0, 0, 0])
 
   async function getInitData() {
@@ -30,45 +27,20 @@ function ChartExample() {
     if (token) {
       const username = jwtDecode(token).username
       try {
-        // for getALL status
-        const statusId = []
-        const responseStatus = await getAllStatus();
-        for (let i = 0; i < responseStatus.data.length; i++) {
-          statusId.push(responseStatus.data[i].id)
-        }
 
-        const countData = [] // Collect name with value of Categories
         // for categoties in Pie Chart
         const responseCategory = await getAllCategoryTasks();
         const categoriesName = []
-        const categoriesId = []
         for (let i = 0; i < responseCategory.data.length; i++) {
           categoriesName.push(responseCategory.data[i].name)
-          categoriesId.push(responseCategory.data[i].id)
-          countData.push({ name: responseCategory.data[i].name, value: 0 })
         }
         setCategoryTasks(categoriesName)
+
+        // for count All UserTask in Pie Chart
+        const responseCount = await getUserTasksCount(username)
+        setCountAllTask(responseCount.data)
+
         
-        // for count in Pie Chart
-        for (let i = 0; i < statusId.length; i++) {
-          const statusID = statusId[i]
-          const responseGetAllUserTasksByStatusId = await getAllUserTasksByStatusId(username, statusID)
-          console.log(responseGetAllUserTasksByStatusId.data)
-          for (let y = 0; y < responseGetAllUserTasksByStatusId.data.length; y++) {
-            const task = responseGetAllUserTasksByStatusId.data[y].task.category_task.name;
-            for (let k = 0; k < countData.length; k++) {
-              if (countData[k].name === task) {
-                countData[k].value = countData[k].value + 1
-                break;
-              }
-            }
-          }
-        }
-        const result = [] // Collect Only Number
-        for (let i = 0; i < countData.length; i++) {
-          result.push(countData[i].value)
-        }
-        setCountAllTask(result)
 
         // Finish Call API
         setLoading(false)
@@ -87,7 +59,7 @@ function ChartExample() {
     labels: !loading ? categoryTasks : ["Type1", "Type2", "Type3", "Type4"],
     datasets: [
       {
-        label: "# of Votes",
+        label: "จำนวนทั้งหมด ",
         data: !loading ? countAllTask : [12, 19, 3, 5],
         borderWidth: 1,
         backgroundColor: [

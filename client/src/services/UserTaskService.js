@@ -12,12 +12,11 @@ const createUserTask = async (username, data) => {
     }
 };
 
-const getAllUserTasksByStatusId = async (username, statusId) => {
+const getUserTasksCount = async (username) => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/users/${username}/tasks/status/${statusId}`, {
+        const response = await axios.get(`${API_BASE_URL}/users/${username}/categoryTasks/tasks`, {
             params: {
                 user_username: username,
-                statusId: statusId
             }
         });
         return response.data;
@@ -27,4 +26,20 @@ const getAllUserTasksByStatusId = async (username, statusId) => {
     }
 };
 
-export { createUserTask, getAllUserTasksByStatusId };
+const getUserTasksCountFinish = async (username) => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/users/${username}/categoryTasks/tasks/status/${2}`, {
+            params: {
+                user_username: username,
+                statusId: 2
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('เกิดข้อผิดพลาดในการเรียก API');
+        throw error;
+    }
+};
+
+
+export { createUserTask, getUserTasksCount, getUserTasksCountFinish };

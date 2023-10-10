@@ -1,11 +1,57 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import React from "react";
 import ChartExample from "./ChartExample";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./Index.css";
 import Navbar from "../Navbar/Navbar";
+import { useState, useEffect } from "react";
+
+// Import Library
+import jwtDecode from "jwt-decode"
+
+// Import API
+import { getUserTasksCount, getUserTasksCountFinish } from "../../../services/UserTaskService"
 
 function Index() {
+  // useNavigate
+  const navigate = useNavigate();
+
+  // for call API
+  const [loading, setLoading] = useState(true)
+  const [countAllTask, setCountAllTask] = useState([0, 0, 0, 0])
+  const [countFinishTask, setCountFinishTask] = useState([0, 0, 0, 0])
+
+  async function getInitData() {
+    const token = localStorage.getItem('token')
+
+    if (token) {
+      const username = jwtDecode(token).username
+      try {
+        // for count All UserTask in Pie Chart
+        const responseCount = await getUserTasksCount(username)
+        setCountAllTask(responseCount.data)
+
+        // for count Finish UserTask in Pie Chart
+        const responseCountFinish = await getUserTasksCountFinish(username)
+        setCountFinishTask(responseCountFinish.data)
+
+        // Finish Call API
+        setLoading(false)
+      }
+      catch (error) {
+        console.log(error.message)
+      }
+    }
+    else {
+      console.log("Don't have token")
+      navigate("/")
+    }
+  }
+
+  useEffect(() => {
+    getInitData();
+  }, [loading])
+
   const divStyle = {
     backgroundColor: "#EEEEEE",
   };
@@ -49,11 +95,13 @@ function Index() {
                       <br />
                       <br />
                       <br />
-                      <h5 className="card-title">จำนวนงานทั้งหมด</h5>
+                      <h5 className="card-title">
+                        {!loading ? (<>จำนวนงานทั้งหมด {countAllTask[0]}</>) : ("จำนวนงานทั้งหมด")}
+                      </h5>
                       <p className="card-text">
-                        จำนวนที่ทำเสร็จสิ้น
+                        {!loading ? (<>จำนวนที่ทำเสร็จสิ้น {countFinishTask[0]}</>) : ("จำนวนที่ทำเสร็จสิ้น")}
                         <br />
-                        คิดเป็นเปอร์เซ็น
+                        {!loading ? (<>คิดเป็นเปอร์เซ็น {countFinishTask[0]*100/countAllTask[0]} %</>) : ("คิดเป็นเปอร์เซ็น")}
                       </p>
                     </div>
                   </div>
@@ -69,11 +117,13 @@ function Index() {
                       <br />
                       <br />
                       <br />
-                      <h5 className="card-title">จำนวนงานทั้งหมด</h5>
+                      <h5 className="card-title">
+                        {!loading ? (<>จำนวนงานทั้งหมด {countAllTask[1]}</>) : ("จำนวนงานทั้งหมด")}
+                      </h5>
                       <p className="card-text">
-                        จำนวนที่ทำเสร็จสิ้น
+                        {!loading ? (<>จำนวนที่ทำเสร็จสิ้น {countFinishTask[1]}</>) : ("จำนวนที่ทำเสร็จสิ้น")}
                         <br />
-                        คิดเป็นเปอร์เซ็น
+                        {!loading ? (<>คิดเป็นเปอร์เซ็น {countFinishTask[1]*100/countAllTask[1]} %</>) : ("คิดเป็นเปอร์เซ็น")}
                       </p>
                     </div>
                   </div>
@@ -91,11 +141,13 @@ function Index() {
                       <br />
                       <br />
                       <br />
-                      <h5 className="card-title">จำนวนงานทั้งหมด</h5>
+                      <h5 className="card-title">
+                        {!loading ? (<>จำนวนงานทั้งหมด {countAllTask[2]}</>) : ("จำนวนงานทั้งหมด")}
+                      </h5>
                       <p className="card-text">
-                        จำนวนที่ทำเสร็จสิ้น
+                        {!loading ? (<>จำนวนที่ทำเสร็จสิ้น {countFinishTask[2]}</>) : ("จำนวนที่ทำเสร็จสิ้น")}
                         <br />
-                        คิดเป็นเปอร์เซ็น
+                        {!loading ? (<>คิดเป็นเปอร์เซ็น {countFinishTask[2]*100/countAllTask[2]} %</>) : ("คิดเป็นเปอร์เซ็น")}
                       </p>
                     </div>
                   </div>
@@ -111,11 +163,13 @@ function Index() {
                       <br />
                       <br />
                       <br />
-                      <h5 className="card-title">จำนวนงานทั้งหมด</h5>
+                      <h5 className="card-title">
+                        {!loading ? (<>จำนวนงานทั้งหมด {countAllTask[3]}</>) : ("จำนวนงานทั้งหมด")}
+                      </h5>
                       <p className="card-text">
-                        จำนวนที่ทำเสร็จสิ้น
+                        {!loading ? (<>จำนวนที่ทำเสร็จสิ้น {countFinishTask[3]}</>) : ("จำนวนที่ทำเสร็จสิ้น")}
                         <br />
-                        คิดเป็นเปอร์เซ็น
+                        {!loading ? (<>คิดเป็นเปอร์เซ็น {countFinishTask[3]*100/countAllTask[3]} %</>) : ("คิดเป็นเปอร์เซ็น")}
                       </p>
                     </div>
                   </div>
