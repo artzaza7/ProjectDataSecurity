@@ -27,10 +27,10 @@ class CategoryTask {
     }
 
     // Function
-    static async getAllCategoryTasks() {
+    static async getAllCategoryTasks(conn) {
         const categories = [];
         try {
-            const conn = await initMySQL();
+
             const results = await conn.query('SELECT * FROM category_task');
             results[0].forEach((value) => {
                 categories.push(value);
@@ -48,9 +48,9 @@ class CategoryTask {
         }
     }
 
-    static async getCategoryTaskById(categoryTaskId) {
+    static async getCategoryTaskById(categoryTaskId, conn) {
         try {
-            const conn = await initMySQL();
+
             const query = 'SELECT * FROM category_task WHERE id = ?';
             const results = await conn.query(query, [categoryTaskId]);
 

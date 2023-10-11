@@ -1,5 +1,5 @@
 // Connect Database
-const { initMySQL } = require('../Config/database')
+
 
 class Status {
     // Properties
@@ -27,10 +27,10 @@ class Status {
     }
 
     // Function
-    static async getAllStatuses() {
+    static async getAllStatuses(conn) {
         const statuses = [];
         try {
-            const conn = await initMySQL();
+
             const results = await conn.query('SELECT * FROM status');
             results[0].forEach((value) => {
                 statuses.push(value);
@@ -48,9 +48,9 @@ class Status {
         }
     }
 
-    static async getStatusById(statusId) {
+    static async getStatusById(statusId, conn) {
         try {
-            const conn = await initMySQL();
+
             const query = 'SELECT * FROM status WHERE id = ?';
             const results = await conn.query(query, [statusId]);
 

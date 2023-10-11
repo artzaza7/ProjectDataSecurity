@@ -50,10 +50,10 @@ class UserTask {
     }
 
     // Static method to get all user tasks
-    static async getAllUserTasks() {
+    static async getAllUserTasks(conn) {
         const userTasks = [];
         try {
-            const conn = await initMySQL(); // Make sure you have this function
+            // Make sure you have this function
             const results = await conn.query('SELECT * FROM user_task');
             results[0].forEach((value) => {
                 userTasks.push(value);
@@ -71,9 +71,9 @@ class UserTask {
         }
     }
 
-    static async getUserTaskById(userTaskId) {
+    static async getUserTaskById(userTaskId, conn) {
         try {
-            const conn = await initMySQL();
+
             const query = 'SELECT * FROM user_task WHERE id = ?';
             const results = await conn.query(query, [userTaskId]);
 
@@ -98,9 +98,9 @@ class UserTask {
         }
     }
 
-    static async getUserTasksByStatus(username, statusId) {
+    static async getUserTasksByStatus(username, statusId, conn) {
         try {
-            const conn = await initMySQL();
+
             const query = 'SELECT * FROM user_task WHERE user_username = ? AND status_id = ?';
             const results = await conn.query(query, [username, statusId]);
 
@@ -125,9 +125,9 @@ class UserTask {
         }
     }
 
-    static async countUserTasksByCategory(username) {
+    static async countUserTasksByCategory(username, conn) {
         try {
-            const conn = await initMySQL();
+
             const query = `SELECT category_task_id, COUNT(*) AS task_count FROM user_task INNER JOIN tasks ON user_task.task_id = tasks.id WHERE user_task.user_username = ? GROUP BY category_task_id;`;
             const results = await conn.query(query, [username]);
 
@@ -151,9 +151,9 @@ class UserTask {
         }
     }
 
-    static async countUserTasksByCategoryAndStatus(username, statusId) {
+    static async countUserTasksByCategoryAndStatus(username, statusId, conn) {
         try {
-            const conn = await initMySQL();
+
             const query = `
                 SELECT category_task_id, COUNT(*) AS task_count
                 FROM user_task
@@ -186,7 +186,7 @@ class UserTask {
 
     static async getUserTasksByTaskId(username, taskId, conn) {
         try {
-            const conn = await initMySQL();
+
             const query = 'SELECT * FROM user_task WHERE user_username = ? AND task_id = ?';
             const results = await conn.query(query, [username, taskId]);
 
@@ -211,9 +211,9 @@ class UserTask {
         }
     }
 
-    static async createUserTask(userTaskData) {
+    static async createUserTask(userTaskData, conn) {
         try {
-            const conn = await initMySQL();
+
             const [insertResult] = await conn.query('INSERT INTO user_task SET ?', userTaskData);
 
             if (insertResult.affectedRows === 1) {
@@ -263,7 +263,7 @@ class UserTask {
 
     static async deleteUserTask(username, taskId, conn) {
         try {
-            const conn = await initMySQL();
+
             const [deleteResult] = await conn.query('DELETE FROM user_task WHERE user_username = ? AND task_id = ?', [username, taskId]);
 
             if (deleteResult.affectedRows === 1) {

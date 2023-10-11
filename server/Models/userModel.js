@@ -59,10 +59,10 @@ class User {
     }
 
     // Function
-    static async getAllUsers() {
+    static async getAllUsers(conn) {
         const users = []
         try {
-            const conn = await initMySQL();
+
             const results = await conn.query('SELECT * FROM users');
             results[0].forEach((value) => {
                 users.push(value)
@@ -80,9 +80,9 @@ class User {
         }
     }
 
-    static async getUserByUsername(username) {
+    static async getUserByUsername(username, conn) {
         try {
-            const conn = await initMySQL();
+
             const query = 'SELECT * FROM users WHERE username = ?';
             const results = await conn.query(query, [username]);
 
@@ -107,7 +107,7 @@ class User {
         }
     }
 
-    static async registerUser(username, password, email, firstname, lastname) {
+    static async registerUser(username, password, email, firstname, lastname, conn) {
         try {
             const existingUser = await this.getUserByUsername(username);
             if (existingUser.status === 200) {
@@ -116,7 +116,7 @@ class User {
 
             const hashedPassword = await bcrypt.hash(password, 10);
 
-            const conn = await initMySQL();
+
             const query = 'INSERT INTO users (username, password, email, firstname, lastname) VALUES (?, ?, ?, ?, ?)';
             const [insertResult] = await conn.query(query, [username, hashedPassword, email, firstname, lastname]);
 
@@ -148,9 +148,9 @@ class User {
         }
     }
 
-    static async login(username, password) {
+    static async login(username, password, conn) {
         try {
-            const conn = await initMySQL();
+
             const query = 'SELECT * FROM users WHERE username = ?';
             const results = await conn.query(query, [username]);
 

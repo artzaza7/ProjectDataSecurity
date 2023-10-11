@@ -7,19 +7,19 @@ const Status = require("../Models/statusModel");
 async function getAlluserTask(req, res) {
     await UserTask.updateTaskStatusIfNeeded(req.conn);
     try {
-        const responseData = await UserTask.getAllUserTasks();
+        const responseData = await UserTask.getAllUserTasks(req.conn);
         const userTasks = responseData.data;
 
         const userTasksWithCategoryNStatus = [];
 
         for (const userTask of userTasks) {
-            const taskResponse = await Task.getTaskById(userTask.task_id);
+            const taskResponse = await Task.getTaskById(userTask.task_id, req.conn);
 
             if (taskResponse.status === 200) {
                 userTask.task = taskResponse.data;
                 delete userTask.task_id;
 
-                const categoryResponse = await CategoryTask.getCategoryTaskById(userTask.task.category_task_id);
+                const categoryResponse = await CategoryTask.getCategoryTaskById(userTask.task.category_task_id, req.conn);
 
                 if (categoryResponse.status === 200) {
                     userTask.task.category_task = categoryResponse.data;
@@ -27,7 +27,7 @@ async function getAlluserTask(req, res) {
                 }
             }
 
-            const statusResponse = await Status.getStatusById(userTask.status_id);
+            const statusResponse = await Status.getStatusById(userTask.status_id, req.conn);
             if (statusResponse.status === 200) {
                 userTask.status = statusResponse.data;
                 delete userTask.status_id;
@@ -53,20 +53,20 @@ async function getUserTaskById(req, res) {
         const userTaskId = req.params.userTaskId;
         await UserTask.updateTaskStatusIfNeeded(req.conn);
 
-        const responseData = await UserTask.getUserTaskById(userTaskId);
+        const responseData = await UserTask.getUserTaskById(userTaskId, req.conn);
         const userTask = responseData.data;
 
         if (responseData.status === 404) {
             return res.status(404).json({ error: 'User Task not found' });
         }
 
-        const taskResponse = await Task.getTaskById(userTask.task_id);
+        const taskResponse = await Task.getTaskById(userTask.task_id, req.conn);
 
         if (taskResponse.status === 200) {
             userTask.task = taskResponse.data;
             delete userTask.task_id;
 
-            const categoryResponse = await CategoryTask.getCategoryTaskById(userTask.task.category_task_id);
+            const categoryResponse = await CategoryTask.getCategoryTaskById(userTask.task.category_task_id, req.conn);
 
             if (categoryResponse.status === 200) {
                 userTask.task.category_task = categoryResponse.data;
@@ -74,7 +74,7 @@ async function getUserTaskById(req, res) {
             }
         }
 
-        const statusResponse = await Status.getStatusById(userTask.status_id);
+        const statusResponse = await Status.getStatusById(userTask.status_id, req.conn);
         if (statusResponse.status === 200) {
             userTask.status = statusResponse.data;
             delete userTask.status_id;
@@ -98,7 +98,7 @@ async function getUserTasksByStatus(req, res) {
         const statusId = req.params.statusId;
         await UserTask.updateTaskStatusIfNeeded(req.conn);
 
-        const responseData = await UserTask.getUserTasksByStatus(username, statusId);
+        const responseData = await UserTask.getUserTasksByStatus(username, statusId, req.conn);
         const userTasks = responseData.data;
 
         if (responseData.status === 404) {
@@ -108,13 +108,13 @@ async function getUserTasksByStatus(req, res) {
         const userTasksWithDetails = [];
 
         for (const userTask of userTasks) {
-            const taskResponse = await Task.getTaskById(userTask.task_id);
+            const taskResponse = await Task.getTaskById(userTask.task_id, req.conn);
 
             if (taskResponse.status === 200) {
                 userTask.task = taskResponse.data;
                 delete userTask.task_id;
 
-                const categoryResponse = await CategoryTask.getCategoryTaskById(userTask.task.category_task_id);
+                const categoryResponse = await CategoryTask.getCategoryTaskById(userTask.task.category_task_id, req.conn);
 
                 if (categoryResponse.status === 200) {
                     userTask.task.category_task = categoryResponse.data;
@@ -122,7 +122,7 @@ async function getUserTasksByStatus(req, res) {
                 }
             }
 
-            const statusResponse = await Status.getStatusById(userTask.status_id);
+            const statusResponse = await Status.getStatusById(userTask.status_id, req.conn);
             if (statusResponse.status === 200) {
                 userTask.status = statusResponse.data;
                 delete userTask.status_id;
@@ -149,7 +149,7 @@ async function getUserTasksByTaskId(req, res) {
         const taskId = req.params.taskId;
         await UserTask.updateTaskStatusIfNeeded(req.conn);
 
-        const responseData = await UserTask.getUserTasksByTaskId(username, taskId);
+        const responseData = await UserTask.getUserTasksByTaskId(username, taskId, req.conn);
         const userTasks = responseData.data;
 
         if (responseData.status === 404) {
@@ -159,13 +159,13 @@ async function getUserTasksByTaskId(req, res) {
         const userTasksWithDetails = [];
 
         for (const userTask of userTasks) {
-            const taskResponse = await Task.getTaskById(userTask.task_id);
+            const taskResponse = await Task.getTaskById(userTask.task_id, req.conn);
 
             if (taskResponse.status === 200) {
                 userTask.task = taskResponse.data;
                 delete userTask.task_id;
 
-                const categoryResponse = await CategoryTask.getCategoryTaskById(userTask.task.category_task_id);
+                const categoryResponse = await CategoryTask.getCategoryTaskById(userTask.task.category_task_id, req.conn);
 
                 if (categoryResponse.status === 200) {
                     userTask.task.category_task = categoryResponse.data;
@@ -173,7 +173,7 @@ async function getUserTasksByTaskId(req, res) {
                 }
             }
 
-            const statusResponse = await Status.getStatusById(userTask.status_id);
+            const statusResponse = await Status.getStatusById(userTask.status_id, req.conn);
             if (statusResponse.status === 200) {
                 userTask.status = statusResponse.data;
                 delete userTask.status_id;
@@ -200,7 +200,7 @@ async function postUserTask(req, res) {
 
     try {
         const statusId = 1;
-        let newTask = await Task.createTask(task);
+        let newTask = await Task.createTask(task, req.conn);
 
         const userTaskData = {
             user_username,
@@ -208,7 +208,7 @@ async function postUserTask(req, res) {
             status_id: statusId,
         };
 
-        const responseData = await UserTask.createUserTask(userTaskData);
+        const responseData = await UserTask.createUserTask(userTaskData, req.conn);
 
         const statusData = await Status.getStatusById(statusId, req.conn);
 
@@ -278,14 +278,14 @@ async function deleteUserTask(req, res) {
     const taskId = req.params.taskId;
 
     try {
-        const responseData = await UserTask.deleteUserTask(username, taskId);
+        const responseData = await UserTask.deleteUserTask(username, taskId, req.conn);
 
         if (responseData.status === 404) {
             return res.status(404).json({ error: 'User task not found' });
         }
 
         if (responseData.status === 200) {
-            const task = await Task.deleteTask(taskId);
+            const task = await Task.deleteTask(taskId, req.conn);
 
             if (task.status === 404) {
                 return res.status(404).json({ error: 'Task not found' });
@@ -306,7 +306,7 @@ async function countUserTasksByCategory(req, res) {
     const username = req.params.user_username;
     await UserTask.updateTaskStatusIfNeeded(req.conn);
     try {
-        const countResponse = await UserTask.countUserTasksByCategory(username);
+        const countResponse = await UserTask.countUserTasksByCategory(username, req.conn);
 
         if (countResponse.status === 404) {
             return res.status(404).json({ error: 'No user tasks found for the specified user' });
@@ -351,7 +351,7 @@ async function countUserTasksByCategoryAndStatus(req, res) {
     const status = req.params.statusId;
     await UserTask.updateTaskStatusIfNeeded(req.conn);
     try {
-        const countResponse = await UserTask.countUserTasksByCategoryAndStatus(username, status);
+        const countResponse = await UserTask.countUserTasksByCategoryAndStatus(username, status, req.conn);
 
         if (countResponse.status === 404) {
             return res.status(404).json({ error: 'No user tasks found for the specified user' });

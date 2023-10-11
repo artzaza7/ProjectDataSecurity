@@ -1,14 +1,24 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
-const cors = require('cors')
+const cors = require('cors');
 const port = 8000;
-
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./swagger');
 
 app.use(bodyParser.json());
-app.use(cors())
+app.use(cors());
+const { initMySQL } = require('./Config/database')
+
+app.use(async (req, res, next) => {
+  try {
+    const conn = await initMySQL();
+    req.conn = conn;
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
 
 // Adding routes
 const userRouter = require('./Routes/userRoute');
@@ -28,5 +38,5 @@ app.use('/api/userTasks', userTaskRouter);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.listen(port, () => {
-  console.log(`Http server run at ${port}`);
+  console.log(`Http server running at ${port}`);
 });

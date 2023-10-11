@@ -3,7 +3,7 @@ const CategoryTask = require("../Models/categoryTaskModel")
 
 async function getAllCategoryTasks(req, res) {
     try {
-        const responseData = await CategoryTask.getAllCategoryTasks();
+        const responseData = await CategoryTask.getAllCategoryTasks(req.conn);
         let response = {
             message: responseData.message,
             data: responseData.data,
@@ -19,7 +19,7 @@ async function getAllCategoryTasks(req, res) {
 async function getCategoryTaskById(req, res) {
     const id = req.params.categoryTaskId;
     try {
-        const responseData = await CategoryTask.getCategoryTaskById(id);
+        const responseData = await CategoryTask.getCategoryTaskById(id, req.conn);
         if (responseData.status === 404) {
             return res.status(404).json({ error: 'Category not found' });
         }

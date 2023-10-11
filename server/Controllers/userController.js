@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken")
 
 async function getAllUsers(req, res) {
     try {
-        const responseData = await User.getAllUsers();
+        const responseData = await User.getAllUsers(req.conn);
         let response = {
             message: responseData.message,
             data: responseData.data,
@@ -22,7 +22,7 @@ async function getAllUsers(req, res) {
 async function getUserByUsername(req, res) {
     const username = req.params.username;
     try {
-        const responseData = await User.getUserByUsername(username);
+        const responseData = await User.getUserByUsername(username, req.conn);
         if (responseData.status === 404) {
             return res.status(404).json({ error: 'User not found' });
         }
@@ -43,7 +43,7 @@ async function registerUser(req, res) {
     console.log(req.body);
 
     try {
-        const responseData = await User.registerUser(username, password, email, firstname, lastname);
+        const responseData = await User.registerUser(username, password, email, firstname, lastname, req.conn);
         if (responseData.status === 400) {
             return res.status(400).json({ error: responseData.message });
         }
@@ -64,7 +64,7 @@ async function loginUser(req, res) {
     console.log(req.body);
 
     try {
-        const responseData = await User.login(username, password);
+        const responseData = await User.login(username, password, req.conn);
         if (responseData.status === 404) {
             return res.status(404).json({ error: responseData.message });
         } else if (responseData.status === 401) {

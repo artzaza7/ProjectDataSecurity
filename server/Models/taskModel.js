@@ -79,10 +79,10 @@ class Task {
     }
 
     // Function
-    static async getAllTasks() {
+    static async getAllTasks(conn) {
         const tasks = [];
         try {
-            const conn = await initMySQL();
+
             const results = await conn.query('SELECT * FROM tasks');
             results[0].forEach((value) => {
                 tasks.push(value);
@@ -100,9 +100,9 @@ class Task {
         }
     }
 
-    static async getTaskById(taskId) {
+    static async getTaskById(taskId, conn) {
         try {
-            const conn = await initMySQL();
+
             const query = 'SELECT * FROM tasks WHERE id = ?';
             const results = await conn.query(query, [taskId]);
 
@@ -127,9 +127,9 @@ class Task {
         }
     }
 
-    static async createTask(taskData) {
+    static async createTask(taskData, conn) {
         try {
-            const conn = await initMySQL();
+
             const [insertResult] = await conn.query('INSERT INTO tasks SET ?', taskData);
 
             if (insertResult.affectedRows === 1) {
@@ -152,9 +152,9 @@ class Task {
         }
     }
 
-    static async putTaskByTaskId(taskId, updatedTaskData) {
+    static async putTaskByTaskId(taskId, updatedTaskData, conn) {
         try {
-            const conn = await initMySQL();
+
             const query = 'UPDATE tasks SET ? WHERE id = ?';
             const [updateResult] = await conn.query(query, [updatedTaskData, taskId]);
 
@@ -177,9 +177,9 @@ class Task {
         }
     }
 
-    static async deleteTask(taskId) {
+    static async deleteTask(taskId, conn) {
         try {
-            const conn = await initMySQL();
+
             const [deleteResult] = await conn.query('DELETE FROM tasks WHERE id = ?', [taskId]);
 
             if (deleteResult.affectedRows === 1) {
