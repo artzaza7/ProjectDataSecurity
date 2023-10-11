@@ -21,6 +21,12 @@ function Index() {
   const [countAllTask, setCountAllTask] = useState([0, 0, 0, 0])
   const [countFinishTask, setCountFinishTask] = useState([0, 0, 0, 0])
 
+  // Calculation %
+  function calculationPercentage(numFinish, numAll) {
+    let result = (numFinish * 100) / numAll;
+    return result.toFixed(2)
+  }
+
   async function getInitData() {
     const token = localStorage.getItem('token')
 
@@ -101,7 +107,7 @@ function Index() {
                       <p className="card-text">
                         {!loading ? (<>จำนวนที่ทำเสร็จสิ้น {countFinishTask[0]}</>) : ("จำนวนที่ทำเสร็จสิ้น")}
                         <br />
-                        {!loading ? (<>คิดเป็นเปอร์เซ็น {countFinishTask[0]*100/countAllTask[0]} %</>) : ("คิดเป็นเปอร์เซ็น")}
+                        {!loading ? (<>คิดเป็นเปอร์เซ็น {calculationPercentage(countFinishTask[0], countAllTask[0])} %</>) : ("คิดเป็นเปอร์เซ็น")}
                       </p>
                     </div>
                   </div>
@@ -123,7 +129,7 @@ function Index() {
                       <p className="card-text">
                         {!loading ? (<>จำนวนที่ทำเสร็จสิ้น {countFinishTask[1]}</>) : ("จำนวนที่ทำเสร็จสิ้น")}
                         <br />
-                        {!loading ? (<>คิดเป็นเปอร์เซ็น {countFinishTask[1]*100/countAllTask[1]} %</>) : ("คิดเป็นเปอร์เซ็น")}
+                        {!loading ? (<>คิดเป็นเปอร์เซ็น {calculationPercentage(countFinishTask[1], countAllTask[1])} %</>) : ("คิดเป็นเปอร์เซ็น")}
                       </p>
                     </div>
                   </div>
@@ -147,7 +153,7 @@ function Index() {
                       <p className="card-text">
                         {!loading ? (<>จำนวนที่ทำเสร็จสิ้น {countFinishTask[2]}</>) : ("จำนวนที่ทำเสร็จสิ้น")}
                         <br />
-                        {!loading ? (<>คิดเป็นเปอร์เซ็น {countFinishTask[2]*100/countAllTask[2]} %</>) : ("คิดเป็นเปอร์เซ็น")}
+                        {!loading ? (<>คิดเป็นเปอร์เซ็น {calculationPercentage(countFinishTask[2], countAllTask[2])} %</>) : ("คิดเป็นเปอร์เซ็น")}
                       </p>
                     </div>
                   </div>
@@ -169,7 +175,7 @@ function Index() {
                       <p className="card-text">
                         {!loading ? (<>จำนวนที่ทำเสร็จสิ้น {countFinishTask[3]}</>) : ("จำนวนที่ทำเสร็จสิ้น")}
                         <br />
-                        {!loading ? (<>คิดเป็นเปอร์เซ็น {countFinishTask[3]*100/countAllTask[3]} %</>) : ("คิดเป็นเปอร์เซ็น")}
+                        {!loading ? (<>คิดเป็นเปอร์เซ็น {calculationPercentage(countFinishTask[3], countAllTask[3])} %</>) : ("คิดเป็นเปอร์เซ็น")}
                       </p>
                     </div>
                   </div>
