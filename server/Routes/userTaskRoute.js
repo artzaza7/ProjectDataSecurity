@@ -419,6 +419,75 @@ router.post('/users/:user_username/tasks', userTaskController.postUserTask);
 
 /**
  * @swagger
+ * /api/userTasks/users/{user_username}/tasks/{taskId}/status/{statusId}:
+ *   put:
+ *     summary: Update the status of a user task by ID.
+ *     tags: [User Task]
+ *     parameters:
+ *       - in: path
+ *         name: user_username
+ *         required: true
+ *         description: The username of the user.
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: taskId
+ *         required: true
+ *         description: The ID of the task to update.
+ *         schema:
+ *           type: integer
+ *       - in: path
+ *         name: statusId
+ *         required: true
+ *         description: The new status for the user task.
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: User task status updated successfully.
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: "User task status updated successfully"
+ *               data: {
+ *                   id: 0,
+ *                   user_username: "user_username",
+ *                   task: {
+ *                     id: 0,
+ *                     name: "name",
+ *                     startDay: "date",
+ *                     startHour: "time",
+ *                     endDay: "date",
+ *                     endHour: "time",
+ *                     category_task: {
+ *                       id: 0,
+ *                       name: "name"
+ *                     }
+ *                   },
+ *                   status: {
+ *                     id: 0,
+ *                     name: "name"
+ *                   }
+ *                 }
+ *               "status": 200
+ *       400:
+ *         description: Bad request.
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: "Bad request"
+ *       500:
+ *         description: Internal Server Error.
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: "Internal Server Error"
+ */
+
+router.put('/users/:user_username/tasks/:taskId/status/:statusId', userTaskController.putUserTaskStatus);
+
+/**
+ * @swagger
  * /api/userTasks/users/{user_username}/tasks/{taskId}:
  *   delete:
  *     summary: Delete a user task by task ID.

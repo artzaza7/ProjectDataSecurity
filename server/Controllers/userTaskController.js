@@ -5,6 +5,7 @@ const CategoryTask = require("../Models/categoryTaskModel");
 const Status = require("../Models/statusModel");
 
 async function getAlluserTask(req, res) {
+    await UserTask.updateTaskStatusIfNeeded(req.conn);
     try {
         const responseData = await UserTask.getAllUserTasks();
         const userTasks = responseData.data;
@@ -50,6 +51,7 @@ async function getAlluserTask(req, res) {
 async function getUserTaskById(req, res) {
     try {
         const userTaskId = req.params.userTaskId;
+        await UserTask.updateTaskStatusIfNeeded(req.conn);
 
         const responseData = await UserTask.getUserTaskById(userTaskId);
         const userTask = responseData.data;
@@ -94,6 +96,7 @@ async function getUserTasksByStatus(req, res) {
     try {
         const username = req.params.user_username;
         const statusId = req.params.statusId;
+        await UserTask.updateTaskStatusIfNeeded(req.conn);
 
         const responseData = await UserTask.getUserTasksByStatus(username, statusId);
         const userTasks = responseData.data;
@@ -144,6 +147,7 @@ async function getUserTasksByTaskId(req, res) {
     try {
         const username = req.params.user_username;
         const taskId = req.params.taskId;
+        await UserTask.updateTaskStatusIfNeeded(req.conn);
 
         const responseData = await UserTask.getUserTasksByTaskId(username, taskId);
         const userTasks = responseData.data;
@@ -206,6 +210,59 @@ async function postUserTask(req, res) {
 
         const responseData = await UserTask.createUserTask(userTaskData);
 
+        const statusData = await Status.getStatusById(statusId, req.conn);
+
+        const categoryResponse = await CategoryTask.getCategoryTaskById(task.category_task_id, req.conn);
+
+        if (categoryResponse.status === 200) {
+            newTask.data.category_task = categoryResponse.data;
+            delete newTask.data.category_task_id;
+        }
+
+        if (statusData.status === 200) {
+            responseData.data.task = newTask.data;
+            delete responseData.data.task_id;
+            responseData.data.status = statusData.data;
+            delete responseData.data.status_id;
+        }
+
+        res.status(responseData.status).json({
+            message: responseData.message,
+            data: responseData.data,
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+async function putUserTaskStatus(req, res) {
+    const { user_username, taskId, statusId } = req.params;
+
+    try {
+        const responseData = await UserTask.updateUserTaskStatus(statusId, user_username, taskId, req.conn);
+
+        const taskResponse = await Task.getTaskById(taskId, req.conn);
+
+        if (taskResponse.status === 200) {
+            responseData.data.task = taskResponse.data;
+            delete responseData.data.task_id;
+        }
+
+        const statusData = await Status.getStatusById(statusId, req.conn);
+
+        if (statusData.status === 200) {
+            responseData.data.status = statusData.data;
+            delete responseData.data.status_id;
+        }
+
+        const categoryResponse = await CategoryTask.getCategoryTaskById(taskResponse.data.category_task_id, req.conn);
+
+        if (categoryResponse.status === 200) {
+            responseData.data.task.category_task = categoryResponse.data;
+            delete responseData.data.task.category_task_id;
+        }
+
         res.status(responseData.status).json({
             message: responseData.message,
             data: responseData.data,
@@ -247,7 +304,7 @@ async function deleteUserTask(req, res) {
 
 async function countUserTasksByCategory(req, res) {
     const username = req.params.user_username;
-
+    await UserTask.updateTaskStatusIfNeeded(req.conn);
     try {
         const countResponse = await UserTask.countUserTasksByCategory(username);
 
@@ -292,7 +349,7 @@ async function countUserTasksByCategory(req, res) {
 async function countUserTasksByCategoryAndStatus(req, res) {
     const username = req.params.user_username;
     const status = req.params.statusId;
-
+    await UserTask.updateTaskStatusIfNeeded(req.conn);
     try {
         const countResponse = await UserTask.countUserTasksByCategoryAndStatus(username, status);
 
@@ -340,6 +397,7 @@ module.exports = {
     getUserTasksByStatus,
     getUserTasksByTaskId,
     postUserTask,
+    putUserTaskStatus,
     deleteUserTask,
     countUserTasksByCategory,
     countUserTasksByCategoryAndStatus,

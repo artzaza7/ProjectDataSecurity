@@ -1,5 +1,6 @@
 // Connect Database
-const { initMySQL } = require('../Config/database')
+const { initMySQL } = require('../Config/database');
+const Task = require('./taskModel');
 
 class UserTask {
     // Properties
@@ -183,8 +184,7 @@ class UserTask {
     }
 
 
-    static async getUserTasksByTaskId(username, taskId) {
-        console.log('Task ID data type:', typeof taskId);
+    static async getUserTasksByTaskId(username, taskId, conn) {
         try {
             const conn = await initMySQL();
             const query = 'SELECT * FROM user_task WHERE user_username = ? AND task_id = ?';
@@ -199,7 +199,7 @@ class UserTask {
             }
 
             const message = 'Get user tasks by task ID, Successful';
-            const data = userTasks;
+            const data = userTasks[0];
             const statusCode = 200;
             return { message, data, status: statusCode };
         } catch (error) {
@@ -236,7 +236,32 @@ class UserTask {
         }
     }
 
-    static async deleteUserTask(username, taskId) {
+    static async updateUserTaskStatus(userTaskStatus, username, taskId, conn) {
+        try {
+            const [updateResult] = await conn.query('UPDATE user_task SET status_id = ? WHERE user_username = ? AND task_id = ?', [userTaskStatus, username, taskId]);
+
+            if (updateResult.affectedRows === 1) {
+                const userTaskData = await UserTask.getUserTasksByTaskId(username, taskId, conn); // Corrected method call
+                const message = 'User task updated successfully';
+                const data = userTaskData.data;
+                const statusCode = 200;
+                return { message, data, status: statusCode };
+            } else {
+                const message = 'Failed to update user task';
+                const data = null;
+                const statusCode = 500;
+                return { message, data, status: statusCode };
+            }
+        } catch (error) {
+            console.error(error);
+            const message = error.message;
+            const data = null;
+            const statusCode = 500;
+            return { message, data, status: statusCode };
+        }
+    }
+
+    static async deleteUserTask(username, taskId, conn) {
         try {
             const conn = await initMySQL();
             const [deleteResult] = await conn.query('DELETE FROM user_task WHERE user_username = ? AND task_id = ?', [username, taskId]);
@@ -252,6 +277,45 @@ class UserTask {
                 const statusCode = 404;
                 return { message, data, status: statusCode };
             }
+        } catch (error) {
+            console.error(error);
+            const message = error.message;
+            const data = null;
+            const statusCode = 500;
+            return { message, data, status: statusCode };
+        }
+    }
+
+    static async updateTaskStatusIfNeeded(conn) {
+        try {
+            // Get the current date in the 'Asia/Bangkok' timezone
+            const currentTimezoneOffset = -7 * 60; // Offset for 'Asia/Bangkok' (UTC+7)
+            const currentTime = new Date(new Date().getTime() - (currentTimezoneOffset * 60 * 1000));
+            const formattedCurrentDate = currentTime.toISOString().slice(0, 19).replace("T", " ");
+            console.log(formattedCurrentDate);
+
+            const query = `
+                UPDATE user_task
+                SET status_id = 3
+                WHERE EXISTS (
+                    SELECT tasks.id
+                    FROM tasks
+                    WHERE tasks.id = user_task.task_id
+                    AND user_task.status_id = 1
+                    AND (
+                        (tasks.endDay < ?)
+                        OR
+                        (tasks.endDay = ? AND tasks.endHour < ?)
+                    )
+                )
+            `;
+
+            const [updateResult] = await conn.query(query, [formattedCurrentDate, formattedCurrentDate, formattedCurrentDate]);
+
+            const message = 'User task statuses updated successfully';
+            const data = updateResult;
+            const statusCode = 200;
+            return { message, data, status: statusCode };
         } catch (error) {
             console.error(error);
             const message = error.message;

@@ -164,9 +164,8 @@ class Task {
                 const statusCode = 404;
                 return { message, data, status: statusCode };
             }
-
             const message = 'Update task by ID, Successful';
-            const data = updatedTaskData;
+            const data = { id: taskId, ...updatedTaskData };
             const statusCode = 200;
             return { message, data, status: statusCode };
         } catch (error) {
