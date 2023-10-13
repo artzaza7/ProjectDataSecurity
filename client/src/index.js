@@ -14,6 +14,7 @@ import Index from './components/pages/Index/Index';
 import AddTask from './components/pages/AddTask/AddTask';
 import Navbar from './components/pages/Navbar/Navbar';
 import MainScreen from './components/pages/MainScreen/MainScreen';
+import UpdateTask from './components/pages/UpdateTask/UpdateTask';
 
 const router = createBrowserRouter([
   {
@@ -43,6 +44,10 @@ const router = createBrowserRouter([
   {
     path: "/mainscreen",
     element: <MainScreen />
+  },
+  {
+    path: "/updatetask/:id",
+    element: <UpdateTask />
   },
   
 ])

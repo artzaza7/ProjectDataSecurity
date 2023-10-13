@@ -3,11 +3,12 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import TimePicker from "react-time-picker";
 import "react-time-picker/dist/TimePicker.css";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./AddTask.css";
 import Navbar from "../Navbar/Navbar";
 import Form from 'react-bootstrap/Form';
+
 
 // Import Library
 import jwtDecode from "jwt-decode"
@@ -34,6 +35,10 @@ function AddTask() {
   // useNavigate
   const navigate = useNavigate();
 
+  function settingStartDate(date) {
+    setStartDate(date)
+  }
+
   async function getInitData() {
     try {
       const response = await getAllCategoryTasks();
@@ -54,14 +59,23 @@ function AddTask() {
     if (token) {
       const username = jwtDecode(token).username
       try {
+        const startDateObject = new Date(startDate)
+        startDateObject.setHours(startDateObject.getHours() + 7)
+        const startDate_isoString = startDateObject.toISOString()
+
+        const endDateObject = new Date(endDate)
+        endDateObject.setHours(endDateObject.getHours() + 7)
+        const endDate_isoString = endDateObject.toISOString()
+
         var data = {
           "name": name,
-          "startDay": startDate,
+          "startDay": startDate_isoString,
           "startHour": startTime,
-          "endDay": endDate,
+          "endDay": endDate_isoString,
           "endHour": endTime,
           "category_task_id": Number(category_task_id)
         }
+        // console.log(data)
         const response = await createUserTask(username, data);
         console.log(response)
       }
@@ -125,7 +139,7 @@ function AddTask() {
                     {/* ใช้ DatePicker กับ id="start-datepicker" */}
                     <DatePicker
                       selected={startDate}
-                      onChange={(date) => setStartDate(date)}
+                      onChange={(date) => settingStartDate(date)}
                       dateFormat="dd-MM-yyyy"
                       placeholderText="dd/mm/yyyy"
                       id="start-datepicker"
@@ -187,16 +201,15 @@ function AddTask() {
                   </div>
                 </div>
                 <div className="row">
-                  <div className="col-6 my-2 d-flex justify-content-center align-items-center">
-                    {/* add task button */}
+                  {/* <div className="col-6 my-2 d-flex justify-content-center align-items-center">
                     <button
                       type="button"
                       className="btn btn-warning px-5 mx-2"
                     >
                       <Link to="/index" style={colorTextLink}>กลับหน้าหลัก</Link>
                     </button>
-                  </div>
-                  <div className="col-6 my-2 d-flex justify-content-center align-items-center">
+                  </div> */}
+                  <div className="col-12 my-2 d-flex justify-content-center align-items-center">
                     {/* add task button */}
                     <button
                       type="button"
