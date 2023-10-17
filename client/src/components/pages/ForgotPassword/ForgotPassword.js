@@ -1,5 +1,6 @@
 // Import Bootstrap 5
 import 'bootstrap/dist/css/bootstrap.min.css';
+import "./ForgotPassword.css";
 
 // import library
 import { Link, useNavigate } from 'react-router-dom';
@@ -36,7 +37,7 @@ function ForgotPassword() {
     }
 
     return (
-        <div>
+        <div className="forgotpassword-bg">
             {/* Content */}
             <div className="container vh-100 d-flex justify-content-center align-items-center">
                 {/* Box White */}

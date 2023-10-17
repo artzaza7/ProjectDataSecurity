@@ -10,6 +10,7 @@ import Navbar from "../Navbar/Navbar";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
+import './Modal.css';
 
 // Import Library
 import jwtDecode from "jwt-decode";
@@ -27,6 +28,8 @@ function AddTask() {
   const [category_task_id, setCategory_task_id] = useState(1);
   const [show, setShow] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showValidationModal, setShowValidationModal] = useState(false);
+  const [missingFields, setMissingFields] = useState([]);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -63,6 +66,18 @@ function AddTask() {
     if (e) {
       e.preventDefault();
     }
+    if (!name || !startDate || !startTime || !endDate || !endTime) {
+      const missing = [];
+      if (!name) missing.push("ชื่อกิจกรรม");
+      if (!startDate) missing.push("วันที่เริ่ม");
+      if (!startTime) missing.push("เวลาที่เริ่ม");
+      if (!endDate) missing.push("วันที่จบ");
+      if (!endTime) missing.push("เวลาที่จบ");
+      setMissingFields(missing);
+      setShowValidationModal(true);
+      return;
+    }
+
     const token = localStorage.getItem("token");
     if (token) {
       const username = jwtDecode(token).username;
@@ -126,7 +141,7 @@ function AddTask() {
                     {/* Username */}
                     <input
                       type="text"
-                      className="form-control py-2"
+                      className="form-control py-2 input-group has-validation"
                       placeholder="กรุณากรอกชื่อกิจกรรม"
                       onChange={(e) => setName(e.target.value)}
                     />
@@ -267,6 +282,30 @@ function AddTask() {
                         }}
                       >
                         ตกลง
+                      </Button>
+                    </Modal.Footer>
+                  </Modal>
+                  <Modal
+                    show={showValidationModal}
+                    onHide={() => setShowValidationModal(false)}
+                  >
+                    <Modal.Header closeButton>
+                      <Modal.Title>ข้อมูลไม่ครบ</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                      กรุณากรอกข้อมูลให้ครบถ้วน:
+                      <ul>
+                        {missingFields.map((field, index) => (
+                          <li key={index} className="text-danger">{field}</li>
+                        ))}
+                      </ul>
+                    </Modal.Body>
+                    <Modal.Footer>
+                      <Button
+                        variant="danger"
+                        onClick={() => setShowValidationModal(false)}
+                      >
+                        ปิด
                       </Button>
                     </Modal.Footer>
                   </Modal>

@@ -1,6 +1,7 @@
 
 // Import Bootstrap 5
 import 'bootstrap/dist/css/bootstrap.min.css';
+import "./Register.css";
 
 // import library
 import { Link, useNavigate } from 'react-router-dom';
@@ -61,7 +62,7 @@ function Register() {
     }
 
     return (
-        <div>
+        <div className="register-bg">
             {/* Content */}
             <div className="container vh-100 d-flex justify-content-center align-items-center">
                 {/* Box White */}
