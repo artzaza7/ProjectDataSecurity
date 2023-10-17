@@ -60,7 +60,7 @@ function ChartExample() {
     datasets: [
       {
         label: "จำนวนทั้งหมด ",
-        data: !loading ? countAllTask : [12, 19, 3, 5],
+        data: !loading ? countAllTask : [0, 0, 0, 0],
         borderWidth: 1,
         backgroundColor: [
           "#FF8080",

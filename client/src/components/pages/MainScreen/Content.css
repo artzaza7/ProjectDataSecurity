@@ -1,0 +1,21 @@
+  .bg-primary{
+    border-color: #ff8080;
+    background-color: #ff8080 !important;
+    color: white;
+  }
+  .bg-info{
+    border-color: #7ecf77;
+    background-color: #7ecf77 !important;
+    color: white;
+  }
+  .bg-warning{
+    border-color: #ac4da3;
+    background-color: #ac4da3 !important;
+    color: white;
+  }
+  .bg-danger{
+    border-color: #ddd626;
+    background-color: #ddd626 !important;
+    color: white;
+  }
+  

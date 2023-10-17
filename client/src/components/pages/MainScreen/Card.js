@@ -153,7 +153,7 @@ function Card(props) {
                 <Modal.Header closeButton>
                     <Modal.Title>คุณต้องการลบกิจกรรม {data.task_name} หรือไม่ ?</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>Woohoo, you are reading this text in a modal!</Modal.Body>
+                <Modal.Body>ยืนยันที่จะลบกิจกรรมนี้หรือไม่</Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleCloseModalDelete}>
                         ปิด

@@ -54,7 +54,7 @@ function Navbar() {
       <div className="container justify-content-center">
         <div className="row w-100">
           <div className="col-4 d-flex justify-content-between align-items-center">
-            <Link to="/index" className="text-white" style={{textDecoration: 'none'}}>Dashboard</Link>
+            <Link to="/index" className="text-white" style={{textDecoration: 'none'}}>แดชบอร์ด</Link>
             <Link to="/addtask" className="text-white" style={{textDecoration: 'none'}}>เพิ่มกิจกรรม</Link>
             <Link to="/mainscreen" className="text-white" style={{textDecoration: 'none'}}>ดูกิจกรรม</Link>
           </div>

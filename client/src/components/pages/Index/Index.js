@@ -5,12 +5,15 @@ import { Link, useNavigate } from "react-router-dom";
 import "./Index.css";
 import Navbar from "../Navbar/Navbar";
 import { useState, useEffect } from "react";
+import 'bootstrap-icons/font/bootstrap-icons.css';
 
 // Import Library
 import jwtDecode from "jwt-decode"
 
 // Import API
 import { getUserTasksCount, getUserTasksCountFinish } from "../../../services/UserTaskService"
+import { getUserTasksCountProgress } from "../../../services/UserTaskService"
+import { getUserTasksCountFail } from "../../../services/UserTaskService"
 
 function Index() {
   // useNavigate
@@ -20,6 +23,8 @@ function Index() {
   const [loading, setLoading] = useState(true)
   const [countAllTask, setCountAllTask] = useState([0, 0, 0, 0])
   const [countFinishTask, setCountFinishTask] = useState([0, 0, 0, 0])
+  const [countProgressTask, setCountProgressTask] = useState([0, 0, 0, 0])
+  const [countFailTask, setCountFailTask] = useState([0, 0, 0, 0])
 
   // Calculation %
   function calculationPercentage(numFinish, numAll) {
@@ -40,6 +45,14 @@ function Index() {
         // for count Finish UserTask in Pie Chart
         const responseCountFinish = await getUserTasksCountFinish(username)
         setCountFinishTask(responseCountFinish.data)
+
+        // for count Progress UserTask in Pie Chart
+        const responseCountProgress = await getUserTasksCountProgress(username)
+        setCountProgressTask(responseCountProgress.data)
+
+        // for count Fail UserTask in Pie Chart
+        const responseCountFail = await getUserTasksCountFail(username)
+        setCountFailTask(responseCountFail.data)
 
         // Finish Call API
         setLoading(false)
@@ -95,19 +108,24 @@ function Index() {
                 <div className="container">
                   <div className="card btn-type1">
                     <div className="card-header btn-type1 text-center">
-                      ประเภท 1
+                      <i className="bi bi-person-workspace"></i>
+                      งาน
                     </div>
                     <div className="card-body text-center">
-                      <br />
-                      <br />
-                      <br />
+                      
                       <h5 className="card-title">
                         {!loading ? (<>จำนวนงานทั้งหมด {countAllTask[0]}</>) : ("จำนวนงานทั้งหมด")}
                       </h5>
+                      <br />
                       <p className="card-text">
+
+                        {!loading ? (<>จำนวนที่ดำเนินการอยู่ {countProgressTask[0]}</>) : ("จำนวนที่ดำเนินการอยู่")}
+                        <br />
+                        {!loading ? (<>จำนวนที่ล้มเหลว {countFailTask[0]}</>) : ("จำนวนที่ล้มเหลว")}
+                        <br />
                         {!loading ? (<>จำนวนที่ทำเสร็จสิ้น {countFinishTask[0]}</>) : ("จำนวนที่ทำเสร็จสิ้น")}
                         <br />
-                        {!loading ? (<>คิดเป็นเปอร์เซ็น {calculationPercentage(countFinishTask[0], countAllTask[0])} %</>) : ("คิดเป็นเปอร์เซ็น")}
+                        {!loading ? (<>เสร็จสิ้นคิดเป็นเปอร์เซ็น {calculationPercentage(countFinishTask[0], countAllTask[0])} %</>) : ("คิดเป็นเปอร์เซ็น")}
                       </p>
                     </div>
                   </div>
@@ -117,16 +135,20 @@ function Index() {
                 <div className="container">
                   <div className="card btn-type2 text-center">
                     <div className="card-header bg-transparent btn-type2 text-center">
-                      ประเภท 2
+                    <i className="bi bi-person-heart"></i>
+                      ครอบครัว
                     </div>
                     <div className="card-body">
-                      <br />
-                      <br />
-                      <br />
+                      
                       <h5 className="card-title">
                         {!loading ? (<>จำนวนงานทั้งหมด {countAllTask[1]}</>) : ("จำนวนงานทั้งหมด")}
                       </h5>
+                      <br />
                       <p className="card-text">
+                        {!loading ? (<>จำนวนที่ดำเนินการอยู่ {countProgressTask[1]}</>) : ("จำนวนที่ดำเนินการอยู่")}
+                        <br />
+                        {!loading ? (<>จำนวนที่ล้มเหลว {countFailTask[1]}</>) : ("จำนวนที่ล้มเหลว")}
+                        <br />
                         {!loading ? (<>จำนวนที่ทำเสร็จสิ้น {countFinishTask[1]}</>) : ("จำนวนที่ทำเสร็จสิ้น")}
                         <br />
                         {!loading ? (<>คิดเป็นเปอร์เซ็น {calculationPercentage(countFinishTask[1], countAllTask[1])} %</>) : ("คิดเป็นเปอร์เซ็น")}
@@ -141,16 +163,20 @@ function Index() {
                 <div className="container">
                   <div className="card btn-type3 text-center">
                     <div className="card-header bg-transparent btn-type3 text-center">
-                      ประเภท 3
+                    <i className="bi bi-person-wheelchair"></i>
+                      โรงพยาบาล
                     </div>
                     <div className="card-body">
-                      <br />
-                      <br />
-                      <br />
+                      
                       <h5 className="card-title">
                         {!loading ? (<>จำนวนงานทั้งหมด {countAllTask[2]}</>) : ("จำนวนงานทั้งหมด")}
                       </h5>
+                      <br />
                       <p className="card-text">
+                        {!loading ? (<>จำนวนที่ดำเนินการอยู่ {countProgressTask[2]}</>) : ("จำนวนที่ดำเนินการอยู่")}
+                        <br />
+                        {!loading ? (<>จำนวนที่ล้มเหลว {countFailTask[2]}</>) : ("จำนวนที่ล้มเหลว")}
+                        <br />
                         {!loading ? (<>จำนวนที่ทำเสร็จสิ้น {countFinishTask[2]}</>) : ("จำนวนที่ทำเสร็จสิ้น")}
                         <br />
                         {!loading ? (<>คิดเป็นเปอร์เซ็น {calculationPercentage(countFinishTask[2], countAllTask[2])} %</>) : ("คิดเป็นเปอร์เซ็น")}
@@ -161,18 +187,23 @@ function Index() {
               </div>
               <div className="col-6">
                 <div className="container">
-                  <div className="card btn-type4 text-center">
+                  <div className="card btn-type4 text-center ">
                     <div className="card-header bg-transparent btn-type4 text-center">
-                      ประเภท 4
+                    <i className="bi bi-person-walking"></i>
+                      อื่นๆ
                     </div>
                     <div className="card-body">
-                      <br />
-                      <br />
-                      <br />
+                      
                       <h5 className="card-title">
                         {!loading ? (<>จำนวนงานทั้งหมด {countAllTask[3]}</>) : ("จำนวนงานทั้งหมด")}
+                       
                       </h5>
+                      <br />
                       <p className="card-text">
+                        {!loading ? (<>จำนวนที่ดำเนินการอยู่ {countProgressTask[3]}</>) : ("จำนวนที่ดำเนินการอยู่")}
+                        <br />
+                        {!loading ? (<>จำนวนที่ล้มเหลว {countFailTask[3]}</>) : ("จำนวนที่ล้มเหลว")}
+                        <br />
                         {!loading ? (<>จำนวนที่ทำเสร็จสิ้น {countFinishTask[3]}</>) : ("จำนวนที่ทำเสร็จสิ้น")}
                         <br />
                         {!loading ? (<>คิดเป็นเปอร์เซ็น {calculationPercentage(countFinishTask[3], countAllTask[3])} %</>) : ("คิดเป็นเปอร์เซ็น")}

@@ -5,6 +5,7 @@ import Tab from 'react-bootstrap/Tab';
 import Content from './Content';
 import Navbar from "../Navbar/Navbar";
 import { useNavigate } from 'react-router-dom';
+import './MainScreen.css';
 
 // Import Library
 import jwtDecode from "jwt-decode"
@@ -130,16 +131,16 @@ function MainScreen() {
             <Navbar />
             <div className="container min-vh-100">
                 {/* Tabs */}
-                <Tab.Container defaultActiveKey="first" onSelect={handleTabSelect}>
-                    <Nav variant="pills" style={minHieghtTab}>
-                        <Nav.Item>
-                            <Nav.Link eventKey="first" className='h-100 d-flex justify-content-center align-items-center text-dark' style={{ backgroundColor: activeTab === 'first' ? 'white' : 'grey' }} >กิจกรรมที่ยังไม่เสร็จ</Nav.Link>
+                <Tab.Container className="custom-nav-item" defaultActiveKey="first" onSelect={handleTabSelect}>
+                    <Nav className="custom-nav-item" variant="pills" style={minHieghtTab}>
+                        <Nav.Item className="custom-nav-item">
+                            <Nav.Link eventKey="first" className='h-100 d-flex justify-content-center align-items-center text-dark' style={{ backgroundColor: activeTab === 'first' ? '#4070F4' : 'white' }} >กิจกรรมที่ยังไม่เสร็จ</Nav.Link>
                         </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link eventKey="second" className='h-100 d-flex justify-content-center align-items-center text-dark' style={{ backgroundColor: activeTab === 'second' ? 'white' : 'grey' }}>กิจกรรมที่เสร็จสิ้นแล้ว</Nav.Link>
+                        <Nav.Item className="custom-nav-item">
+                            <Nav.Link eventKey="second" className='h-100 d-flex justify-content-center align-items-center text-dark' style={{ backgroundColor: activeTab === 'second' ? '#4070F4' : 'white' }}>กิจกรรมที่เสร็จสิ้นแล้ว</Nav.Link>
                         </Nav.Item>
                     </Nav>
-                    <Tab.Content className='bg-white d-flex justify-content-center align-items-center w-100'>
+                    <Tab.Content className='d-flex justify-content-center align-items-center w-100'>
                         <Tab.Pane eventKey="first" className='w-100'>
 
                             {!loading ? <Content mode="notFinish" data={dataNotFinish} /> : <div>LOADING</div>}

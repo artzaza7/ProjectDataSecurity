@@ -1,4 +1,5 @@
 import Column from './Column';
+import './Content.css';
 
 const hieghtContent = {
     height: '95vh'

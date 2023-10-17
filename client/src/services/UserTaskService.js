@@ -40,6 +40,34 @@ const getUserTasksCountFinish = async (username) => {
         throw error;
     }
 };
+const getUserTasksCountProgress = async (username) => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/users/${username}/categoryTasks/tasks/status/${1}`, {
+            params: {
+                user_username: username,
+                statusId: 1
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('เกิดข้อผิดพลาดในการเรียก API');
+        throw error;
+    }
+};
+const getUserTasksCountFail = async (username) => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/users/${username}/categoryTasks/tasks/status/${3}`, {
+            params: {
+                user_username: username,
+                statusId: 3
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('เกิดข้อผิดพลาดในการเรียก API');
+        throw error;
+    }
+};
 
 const getUserTasksByStatusId = async (username, status_id) => {
     try {
@@ -93,4 +121,4 @@ const updateUserTaskById = async (user_username, taskId, statusId) => {
 
 
 
-export { createUserTask, getUserTasksCount, getUserTasksCountFinish, getUserTasksByStatusId, getUserTaskById, deleteUserTaskById, updateUserTaskById };
+export { createUserTask, getUserTasksCount, getUserTasksCountFinish, getUserTasksCountProgress,getUserTasksCountFail,getUserTasksByStatusId, getUserTaskById, deleteUserTaskById, updateUserTaskById };
