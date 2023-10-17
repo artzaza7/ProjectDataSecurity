@@ -125,7 +125,7 @@ function Index() {
                         <br />
                         {!loading ? (<>จำนวนที่ทำเสร็จสิ้น {countFinishTask[0]}</>) : ("จำนวนที่ทำเสร็จสิ้น")}
                         <br />
-                        {!loading ? (<>คิดเป็นเปอร์เซ็น {calculationPercentage(countFinishTask[0], countAllTask[0])} %</>) : ("คิดเป็นเปอร์เซ็น")}
+                        {!loading ? (<>เสร็จสิ้นคิดเป็นเปอร์เซ็น {calculationPercentage(countFinishTask[0], countAllTask[0])} %</>) : ("คิดเป็นเปอร์เซ็น")}
                       </p>
                     </div>
                   </div>
