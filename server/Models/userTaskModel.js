@@ -108,7 +108,7 @@ class UserTask {
             if (userTasks.length === 0) {
                 const message = 'No user tasks found with the specified status';
                 const data = [];
-                const statusCode = 404;
+                const statusCode = 200;
                 return { message, data, status: statusCode };
             }
 
