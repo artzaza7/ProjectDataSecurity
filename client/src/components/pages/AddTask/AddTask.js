@@ -7,23 +7,29 @@ import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./AddTask.css";
 import Navbar from "../Navbar/Navbar";
-import Form from 'react-bootstrap/Form';
-
+import Form from "react-bootstrap/Form";
+import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
 
 // Import Library
-import jwtDecode from "jwt-decode"
+import jwtDecode from "jwt-decode";
 
 // Import API
-import { getAllCategoryTasks } from "../../../services/CategoryTaskService"
-import { createUserTask } from "../../../services/UserTaskService"
+import { getAllCategoryTasks } from "../../../services/CategoryTaskService";
+import { createUserTask } from "../../../services/UserTaskService";
 
 function AddTask() {
-  const [name, setName] = useState("")
+  const [name, setName] = useState("");
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
   const [category_task_id, setCategory_task_id] = useState(1);
+  const [show, setShow] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
   const colorTextLink = {
     textDecoration: "none",
     color: "#FFFFFF",
@@ -36,56 +42,56 @@ function AddTask() {
   const navigate = useNavigate();
 
   function settingStartDate(date) {
-    setStartDate(date)
+    setStartDate(date);
   }
 
   async function getInitData() {
     try {
       const response = await getAllCategoryTasks();
-      setCategoryTasks(response.data)
-    }
-    catch (error) {
-      console.log(error.message)
+      setCategoryTasks(response.data);
+    } catch (error) {
+      console.log(error.message);
     }
   }
 
   useEffect(() => {
-    getInitData()
+    getInitData();
   }, []);
 
   async function submitCreateTask(e) {
-    e.preventDefault();
-    const token = localStorage.getItem("token")
+    // ตรวจสอบ e และเรียก preventDefault ถ้าเป็นไปได้
+    if (e) {
+      e.preventDefault();
+    }
+    const token = localStorage.getItem("token");
     if (token) {
-      const username = jwtDecode(token).username
+      const username = jwtDecode(token).username;
       try {
-        const startDateObject = new Date(startDate)
-        startDateObject.setHours(startDateObject.getHours() + 7)
-        const startDate_isoString = startDateObject.toISOString()
+        const startDateObject = new Date(startDate);
+        startDateObject.setHours(startDateObject.getHours() + 7);
+        const startDate_isoString = startDateObject.toISOString();
 
-        const endDateObject = new Date(endDate)
-        endDateObject.setHours(endDateObject.getHours() + 7)
-        const endDate_isoString = endDateObject.toISOString()
+        const endDateObject = new Date(endDate);
+        endDateObject.setHours(endDateObject.getHours() + 7);
+        const endDate_isoString = endDateObject.toISOString();
 
         var data = {
-          "name": name,
-          "startDay": startDate_isoString,
-          "startHour": startTime,
-          "endDay": endDate_isoString,
-          "endHour": endTime,
-          "category_task_id": Number(category_task_id)
-        }
-        // console.log(data)
+          name: name,
+          startDay: startDate_isoString,
+          startHour: startTime,
+          endDay: endDate_isoString,
+          endHour: endTime,
+          category_task_id: Number(category_task_id),
+        };
         const response = await createUserTask(username, data);
-        console.log(response)
+        console.log(response);
+        setShowSuccessModal(true);
+      } catch (error) {
+        console.log(error.message);
       }
-      catch (error) {
-        console.log(error.message)
-      }
-    }
-    else {
-      console.log("Don't have token")
-      navigate("/")
+    } else {
+      console.log("Don't have token");
+      navigate("/");
     }
   }
 
@@ -93,7 +99,7 @@ function AddTask() {
     <option key={item.id} value={item.id}>
       {item.name}
     </option>
-  ))
+  ));
 
   return (
     <div>
@@ -195,7 +201,10 @@ function AddTask() {
                 </div>
                 <div className="row pb-3">
                   <div className="col-12 d-flex justify-content-start align-items-center">
-                    <Form.Select aria-label="Default select example" onChange={(e) => setCategory_task_id(e.target.value)}>
+                    <Form.Select
+                      aria-label="Default select example"
+                      onChange={(e) => setCategory_task_id(e.target.value)}
+                    >
                       {categoryOptions}
                     </Form.Select>
                   </div>
@@ -210,16 +219,57 @@ function AddTask() {
                     </button>
                   </div> */}
                   <div className="col-12 my-2 d-flex justify-content-center align-items-center">
-                    {/* add task button */}
                     <button
                       type="button"
                       className="btn btn-primary px-5 mx-2"
                       style={colorTextLink}
-                      onClick={(e) => submitCreateTask(e)}
+                      onClick={handleShow} // Use the handleShow function here
                     >
                       เพิ่มกิจกรรม
                     </button>
                   </div>
+                  <Modal show={show} onHide={handleClose}>
+                    <Modal.Header closeButton>
+                      <Modal.Title>ยืนยันการเพิ่มกิจกรรม</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>ต้องการเพิ่มกิจกรรมใช่หรือไม่</Modal.Body>
+                    <Modal.Footer>
+                      <Button variant="secondary" onClick={handleClose}>
+                        ยกเลิก
+                      </Button>
+                      <Button
+                        variant="primary"
+                        onClick={(e) => {
+                          submitCreateTask(e);
+                          handleClose();
+                        }}
+                      >
+                        ตกลง
+                      </Button>
+                    </Modal.Footer>
+                  </Modal>
+                  <Modal
+                    show={showSuccessModal}
+                    onHide={() => setShowSuccessModal(false)}
+                  >
+                    <Modal.Header closeButton>
+                      <Modal.Title>ทำการเพิ่มกิจกรรมแล้ว</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                      กิจกรรมของคุณได้ถูกเพิ่มเรียบร้อยแล้ว
+                    </Modal.Body>
+                    <Modal.Footer>
+                      <Button
+                        variant="primary"
+                        onClick={() => {
+                          setShowSuccessModal(false);
+                          window.location.reload(true); // รีเฟรชหน้า
+                        }}
+                      >
+                        ตกลง
+                      </Button>
+                    </Modal.Footer>
+                  </Modal>
                 </div>
               </div>
             </div>

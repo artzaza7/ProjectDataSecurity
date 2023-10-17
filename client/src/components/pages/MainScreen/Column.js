@@ -19,7 +19,7 @@ function Column(props) {
                     (<div className="card-body bg-secondary h-100 d-flex justify-content-center align-items-center">
                         <div className="card">
                             <div className="card-body">
-                                [... Don't have Data ...]
+                                [... ยังไม่พบงาน ...]
                             </div>
                         </div>
                     </div>)}

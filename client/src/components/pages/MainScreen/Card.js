@@ -137,13 +137,13 @@ function Card(props) {
                 <Modal.Header closeButton>
                     <Modal.Title>คุณต้องการเปลี่ยนสถานะ {data.task_name} หรือไม่ ?</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>Woohoo, you are reading this text in a modal!</Modal.Body>
+                <Modal.Body>ยืนยันที่จะเปลี่ยนสถานะเป็นเสร็จสิ้นแล้วหรือไม่</Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleCloseModalStatus}>
-                        ปิด
+                        ยกเลิก
                     </Button>
                     <Button variant="primary" onClick={handleChangeStatus}>
-                        เปลี่ยนสถานะ
+                        ยืนยัน
                     </Button>
                 </Modal.Footer>
             </Modal>
