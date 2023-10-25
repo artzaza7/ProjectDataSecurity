@@ -66,7 +66,7 @@ function ChartExample() {
           "#FF8080",
           "#7ECF77",
           "#AC4DA3",
-          "#DDD626",
+          "#d6a820",
         ],
       },
     ],
