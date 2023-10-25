@@ -58,13 +58,13 @@ function Content(props) {
 
             <div className='row h-100'>
 
-                <Column textNumber="1" bgColor="bg-primary" mode={mode} data={type_1} dataLength={type_1.length}/>
+                <Column textNumber="งาน" bgColor="bg-primary" mode={mode} data={type_1} dataLength={type_1.length}/>
 
-                <Column textNumber="2" bgColor="bg-info" mode={mode} data={type_2} dataLength={type_2.length}/>
+                <Column textNumber="ครอบครัว" bgColor="bg-info" mode={mode} data={type_2} dataLength={type_2.length}/>
 
-                <Column textNumber="3" bgColor="bg-warning" mode={mode} data={type_3} dataLength={type_3.length}/>
+                <Column textNumber="โรงพยาบาล" bgColor="bg-warning" mode={mode} data={type_3} dataLength={type_3.length}/>
 
-                <Column textNumber="4" bgColor="bg-danger" mode={mode} data={type_4} dataLength={type_4.length}/>
+                <Column textNumber="อื่นๆ" bgColor="bg-danger" mode={mode} data={type_4} dataLength={type_4.length}/>
 
 
             </div>
