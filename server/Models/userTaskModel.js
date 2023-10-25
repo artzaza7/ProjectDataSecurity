@@ -1,6 +1,5 @@
 // Connect Database
 const { initMySQL } = require('../Config/database');
-const Task = require('./taskModel');
 
 class UserTask {
     // Properties
@@ -50,11 +49,13 @@ class UserTask {
     }
 
     // Static method to get all user tasks
-    static async getAllUserTasks(conn) {
+    static async getAllUserTasks() {
         const userTasks = [];
         try {
-            // Make sure you have this function
+            const conn = await initMySQL();
             const results = await conn.query('SELECT * FROM user_task');
+            await conn.end();
+
             results[0].forEach((value) => {
                 userTasks.push(value);
             });
@@ -71,11 +72,12 @@ class UserTask {
         }
     }
 
-    static async getUserTaskById(userTaskId, conn) {
+    static async getUserTaskById(userTaskId) {
         try {
-
+            const conn = await initMySQL();
             const query = 'SELECT * FROM user_task WHERE id = ?';
             const results = await conn.query(query, [userTaskId]);
+            await conn.end();
 
             if (results[0].length === 0) {
                 const message = 'User Task not found';
@@ -98,11 +100,12 @@ class UserTask {
         }
     }
 
-    static async getUserTasksByStatus(username, statusId, conn) {
+    static async getUserTasksByStatus(username, statusId) {
         try {
-
+            const conn = await initMySQL();
             const query = 'SELECT * FROM user_task WHERE user_username = ? AND status_id = ?';
             const results = await conn.query(query, [username, statusId]);
+            await conn.end();
 
             const userTasks = results[0];
             if (userTasks.length === 0) {
@@ -125,11 +128,12 @@ class UserTask {
         }
     }
 
-    static async countUserTasksByCategory(username, conn) {
+    static async countUserTasksByCategory(username) {
         try {
-
+            const conn = await initMySQL();
             const query = `SELECT category_task_id, COUNT(*) AS task_count FROM user_task INNER JOIN tasks ON user_task.task_id = tasks.id WHERE user_task.user_username = ? GROUP BY category_task_id;`;
             const results = await conn.query(query, [username]);
+            await conn.end();
 
             if (results.length === 0) {
                 const message = 'No user tasks found for the specified user';
@@ -151,9 +155,9 @@ class UserTask {
         }
     }
 
-    static async countUserTasksByCategoryAndStatus(username, statusId, conn) {
+    static async countUserTasksByCategoryAndStatus(username, statusId) {
         try {
-
+            const conn = await initMySQL();
             const query = `
                 SELECT category_task_id, COUNT(*) AS task_count
                 FROM user_task
@@ -162,6 +166,7 @@ class UserTask {
                 GROUP BY category_task_id;
             `;
             const results = await conn.query(query, [username, statusId]);
+            await conn.end();
 
             if (results.length === 0) {
                 const message = 'No user tasks found for the specified user and status';
@@ -184,11 +189,12 @@ class UserTask {
     }
 
 
-    static async getUserTasksByTaskId(username, taskId, conn) {
+    static async getUserTasksByTaskId(username, taskId) {
         try {
-
+            const conn = await initMySQL();
             const query = 'SELECT * FROM user_task WHERE user_username = ? AND task_id = ?';
             const results = await conn.query(query, [username, taskId]);
+            await conn.end();
 
             const userTasks = results[0];
             if (userTasks.length === 0) {
@@ -211,10 +217,11 @@ class UserTask {
         }
     }
 
-    static async createUserTask(userTaskData, conn) {
+    static async createUserTask(userTaskData) {
         try {
-
+            const conn = await initMySQL();
             const [insertResult] = await conn.query('INSERT INTO user_task SET ?', userTaskData);
+            await conn.end();
 
             if (insertResult.affectedRows === 1) {
                 const message = 'User task created successfully';
@@ -236,12 +243,14 @@ class UserTask {
         }
     }
 
-    static async updateUserTaskStatus(userTaskStatus, username, taskId, conn) {
+    static async updateUserTaskStatus(userTaskStatus, username, taskId) {
         try {
+            const conn = await initMySQL();
             const [updateResult] = await conn.query('UPDATE user_task SET status_id = ? WHERE user_username = ? AND task_id = ?', [userTaskStatus, username, taskId]);
+            await conn.end();
 
             if (updateResult.affectedRows === 1) {
-                const userTaskData = await UserTask.getUserTasksByTaskId(username, taskId, conn); // Corrected method call
+                const userTaskData = await UserTask.getUserTasksByTaskId(username, taskId); // Corrected method call
                 const message = 'User task updated successfully';
                 const data = userTaskData.data;
                 const statusCode = 200;
@@ -261,10 +270,11 @@ class UserTask {
         }
     }
 
-    static async deleteUserTask(username, taskId, conn) {
+    static async deleteUserTask(username, taskId) {
         try {
-
+            const conn = await initMySQL();
             const [deleteResult] = await conn.query('DELETE FROM user_task WHERE user_username = ? AND task_id = ?', [username, taskId]);
+            await conn.end();
 
             if (deleteResult.affectedRows === 1) {
                 const message = 'User task deleted successfully';
@@ -286,31 +296,30 @@ class UserTask {
         }
     }
 
-    static async updateTaskStatusIfNeeded(conn) {
+    static async updateTaskStatusIfNeeded() {
         try {
             // Get the current date in the 'Asia/Bangkok' timezone
             const currentTimezoneOffset = -7 * 60; // Offset for 'Asia/Bangkok' (UTC+7)
             const currentTime = new Date(new Date().getTime() - (currentTimezoneOffset * 60 * 1000));
             const formattedCurrentDate = currentTime.toISOString().slice(0, 19).replace("T", " ");
-            console.log(formattedCurrentDate);
+            const dateComponents = formattedCurrentDate.split(' ');
+            const nowDate = dateComponents[0];
+            const nowTime = dateComponents[1];
 
             const query = `
-                UPDATE user_task
-                SET status_id = 3
-                WHERE EXISTS (
-                    SELECT tasks.id
-                    FROM tasks
-                    WHERE tasks.id = user_task.task_id
-                    AND user_task.status_id = 1
-                    AND (
-                        (tasks.endDay < ?)
-                        OR
-                        (tasks.endDay = ? AND tasks.endHour < ?)
-                    )
-                )
-            `;
-
-            const [updateResult] = await conn.query(query, [formattedCurrentDate, formattedCurrentDate, formattedCurrentDate]);
+                            UPDATE user_task
+                            SET status_id = 3
+                            WHERE EXISTS (
+                                SELECT tasks.id
+                                FROM tasks
+                                WHERE tasks.id = user_task.task_id
+                                AND user_task.status_id = 1
+                                AND (tasks.endDay < ? OR (tasks.endDay = ? AND tasks.endHour < ?))
+                            )
+                        `;
+            const conn = await initMySQL();
+            const [updateResult] = await conn.query(query, [nowDate, nowDate, nowTime]);
+            await conn.end();
 
             const message = 'User task statuses updated successfully';
             const data = updateResult;

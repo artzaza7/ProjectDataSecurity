@@ -4,13 +4,13 @@ const CategoryTask = require("../Models/categoryTaskModel");
 
 async function getAllTasks(req, res) {
     try {
-        const responseData = await Task.getAllTasks(req.conn);
+        const responseData = await Task.getAllTasks();
         const tasks = responseData.data;
 
         const tasksWithCategory = [];
 
         for (const task of tasks) {
-            const categoryResponse = await CategoryTask.getCategoryTaskById(task.category_task_id, req.conn);
+            const categoryResponse = await CategoryTask.getCategoryTaskById(task.category_task_id);
 
             if (categoryResponse.status === 200) {
                 task.category_task = categoryResponse.data;
@@ -36,14 +36,14 @@ async function getTaskById(req, res) {
     const id = req.params.taskId;
 
     try {
-        const responseData = await Task.getTaskById(id, req.conn);
+        const responseData = await Task.getTaskById(id);
         const task = responseData.data;
 
         if (responseData.status === 404) {
             return res.status(404).json({ error: 'Task not found' });
         }
 
-        const categoryResponse = await CategoryTask.getCategoryTaskById(task.category_task_id, req.conn);
+        const categoryResponse = await CategoryTask.getCategoryTaskById(task.category_task_id);
 
         if (categoryResponse.status === 200) {
             task.category_task = categoryResponse.data;
@@ -68,14 +68,14 @@ async function putTaskByTaskId(req, res) {
     const updatedTaskData = req.body;
 
     try {
-        const responseData = await Task.putTaskByTaskId(taskId, updatedTaskData, req.conn);
+        const responseData = await Task.putTaskByTaskId(taskId, updatedTaskData);
         const updatedTask = responseData.data;
 
         if (responseData.status === 404) {
             return res.status(404).json({ error: 'Task not found' });
         }
 
-        const categoryResponse = await CategoryTask.getCategoryTaskById(updatedTask.category_task_id, req.conn);
+        const categoryResponse = await CategoryTask.getCategoryTaskById(updatedTask.category_task_id);
 
         if (categoryResponse.status === 200) {
             updatedTask.category_task = categoryResponse.data;

@@ -230,4 +230,61 @@ router.post('/register', userController.registerUser);
 
 router.post('/login', userController.loginUser);
 
+/**
+ * @swagger
+ * /api/users/resetPassword:
+ *   put:
+ *     summary: Reset a user's password.
+ *     tags: [User]
+ *     requestBody:
+ *       description: User password reset data.
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 example: "username"
+ *               email:
+ *                 type: string
+ *                 example: "user@example.com"
+ *               password:
+ *                 type: string
+ *                 example: "newPassword"
+ *             required:
+ *               - username
+ *               - email
+ *               - password
+ *     responses:
+ *       200:
+ *         description: Password reset successful.
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: "Password reset successful"
+ *               "status": 200
+ *       400:
+ *         description: Bad request.
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: "Email does not match user record"
+ *       404:
+ *         description: User not found.
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: "User not found"
+ *       500:
+ *         description: Internal Server Error.
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: "Failed to reset password"
+ */
+
+router.put('/resetPassword', userController.resetPassword);
+
 module.exports = router;

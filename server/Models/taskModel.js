@@ -79,11 +79,13 @@ class Task {
     }
 
     // Function
-    static async getAllTasks(conn) {
+    static async getAllTasks() {
         const tasks = [];
         try {
-
+            const conn = await initMySQL();
             const results = await conn.query('SELECT * FROM tasks');
+            await conn.end();
+
             results[0].forEach((value) => {
                 tasks.push(value);
             });
@@ -100,11 +102,12 @@ class Task {
         }
     }
 
-    static async getTaskById(taskId, conn) {
+    static async getTaskById(taskId) {
         try {
-
+            const conn = await initMySQL();
             const query = 'SELECT * FROM tasks WHERE id = ?';
             const results = await conn.query(query, [taskId]);
+            await conn.end();
 
             if (results[0].length === 0) {
                 const message = 'Task not found';
@@ -127,10 +130,11 @@ class Task {
         }
     }
 
-    static async createTask(taskData, conn) {
+    static async createTask(taskData) {
         try {
-
+            const conn = await initMySQL();
             const [insertResult] = await conn.query('INSERT INTO tasks SET ?', taskData);
+            await conn.end();
 
             if (insertResult.affectedRows === 1) {
                 const message = 'Task created successfully';
@@ -152,11 +156,12 @@ class Task {
         }
     }
 
-    static async putTaskByTaskId(taskId, updatedTaskData, conn) {
+    static async putTaskByTaskId(taskId, updatedTaskData) {
         try {
-
+            const conn = await initMySQL();
             const query = 'UPDATE tasks SET ? WHERE id = ?';
             const [updateResult] = await conn.query(query, [updatedTaskData, taskId]);
+            await conn.end();
 
             if (updateResult.affectedRows === 0) {
                 const message = 'Task not found';
@@ -177,10 +182,11 @@ class Task {
         }
     }
 
-    static async deleteTask(taskId, conn) {
+    static async deleteTask(taskId) {
         try {
-
+            const conn = await initMySQL();
             const [deleteResult] = await conn.query('DELETE FROM tasks WHERE id = ?', [taskId]);
+            await conn.end();
 
             if (deleteResult.affectedRows === 1) {
                 const message = 'Task deleted successfully';

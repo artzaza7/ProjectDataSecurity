@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken")
 
 async function getAllUsers(req, res) {
     try {
-        const responseData = await User.getAllUsers(req.conn);
+        const responseData = await User.getAllUsers();
         let response = {
             message: responseData.message,
             data: responseData.data,
@@ -22,7 +22,7 @@ async function getAllUsers(req, res) {
 async function getUserByUsername(req, res) {
     const username = req.params.username;
     try {
-        const responseData = await User.getUserByUsername(username, req.conn);
+        const responseData = await User.getUserByUsername(username);
         if (responseData.status === 404) {
             return res.status(404).json({ error: 'User not found' });
         }
@@ -40,10 +40,9 @@ async function getUserByUsername(req, res) {
 
 async function registerUser(req, res) {
     const { username, password, email, firstname, lastname } = req.body;
-    console.log(req.body);
 
     try {
-        const responseData = await User.registerUser(username, password, email, firstname, lastname, req.conn);
+        const responseData = await User.registerUser(username, password, email, firstname, lastname);
         if (responseData.status === 400) {
             return res.status(400).json({ error: responseData.message });
         }
@@ -61,10 +60,9 @@ async function registerUser(req, res) {
 
 async function loginUser(req, res) {
     const { username, password } = req.body;
-    console.log(req.body);
 
     try {
-        const responseData = await User.login(username, password, req.conn);
+        const responseData = await User.login(username, password);
         if (responseData.status === 404) {
             return res.status(404).json({ error: responseData.message });
         } else if (responseData.status === 401) {
@@ -89,9 +87,31 @@ async function loginUser(req, res) {
     }
 }
 
+async function resetPassword(req, res) {
+    const { username, email, password } = req.body;
+
+    try {
+        const resetResult = await User.resetPassword(username, email, password);
+
+        if (resetResult.status === 200) {
+            return res.status(200).json({ message: 'Password reset successful' });
+        } else if (resetResult.status === 404) {
+            return res.status(404).json({ error: 'User not found' });
+        } else if (resetResult.status === 400) {
+            return res.status(400).json({ error: 'Email does not match user record' });
+        } else {
+            return res.status(500).json({ error: 'Failed to reset password' });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
 module.exports = {
     getAllUsers,
     getUserByUsername,
     registerUser,
     loginUser,
+    resetPassword,
 }

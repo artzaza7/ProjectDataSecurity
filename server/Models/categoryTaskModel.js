@@ -27,11 +27,13 @@ class CategoryTask {
     }
 
     // Function
-    static async getAllCategoryTasks(conn) {
+    static async getAllCategoryTasks() {
         const categories = [];
         try {
-
+            const conn = await initMySQL();
             const results = await conn.query('SELECT * FROM category_task');
+            await conn.end();
+
             results[0].forEach((value) => {
                 categories.push(value);
             });
@@ -48,11 +50,12 @@ class CategoryTask {
         }
     }
 
-    static async getCategoryTaskById(categoryTaskId, conn) {
+    static async getCategoryTaskById(categoryTaskId) {
         try {
-
+            const conn = await initMySQL();
             const query = 'SELECT * FROM category_task WHERE id = ?';
             const results = await conn.query(query, [categoryTaskId]);
+            await conn.end();
 
             if (results[0].length === 0) {
                 const message = 'Category task not found';
@@ -65,6 +68,7 @@ class CategoryTask {
             const message = 'Get category task by ID, Successful';
             const data = categoryTask;
             const statusCode = 200;
+
             return { message, data, status: statusCode };
         } catch (error) {
             console.error(error);

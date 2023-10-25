@@ -1,15 +1,18 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const app = express();
 const cors = require('cors');
-const port = 8000;
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./swagger');
+const { initMySQL } = require('./Config/database');
 
+const app = express();
+const port = process.env.PORT || 8000; // Use the PORT environment variable if available
+
+// Middleware
 app.use(bodyParser.json());
 app.use(cors());
-const { initMySQL } = require('./Config/database')
 
+// Middleware to handle MySQL database connections
 app.use(async (req, res, next) => {
   try {
     const conn = await initMySQL();
@@ -20,14 +23,13 @@ app.use(async (req, res, next) => {
   }
 });
 
-// Adding routes
+// Routes
 const userRouter = require('./Routes/userRoute');
 const statusRouter = require('./Routes/statusRoute');
 const taskRouter = require('./Routes/taskRoute');
 const categoryTaskRouter = require('./Routes/categoryTaskRoute');
 const userTaskRouter = require('./Routes/userTaskRoute');
 
-// Example
 app.use('/api/users', userRouter);
 app.use('/api/statuses', statusRouter);
 app.use('/api/tasks', taskRouter);
@@ -38,5 +40,5 @@ app.use('/api/userTasks', userTaskRouter);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.listen(port, () => {
-  console.log(`Http server running at ${port}`);
+  console.log(`Server is running on port ${port}`);
 });
