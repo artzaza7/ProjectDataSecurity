@@ -29,6 +29,7 @@ function UpdateTask() {
   const [show, setShow] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showValidationModal, setShowValidationModal] = useState(false);
+  const [showValidationDate, setShowValidationDate] = useState(false);
   const [missingFields, setMissingFields] = useState([]);
 
   const handleClose = () => setShow(false);
@@ -79,19 +80,30 @@ function UpdateTask() {
 
   async function submitUpdateTask(e) {
     if (e) {
-        e.preventDefault();
-      }
-      if (!name || !startDate || !startTime || !endDate || !endTime) {
-        const missing = [];
-        if (!name) missing.push("ชื่อกิจกรรม");
-        if (!startDate) missing.push("วันที่เริ่ม");
-        if (!startTime) missing.push("เวลาที่เริ่ม");
-        if (!endDate) missing.push("วันที่จบ");
-        if (!endTime) missing.push("เวลาที่จบ");
-        setMissingFields(missing);
-        setShowValidationModal(true);
+      e.preventDefault();
+    }
+    if (!name || !startDate || !startTime || !endDate || !endTime) {
+      const missing = [];
+      if (!name) missing.push("ชื่อกิจกรรม");
+      if (!startDate) missing.push("วันที่เริ่ม");
+      if (!startTime) missing.push("เวลาที่เริ่ม");
+      if (!endDate) missing.push("วันที่จบ");
+      if (!endTime) missing.push("เวลาที่จบ");
+      setMissingFields(missing);
+      setShowValidationModal(true);
+      return;
+    }
+    // check date and time
+    if (startDate > endDate) {
+      setShowValidationDate(true);
+      return;
+    } else if (startDate >= endDate && startDate <= endDate) {
+      if (startTime >= endTime) {
+        setShowValidationDate(true);
         return;
       }
+    }
+
     const token = localStorage.getItem("token");
     if (token) {
       try {
@@ -112,7 +124,7 @@ function UpdateTask() {
           category_task_id: Number(category_task_id),
         };
         // console.log(data)
-        setShowSuccessModal(true)
+        setShowSuccessModal(true);
         const response = await editTaskById(id, data);
         console.log(response);
       } catch (error) {
@@ -313,7 +325,9 @@ function UpdateTask() {
                       กรุณากรอกข้อมูลให้ครบถ้วน:
                       <ul>
                         {missingFields.map((field, index) => (
-                          <li key={index} className="text-danger">{field}</li>
+                          <li key={index} className="text-danger">
+                            {field}
+                          </li>
                         ))}
                       </ul>
                     </Modal.Body>
@@ -321,6 +335,25 @@ function UpdateTask() {
                       <Button
                         variant="danger"
                         onClick={() => setShowValidationModal(false)}
+                      >
+                        ปิด
+                      </Button>
+                    </Modal.Footer>
+                  </Modal>
+                  <Modal
+                    show={showValidationDate}
+                    onHide={() => setShowValidationDate(false)}
+                  >
+                    <Modal.Header closeButton>
+                      <Modal.Title>แก้ไขกิจกรรมไม่สำเร็จ</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                      กรุณาตรวจสอบเวลาและวันที่
+                    </Modal.Body>
+                    <Modal.Footer>
+                      <Button
+                        variant="danger"
+                        onClick={() => setShowValidationDate(false)}
                       >
                         ปิด
                       </Button>

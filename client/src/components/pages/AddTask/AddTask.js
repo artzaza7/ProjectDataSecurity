@@ -29,6 +29,7 @@ function AddTask() {
   const [show, setShow] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showValidationModal, setShowValidationModal] = useState(false);
+  const [showValidationDate, setShowValidationDate] = useState(false);
   const [missingFields, setMissingFields] = useState([]);
 
   const handleClose = () => setShow(false);
@@ -76,6 +77,17 @@ function AddTask() {
       setMissingFields(missing);
       setShowValidationModal(true);
       return;
+    }
+
+    // check date and time
+    if (startDate > endDate) {
+      setShowValidationDate(true);
+      return;
+    }else if(startDate >= endDate && startDate <= endDate){
+      if(startTime>=endTime){
+        setShowValidationDate(true);
+      return;
+      }
     }
 
     const token = localStorage.getItem("token");
@@ -304,6 +316,26 @@ function AddTask() {
                       <Button
                         variant="danger"
                         onClick={() => setShowValidationModal(false)}
+                      >
+                        ปิด
+                      </Button>
+                    </Modal.Footer>
+                  </Modal>
+
+                  <Modal
+                    show={showValidationDate}
+                    onHide={() => setShowValidationDate(false)}
+                  >
+                    <Modal.Header closeButton>
+                      <Modal.Title>เพิ่มกิจกรรมไม่สำเร็จ</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                      กรุณาตรวจสอบเวลาและวันที่
+                    </Modal.Body>
+                    <Modal.Footer>
+                      <Button
+                        variant="danger"
+                        onClick={() => setShowValidationDate(false)}
                       >
                         ปิด
                       </Button>
