@@ -15,6 +15,8 @@ function Card(props) {
 
     // for modal Delete
     const [showModalDelete, setShowModalDelete] = useState(false);
+    const [showSuccessDeleteModal, setshowSuccessDeleteModal] = useState(false);
+    const [showModalStatusSuccess, setShowModalStatusSuccess] = useState(false);
 
     async function handleChangeDelete() {
         const token = localStorage.getItem('token')
@@ -25,8 +27,9 @@ function Card(props) {
                 console.log(responseDelete)
                 console.log("Delete")
                 setShowModalDelete(false)
+                setshowSuccessDeleteModal(true)
                 // Refresh page
-                window.location.reload();
+                // window.location.reload();
             }
             catch (error) {
                 console.log(error)
@@ -52,8 +55,9 @@ function Card(props) {
                 console.log(responseUpdate)
                 console.log("Change Status")
                 setShowModalStatus(false)
+                setShowModalStatusSuccess(true)
                 // Refresh page
-                window.location.reload();
+                // window.location.reload();
             }
             catch (error) {
                 console.log(error)
@@ -162,6 +166,54 @@ function Card(props) {
                         ลบกิจกรรม
                     </Button>
                 </Modal.Footer>
+            </Modal>
+
+            {/* Modal ลบกิจกรรมสำเร็จ */}
+            <Modal
+                    show={showSuccessDeleteModal}
+                    onHide={() => setshowSuccessDeleteModal(false)}
+                  >
+                    <Modal.Header closeButton>
+                      <Modal.Title>ทำการลบกิจกรรม {data.task_name} แล้ว</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                      กิจกรรมของคุณได้ถูกลบเรียบร้อยแล้ว
+                    </Modal.Body>
+                    <Modal.Footer>
+                      <Button
+                        variant="primary"
+                        onClick={() => {
+                          setshowSuccessDeleteModal(false);
+                          window.location.reload(true); // รีเฟรชหน้า
+                        }}
+                      >
+                        ตกลง
+                      </Button>
+                    </Modal.Footer>
+            </Modal>
+
+            {/* Modal เปลี่ยนสถานะสำเร็จ */}
+            <Modal
+                    show={showModalStatusSuccess}
+                    onHide={() => setShowModalStatusSuccess(false)}
+                  >
+                    <Modal.Header closeButton>
+                      <Modal.Title>ทำการเปลี่ยนสถานะกิจกรรม {data.task_name} แล้ว</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                      กิจกรรมของคุณได้ถูกเปลี่ยนสถานะเรียบร้อยแล้ว
+                    </Modal.Body>
+                    <Modal.Footer>
+                      <Button
+                        variant="primary"
+                        onClick={() => {
+                          setShowModalStatusSuccess(false);
+                          window.location.reload(true); // รีเฟรชหน้า
+                        }}
+                      >
+                        ตกลง
+                      </Button>
+                    </Modal.Footer>
             </Modal>
         </>
     );
