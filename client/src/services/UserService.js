@@ -22,6 +22,16 @@ const login = async (data) => {
   }
 };
 
+const reset = async (data) => {
+  try {
+    const response = await axios.put(`${API_BASE_URL}/resetPassword`,data);
+    return response.data;
+} catch (error) {
+    console.error('เกิดข้อผิดพลาดในการเรียก API');
+    throw error;
+}
+};
+
 const getUserbyUsername = async (username) => {
   try {
     const response = await axios.get(`${API_BASE_URL}/${username}`, {
@@ -36,4 +46,4 @@ const getUserbyUsername = async (username) => {
   }
 }
 
-export { register, login, getUserbyUsername };
+export { register, login, getUserbyUsername, reset};
