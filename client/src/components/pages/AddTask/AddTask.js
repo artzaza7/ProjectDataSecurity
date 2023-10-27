@@ -31,6 +31,7 @@ function AddTask() {
   const [showValidationModal, setShowValidationModal] = useState(false);
   const [showValidationDate, setShowValidationDate] = useState(false);
   const [missingFields, setMissingFields] = useState([]);
+  const [currentTime, setCurrentTime] = useState(new Date());
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -57,6 +58,18 @@ function AddTask() {
       console.log(error.message);
     }
   }
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000); // 1000 มิลลิวินาทีหรือ 1 วินาที
+  
+    // คืนค่าฟังก์ชันที่จะทำการล้างตัวจับเวลาเมื่อ component unmount
+    return () => {
+      clearInterval(timer);
+    };
+  }, []);
+  //console.log(currentTime);
 
   useEffect(() => {
     getInitData();
@@ -87,6 +100,10 @@ function AddTask() {
       if(startTime>=endTime){
         setShowValidationDate(true);
       return;
+      } 
+      else if(endTime < currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })){
+        setShowValidationDate(true);
+        return;
       }
     }
 
