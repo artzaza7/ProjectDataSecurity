@@ -45,6 +45,7 @@ function MainScreen() {
     // for Data
     const [dataFinish, setDataFinish] = useState([])
     const [dataNotFinish, setDataNotFinish] = useState([])
+    const [dataFail, setDataFail] = useState([])
     const [loading, setLoading] = useState(true)
 
     // initFunction
@@ -109,6 +110,34 @@ function MainScreen() {
                 }
                 setDataFinish(tasks)
 
+                // reset tasks
+                tasks = []
+
+                // for fail
+                const responseFail = await getUserTasksByStatusId(username, 3) // 3 for fail
+
+                for (let i = 0; i < responseFail.data.length; i++) {
+                    // for each of type data
+                    const item = responseFail.data[i]
+                    const task = item.task
+                    const category = task.category_task
+
+                    const userTask_id = item.id
+                    const task_id = task.id
+                    const task_name = task.name
+                    const task_startDay = task.startDay
+                    const task_startHour = task.startHour
+                    const task_endDay = task.endDay
+                    const task_endHour = task.endHour
+                    const category_id = category.id
+                    const category_name = category.name
+
+                    // create Class task
+                    const taskClass = new Task(userTask_id, task_id, task_name, task_startDay, task_startHour, task_endDay, task_endHour, category_id, category_name)
+                    tasks.push(taskClass)
+                }
+                setDataFail(tasks)
+
                 setLoading(false)
             }
             catch (error) {
@@ -139,6 +168,9 @@ function MainScreen() {
                         <Nav.Item className="custom-nav-item">
                             <Nav.Link eventKey="second" className='h-100 d-flex justify-content-center align-items-center ' style={{ backgroundColor: activeTab === 'second' ? '#4070F4' : 'white', color: activeTab === 'second' ? 'white' : 'black' }}>กิจกรรมที่เสร็จสิ้นแล้ว</Nav.Link>
                         </Nav.Item>
+                        <Nav.Item className="custom-nav-item">
+                            <Nav.Link eventKey="third" className='h-100 d-flex justify-content-center align-items-center ' style={{ backgroundColor: activeTab === 'third' ? '#4070F4' : 'white', color: activeTab === 'third' ? 'white' : 'black' }}>กิจกรรมที่ล้มเหลว</Nav.Link>
+                        </Nav.Item>
                     </Nav>
                     <Tab.Content className='d-flex justify-content-center align-items-center w-100'>
                         <Tab.Pane eventKey="first" className='w-100'>
@@ -150,6 +182,12 @@ function MainScreen() {
                         <Tab.Pane eventKey="second" className='w-100'>
 
                             {!loading ? <Content mode="Finish" data={dataFinish} /> : <div>LOADING</div>}
+
+                        </Tab.Pane>
+
+                        <Tab.Pane eventKey="third" className='w-100'>
+
+                            {!loading ? <Content mode="Fail" data={dataFail} /> : <div>LOADING</div>}
 
                         </Tab.Pane>
                     </Tab.Content>

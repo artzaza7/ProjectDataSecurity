@@ -10,7 +10,7 @@ import Navbar from "../Navbar/Navbar";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
-import './Modal.css';
+import "./Modal.css";
 
 // Import Library
 import jwtDecode from "jwt-decode";
@@ -63,7 +63,7 @@ function AddTask() {
     const timer = setInterval(() => {
       setCurrentTime(new Date());
     }, 1000); // 1000 มิลลิวินาทีหรือ 1 วินาที
-  
+
     // คืนค่าฟังก์ชันที่จะทำการล้างตัวจับเวลาเมื่อ component unmount
     return () => {
       clearInterval(timer);
@@ -77,6 +77,27 @@ function AddTask() {
 
   async function submitCreateTask(e) {
     // ตรวจสอบ e และเรียก preventDefault ถ้าเป็นไปได้
+    console.log(currentTime.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+     }));
+     let formattedTime = currentTime.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+    
+    if (formattedTime > "24:00") {
+      const timeParts = formattedTime.split(":");
+      const hours = parseInt(timeParts[0]);
+      const minutes = parseInt(timeParts[1]);
+    
+      const adjustedHours = hours % 24;
+      formattedTime = `${adjustedHours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
+    }
+    console.log(formattedTime);
+
     if (e) {
       e.preventDefault();
     }
@@ -91,19 +112,51 @@ function AddTask() {
       setShowValidationModal(true);
       return;
     }
-
+    
     // check date and time
     if (startDate > endDate) {
       setShowValidationDate(true);
+      console.log("1");
       return;
-    }else if(startDate >= endDate && startDate <= endDate){
-      if(startTime>=endTime){
+    }
+    if ((startDate >= endDate && startDate <= endDate)) {
+      if(endDate.toLocaleDateString() === currentTime.toLocaleDateString()){
+        if (startTime >= endTime) {
+          setShowValidationDate(true);
+          console.log("2");
+          return;
+        } else if (startTime < endTime) {
+          if (
+            endTime <=
+            currentTime.toLocaleTimeString([], {
+             hour: "2-digit",
+             minute: "2-digit",
+             hour12: false,
+            })
+          ) {
+            setShowValidationDate(true);
+            console.log(endTime);
+            console.log(currentTime.toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+              hour12: false,
+             }));
+            console.log("3");
+            return;
+          }
+        }
+      }
+      if(endDate.toLocaleDateString() < currentTime.toLocaleDateString()){
         setShowValidationDate(true);
-      return;
-      } 
-      else if(endTime < currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })){
-        setShowValidationDate(true);
+        console.log("4");
         return;
+      }
+      if(endDate.toLocaleDateString() > currentTime.toLocaleDateString()){
+        if (startTime >= endTime) {
+          setShowValidationDate(true);
+          console.log("5");
+          return;
+        }
       }
     }
 
@@ -325,7 +378,9 @@ function AddTask() {
                       กรุณากรอกข้อมูลให้ครบถ้วน:
                       <ul>
                         {missingFields.map((field, index) => (
-                          <li key={index} className="text-danger">{field}</li>
+                          <li key={index} className="text-danger">
+                            {field}
+                          </li>
                         ))}
                       </ul>
                     </Modal.Body>
@@ -346,9 +401,7 @@ function AddTask() {
                     <Modal.Header closeButton>
                       <Modal.Title>เพิ่มกิจกรรมไม่สำเร็จ</Modal.Title>
                     </Modal.Header>
-                    <Modal.Body>
-                      กรุณาตรวจสอบเวลาและวันที่
-                    </Modal.Body>
+                    <Modal.Body>กรุณาตรวจสอบเวลาและวันที่</Modal.Body>
                     <Modal.Footer>
                       <Button
                         variant="danger"

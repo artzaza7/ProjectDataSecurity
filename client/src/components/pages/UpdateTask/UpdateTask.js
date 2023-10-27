@@ -31,6 +31,7 @@ function UpdateTask() {
   const [showValidationModal, setShowValidationModal] = useState(false);
   const [showValidationDate, setShowValidationDate] = useState(false);
   const [missingFields, setMissingFields] = useState([]);
+  const [currentTime, setCurrentTime] = useState(new Date());
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -75,6 +76,17 @@ function UpdateTask() {
   }
 
   useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000); // 1000 มิลลิวินาทีหรือ 1 วินาที
+  
+    // คืนค่าฟังก์ชันที่จะทำการล้างตัวจับเวลาเมื่อ component unmount
+    return () => {
+      clearInterval(timer);
+    };
+  }, []);
+
+  useEffect(() => {
     getInitData();
   }, [loading]);
 
@@ -93,14 +105,51 @@ function UpdateTask() {
       setShowValidationModal(true);
       return;
     }
+
     // check date and time
     if (startDate > endDate) {
       setShowValidationDate(true);
+      console.log("1");
       return;
-    } else if (startDate >= endDate && startDate <= endDate) {
-      if (startTime >= endTime) {
+    }
+    if ((startDate >= endDate && startDate <= endDate)) {
+      if(endDate.toLocaleDateString() === currentTime.toLocaleDateString()){
+        if (startTime >= endTime) {
+          setShowValidationDate(true);
+          console.log("2");
+          return;
+        } else if (startTime < endTime) {
+          if (
+            endTime <=
+            currentTime.toLocaleTimeString([], {
+             hour: "2-digit",
+             minute: "2-digit",
+             hour12: false,
+            })
+          ) {
+            setShowValidationDate(true);
+            console.log(endTime);
+            console.log(currentTime.toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+              hour12: false,
+             }));
+            console.log("3");
+            return;
+          }
+        }
+      }
+      if(endDate.toLocaleDateString() < currentTime.toLocaleDateString()){
         setShowValidationDate(true);
+        console.log("4");
         return;
+      }
+      if(endDate.toLocaleDateString() > currentTime.toLocaleDateString()){
+        if (startTime >= endTime) {
+          setShowValidationDate(true);
+          console.log("5");
+          return;
+        }
       }
     }
 
