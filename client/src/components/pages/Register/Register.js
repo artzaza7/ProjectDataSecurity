@@ -12,7 +12,7 @@ import { register } from "../../../services/UserService";
 // Import modal
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
-import './Modal.css';
+import './Modal.css'
 
 const colorTextLink = {
   textDecoration: "none",
