@@ -130,12 +130,16 @@ function Card(props) {
                         {mode === "Fail" ? <div className="col-12 my-1 d-flex justify-content-center align-items-center">
                             <h6 className="my-0 badge rounded-pill bg-primary px-3 py-2">ล้มเหลว</h6>
                         </div> : <></>}
-                        {mode === "Finish" || mode === "notFinish" ?
+                        
                         <div className="col-12 my-1 d-flex justify-content-evenly align-items-center">
+                            {mode === "Finish" || mode === "notFinish" ?
                             <Link to={`/updatetask/${data.userTask_id}`}><button type="button" className="btn btn-warning">UPDATE</button>
-                            </Link>
+                            </Link> : <></>}
+                            {mode === "Fail" ?
+                            <button type="button" className="btn btn-secondary">UPDATE</button>
+                             : <></>}
                             <button type="button" className="btn btn-danger" onClick={handleShowModalDelete}>DELETE</button>
-                        </div> : <></>}
+                        </div> 
                     </div>
 
                 </div>

@@ -28,6 +28,9 @@ function Index() {
 
   // Calculation %
   function calculationPercentage(numFinish, numAll) {
+    if(numAll === 0){
+      numAll = 1;
+    }
     let result = (numFinish * 100) / numAll;
     return result.toFixed(2)
   }

@@ -23,7 +23,7 @@ function ChartExample() {
 
   async function getInitData() {
     const token = localStorage.getItem('token')
-
+    console.log(countAllTask);
     if (token) {
       const username = jwtDecode(token).username
       try {
@@ -32,12 +32,16 @@ function ChartExample() {
         const responseCategory = await getAllCategoryTasks();
         const categoriesName = []
         for (let i = 0; i < responseCategory.data.length; i++) {
-          categoriesName.push(responseCategory.data[i].name)
+          categoriesName.push(responseCategory.data[i].name)    
         }
         setCategoryTasks(categoriesName)
 
         // for count All UserTask in Pie Chart
         const responseCount = await getUserTasksCount(username)
+        if(responseCount.data[0] === 0 && responseCount.data[1] === 0 && responseCount.data[2] === 0 && responseCount.data[3]=== 0 ){
+          responseCount.data = [1, 1, 1, 1]
+        }
+        console.log(responseCount.data);
         setCountAllTask(responseCount.data)
 
         
@@ -56,11 +60,11 @@ function ChartExample() {
   }
 
   const data = {
-    labels: !loading ? categoryTasks : ["Type1", "Type2", "Type3", "Type4"],
+    labels: loading ? ["Loading...", "Loading...", "Loading...", "Loading..."] : categoryTasks,
     datasets: [
       {
-        label: "จำนวนทั้งหมด ",
-        data: !loading ? countAllTask : [0, 0, 0, 0],
+        label: "จำนวนทั้งหมด",
+        data: loading ? [0, 0, 0, 0] : countAllTask,
         borderWidth: 1,
         backgroundColor: [
           "#FF8080",
@@ -71,6 +75,7 @@ function ChartExample() {
       },
     ],
   };
+  console.log(countAllTask)
 
   useEffect(() => {
     getInitData()
