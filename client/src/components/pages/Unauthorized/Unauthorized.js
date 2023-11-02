@@ -2,11 +2,11 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-import "./ErrorPage.css";
-function ErrorPage() {
+import "./Unauthorized.css";
+function Unauthorized() {
   return (
     <div>
-      <div className="error-bg bg-img vh-100">
+      <div className="error-bg bg-img2 vh-100">
         <div className="d-flex justify-content-center align-items-end vh-100 pb-5">
           <Link to="/">
             <button className="btn btn-primary p-2 ">
@@ -19,4 +19,4 @@ function ErrorPage() {
   );
 }
 
-export default ErrorPage;
+export default Unauthorized;

@@ -16,6 +16,7 @@ import Navbar from './components/pages/Navbar/Navbar';
 import MainScreen from './components/pages/MainScreen/MainScreen';
 import UpdateTask from './components/pages/UpdateTask/UpdateTask';
 import ErrorPage from './components/pages/ErrorPage/ErrorPage';
+import Unauthorized from './components/pages/Unauthorized/Unauthorized';
 
 const router = createBrowserRouter([
   {
@@ -51,9 +52,14 @@ const router = createBrowserRouter([
     element: <UpdateTask />
   },
   {
+    path: "/unauthorized",
+    element: <Unauthorized />
+  },
+  {
     path: "*",
     element: <ErrorPage />
   },
+  
   
 ])
 
