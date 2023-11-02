@@ -2,6 +2,9 @@
 const Task = require("../Models/taskModel");
 const CategoryTask = require("../Models/categoryTaskModel");
 
+//USING ENCRYPT AND DECRYPT
+const {encrypt, decrypt} = require("../Utils/cryptoUtils")
+
 async function getAllTasks(req, res) {
     try {
         const responseData = await Task.getAllTasks();
@@ -10,9 +13,11 @@ async function getAllTasks(req, res) {
         const tasksWithCategory = [];
 
         for (const task of tasks) {
+            task.name = decrypt(task.name);
             const categoryResponse = await CategoryTask.getCategoryTaskById(task.category_task_id);
 
             if (categoryResponse.status === 200) {
+                categoryResponse.data.name = decrypt(categoryResponse.data.name);
                 task.category_task = categoryResponse.data;
                 delete task.category_task_id;
             }
@@ -42,10 +47,12 @@ async function getTaskById(req, res) {
         if (responseData.status === 404) {
             return res.status(404).json({ error: 'Task not found' });
         }
+        task.name = decrypt(task.name);
 
         const categoryResponse = await CategoryTask.getCategoryTaskById(task.category_task_id);
 
         if (categoryResponse.status === 200) {
+            categoryResponse.data.name = decrypt(categoryResponse.data.name);
             task.category_task = categoryResponse.data;
             delete task.category_task_id;
         }
@@ -66,8 +73,8 @@ async function getTaskById(req, res) {
 async function putTaskByTaskId(req, res) {
     const taskId = req.params.taskId;
     const updatedTaskData = req.body;
-
     try {
+        updatedTaskData.name = encrypt(updatedTaskData.name);
         const responseData = await Task.putTaskByTaskId(taskId, updatedTaskData);
         const updatedTask = responseData.data;
 
@@ -75,9 +82,12 @@ async function putTaskByTaskId(req, res) {
             return res.status(404).json({ error: 'Task not found' });
         }
 
+        updatedTask.name = decrypt(updatedTask.name);
+
         const categoryResponse = await CategoryTask.getCategoryTaskById(updatedTask.category_task_id);
 
         if (categoryResponse.status === 200) {
+            categoryResponse.data.name = decrypt(categoryResponse.data.name);
             updatedTask.category_task = categoryResponse.data;
             delete updatedTask.category_task_id;
         }

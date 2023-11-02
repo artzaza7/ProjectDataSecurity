@@ -287,4 +287,48 @@ router.post('/login', userController.loginUser);
 
 router.put('/resetPassword', userController.resetPassword);
 
+/**
+ * @swagger
+ * /api/users/verifyToken:
+ *   post:
+ *     summary: Verify the validity of a token.
+ *     tags: [User]
+ *     requestBody:
+ *       description: Token data to verify.
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               token:
+ *                 type: string
+ *                 example: "your_jwt_token_here"
+ *             required:
+ *               - token
+ *     responses:
+ *       200:
+ *         description: Token is valid.
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: "Token is valid"
+ *               "status": 200
+ *       401:
+ *         description: Token is invalid.
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: "Token is invalid"
+ *               "status": 401
+ *       500:
+ *         description: Internal Server Error.
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: "Internal Server Error"
+ */
+
+router.post('/verifyToken', userController.isTokenValid);
+
 module.exports = router;

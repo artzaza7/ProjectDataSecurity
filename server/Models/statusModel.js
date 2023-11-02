@@ -29,10 +29,9 @@ class Status {
     // Function
     static async getAllStatuses() {
         const statuses = [];
+        const conn = await initMySQL();
         try {
-            const conn = await initMySQL();
             const results = await conn.query('SELECT * FROM status');
-            await conn.end();
 
             results[0].forEach((value) => {
                 statuses.push(value);
@@ -47,15 +46,16 @@ class Status {
             const data = statuses;
             const statusCode = 500;
             return { message, data, status: statusCode };
+        } finally {
+            conn.end();
         }
     }
 
     static async getStatusById(statusId) {
+        const conn = await initMySQL();
         try {
-            const conn = await initMySQL();
             const query = 'SELECT * FROM status WHERE id = ?';
             const results = await conn.query(query, [statusId]);
-            await conn.end();
 
             if (results[0].length === 0) {
                 const message = 'Status not found';
@@ -75,6 +75,8 @@ class Status {
             const data = null;
             const statusCode = 500;
             return { message, data, status: statusCode };
+        } finally {
+            conn.end();
         }
     }
 

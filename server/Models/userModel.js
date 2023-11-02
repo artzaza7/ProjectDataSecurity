@@ -60,11 +60,10 @@ class User {
 
     // Function
     static async getAllUsers() {
-        const users = []
+        const users = [];
+        const conn = await initMySQL();
         try {
-            const conn = await initMySQL();
             const results = await conn.query('SELECT * FROM users');
-            await conn.end();
 
             results[0].forEach((value) => {
                 users.push(value)
@@ -79,15 +78,16 @@ class User {
             const data = users
             const status = 500
             return { message, data, status }
+        } finally {
+            conn.end();
         }
     }
 
     static async getUserByUsername(username) {
+        const conn = await initMySQL();
         try {
-            const conn = await initMySQL();
             const query = 'SELECT * FROM users WHERE username = ?';
             const results = await conn.query(query, [username]);
-            await conn.end();
 
             if (results[0].length === 0) {
                 const message = 'User not found';
@@ -107,10 +107,13 @@ class User {
             const data = null;
             const statusCode = 500;
             return { message, data, status: statusCode };
+        } finally {
+            conn.end();
         }
     }
 
     static async registerUser(username, password, email, firstname, lastname) {
+        const conn = await initMySQL();
         try {
             const existingUser = await this.getUserByUsername(username);
             if (existingUser.status === 200) {
@@ -119,10 +122,8 @@ class User {
 
             const hashedPassword = await bcrypt.hash(password, 10);
 
-            const conn = await initMySQL();
             const query = 'INSERT INTO users (username, password, email, firstname, lastname) VALUES (?, ?, ?, ?, ?)';
             const [insertResult] = await conn.query(query, [username, hashedPassword, email, firstname, lastname]);
-            await conn.end();
 
             const newUser = {
                 username,
@@ -149,15 +150,16 @@ class User {
             const data = null;
             const statusCode = 500;
             return { message, data, status: statusCode };
+        } finally {
+            conn.end();
         }
     }
 
     static async login(username, password) {
+        const conn = await initMySQL();
         try {
-            const conn = await initMySQL();
             const query = 'SELECT * FROM users WHERE username = ?';
             const results = await conn.query(query, [username]);
-            await conn.end();
 
             if (results[0].length === 0) {
                 return { message: 'User not found', data: null, status: 404 };
@@ -180,10 +182,13 @@ class User {
             const data = null;
             const statusCode = 500;
             return { message, data, status: statusCode };
+        } finally {
+            conn.end();
         }
     }
 
     static async resetPassword(username, email, newPassword) {
+        const conn = await initMySQL();
         try {
             // Check if the user exists by username
             const existingUser = await this.getUserByUsername(username);
@@ -201,10 +206,8 @@ class User {
             const hashedPassword = await bcrypt.hash(newPassword, 10);
 
             // Update the user's password in the database
-            const conn = await initMySQL();
             const updateQuery = 'UPDATE users SET password = ? WHERE username = ?';
             const [updateResult] = await conn.query(updateQuery, [hashedPassword, username]);
-            await conn.end();
 
             if (updateResult.affectedRows === 1) {
                 return { message: 'Password reset successful', data: null, status: 200 };
@@ -214,6 +217,8 @@ class User {
         } catch (error) {
             console.error(error);
             return { message: error.message, data: null, status: 500 };
+        } finally {
+            conn.end();
         }
     }
 }

@@ -8,13 +8,14 @@ const DB_PORT = '3306'
 
 const mysql = require('mysql2/promise')
 
-async function initMySQL() {
-    const conn = await mysql.createConnection({
+function initMySQL() {
+    const conn = mysql.createPool({
         host: DB_HOST,
         user: DB_USER,
         password: DB_PASSWORD,
         database: DB_NAME,
-        port: DB_PORT
+        port: DB_PORT,
+        connectionLimit: 10,
     })
     return conn
 }

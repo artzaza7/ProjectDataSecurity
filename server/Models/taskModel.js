@@ -81,10 +81,9 @@ class Task {
     // Function
     static async getAllTasks() {
         const tasks = [];
+        const conn = await initMySQL();
         try {
-            const conn = await initMySQL();
             const results = await conn.query('SELECT * FROM tasks');
-            await conn.end();
 
             results[0].forEach((value) => {
                 tasks.push(value);
@@ -99,15 +98,16 @@ class Task {
             const data = tasks;
             const statusCode = 500;
             return { message, data, status: statusCode };
+        } finally {
+            conn.end();
         }
     }
 
     static async getTaskById(taskId) {
+        const conn = await initMySQL();
         try {
-            const conn = await initMySQL();
             const query = 'SELECT * FROM tasks WHERE id = ?';
             const results = await conn.query(query, [taskId]);
-            await conn.end();
 
             if (results[0].length === 0) {
                 const message = 'Task not found';
@@ -127,14 +127,15 @@ class Task {
             const data = null;
             const statusCode = 500;
             return { message, data, status: statusCode };
+        } finally {
+            conn.end();
         }
     }
 
     static async createTask(taskData) {
+        const conn = await initMySQL();
         try {
-            const conn = await initMySQL();
             const [insertResult] = await conn.query('INSERT INTO tasks SET ?', taskData);
-            await conn.end();
 
             if (insertResult.affectedRows === 1) {
                 const message = 'Task created successfully';
@@ -153,15 +154,16 @@ class Task {
             const data = null;
             const statusCode = 500;
             return { message, data, status: statusCode };
+        } finally {
+            conn.end();
         }
     }
 
     static async putTaskByTaskId(taskId, updatedTaskData) {
+        const conn = await initMySQL();
         try {
-            const conn = await initMySQL();
             const query = 'UPDATE tasks SET ? WHERE id = ?';
             const [updateResult] = await conn.query(query, [updatedTaskData, taskId]);
-            await conn.end();
 
             if (updateResult.affectedRows === 0) {
                 const message = 'Task not found';
@@ -179,14 +181,15 @@ class Task {
             const data = null;
             const statusCode = 500;
             return { message, data, status: statusCode };
+        } finally {
+            conn.end();
         }
     }
 
     static async deleteTask(taskId) {
+        const conn = await initMySQL();
         try {
-            const conn = await initMySQL();
             const [deleteResult] = await conn.query('DELETE FROM tasks WHERE id = ?', [taskId]);
-            await conn.end();
 
             if (deleteResult.affectedRows === 1) {
                 const message = 'Task deleted successfully';
@@ -205,6 +208,8 @@ class Task {
             const data = null;
             const statusCode = 500;
             return { message, data, status: statusCode };
+        } finally {
+            conn.end();
         }
     }
 

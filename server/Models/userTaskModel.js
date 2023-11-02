@@ -51,10 +51,9 @@ class UserTask {
     // Static method to get all user tasks
     static async getAllUserTasks() {
         const userTasks = [];
+        const conn = await initMySQL();
         try {
-            const conn = await initMySQL();
-            const results = await conn.query('SELECT * FROM user_task');
-            await conn.end();
+            const results = await conn.query('SELECT * FROM user_task ORDER BY id DESC');
 
             results[0].forEach((value) => {
                 userTasks.push(value);
@@ -69,15 +68,16 @@ class UserTask {
             const data = userTasks;
             const statusCode = 500;
             return { message, data, status: statusCode };
+        } finally {
+            conn.end();
         }
     }
 
     static async getUserTaskById(userTaskId) {
+        const conn = await initMySQL();
         try {
-            const conn = await initMySQL();
             const query = 'SELECT * FROM user_task WHERE id = ?';
             const results = await conn.query(query, [userTaskId]);
-            await conn.end();
 
             if (results[0].length === 0) {
                 const message = 'User Task not found';
@@ -97,15 +97,16 @@ class UserTask {
             const data = null;
             const statusCode = 500;
             return { message, data, status: statusCode };
+        } finally {
+            conn.end();
         }
     }
 
     static async getUserTasksByStatus(username, statusId) {
+        const conn = await initMySQL();
         try {
-            const conn = await initMySQL();
-            const query = 'SELECT * FROM user_task WHERE user_username = ? AND status_id = ?';
+            const query = 'SELECT * FROM user_task WHERE user_username = ? AND status_id = ? ORDER BY id DESC';
             const results = await conn.query(query, [username, statusId]);
-            await conn.end();
 
             const userTasks = results[0];
             if (userTasks.length === 0) {
@@ -125,15 +126,16 @@ class UserTask {
             const data = null;
             const statusCode = 500;
             return { message, data, status: statusCode };
+        } finally {
+            conn.end();
         }
     }
 
     static async countUserTasksByCategory(username) {
+        const conn = await initMySQL();
         try {
-            const conn = await initMySQL();
             const query = `SELECT category_task_id, COUNT(*) AS task_count FROM user_task INNER JOIN tasks ON user_task.task_id = tasks.id WHERE user_task.user_username = ? GROUP BY category_task_id;`;
             const results = await conn.query(query, [username]);
-            await conn.end();
 
             if (results.length === 0) {
                 const message = 'No user tasks found for the specified user';
@@ -152,12 +154,14 @@ class UserTask {
             const data = null;
             const statusCode = 500;
             return { message, data, status: statusCode };
+        } finally {
+            conn.end();
         }
     }
 
     static async countUserTasksByCategoryAndStatus(username, statusId) {
+        const conn = await initMySQL();
         try {
-            const conn = await initMySQL();
             const query = `
                 SELECT category_task_id, COUNT(*) AS task_count
                 FROM user_task
@@ -166,7 +170,6 @@ class UserTask {
                 GROUP BY category_task_id;
             `;
             const results = await conn.query(query, [username, statusId]);
-            await conn.end();
 
             if (results.length === 0) {
                 const message = 'No user tasks found for the specified user and status';
@@ -185,16 +188,17 @@ class UserTask {
             const data = null;
             const statusCode = 500;
             return { message, data, status: statusCode };
+        } finally {
+            conn.end();
         }
     }
 
 
     static async getUserTasksByTaskId(username, taskId) {
+        const conn = await initMySQL();
         try {
-            const conn = await initMySQL();
             const query = 'SELECT * FROM user_task WHERE user_username = ? AND task_id = ?';
             const results = await conn.query(query, [username, taskId]);
-            await conn.end();
 
             const userTasks = results[0];
             if (userTasks.length === 0) {
@@ -214,14 +218,15 @@ class UserTask {
             const data = null;
             const statusCode = 500;
             return { message, data, status: statusCode };
+        } finally {
+            conn.end();
         }
     }
 
     static async createUserTask(userTaskData) {
+        const conn = await initMySQL();
         try {
-            const conn = await initMySQL();
             const [insertResult] = await conn.query('INSERT INTO user_task SET ?', userTaskData);
-            await conn.end();
 
             if (insertResult.affectedRows === 1) {
                 const message = 'User task created successfully';
@@ -240,14 +245,15 @@ class UserTask {
             const data = null;
             const statusCode = 500;
             return { message, data, status: statusCode };
+        } finally {
+            conn.end();
         }
     }
 
     static async updateUserTaskStatus(userTaskStatus, username, taskId) {
+        const conn = await initMySQL();
         try {
-            const conn = await initMySQL();
             const [updateResult] = await conn.query('UPDATE user_task SET status_id = ? WHERE user_username = ? AND task_id = ?', [userTaskStatus, username, taskId]);
-            await conn.end();
 
             if (updateResult.affectedRows === 1) {
                 const userTaskData = await UserTask.getUserTasksByTaskId(username, taskId); // Corrected method call
@@ -267,14 +273,15 @@ class UserTask {
             const data = null;
             const statusCode = 500;
             return { message, data, status: statusCode };
+        } finally {
+            conn.end();
         }
     }
 
     static async deleteUserTask(username, taskId) {
+        const conn = await initMySQL();
         try {
-            const conn = await initMySQL();
             const [deleteResult] = await conn.query('DELETE FROM user_task WHERE user_username = ? AND task_id = ?', [username, taskId]);
-            await conn.end();
 
             if (deleteResult.affectedRows === 1) {
                 const message = 'User task deleted successfully';
@@ -293,10 +300,13 @@ class UserTask {
             const data = null;
             const statusCode = 500;
             return { message, data, status: statusCode };
+        } finally {
+            conn.end();
         }
     }
 
     static async updateTaskStatusIfNeeded() {
+        const conn = await initMySQL();
         try {
             // Get the current date in the 'Asia/Bangkok' timezone
             const currentTimezoneOffset = -7 * 60; // Offset for 'Asia/Bangkok' (UTC+7)
@@ -317,9 +327,7 @@ class UserTask {
                                 AND (tasks.endDay < ? OR (tasks.endDay = ? AND tasks.endHour < ?))
                             )
                         `;
-            const conn = await initMySQL();
             const [updateResult] = await conn.query(query, [nowDate, nowDate, nowTime]);
-            await conn.end();
 
             const message = 'User task statuses updated successfully';
             const data = updateResult;
@@ -331,6 +339,8 @@ class UserTask {
             const data = null;
             const statusCode = 500;
             return { message, data, status: statusCode };
+        } finally {
+            conn.end();
         }
     }
 

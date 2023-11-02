@@ -3,7 +3,9 @@ const UserTask = require("../Models/userTaskModel");
 const Task = require("../Models/taskModel");
 const CategoryTask = require("../Models/categoryTaskModel");
 const Status = require("../Models/statusModel");
-const crypto = require('crypto');
+
+//USING ENCRYPT AND DECRYPT
+const { encrypt, decrypt } = require("../Utils/cryptoUtils")
 
 async function getAlluserTask(req, res) {
     await UserTask.updateTaskStatusIfNeeded();
@@ -14,15 +16,18 @@ async function getAlluserTask(req, res) {
         const userTasksWithCategoryNStatus = [];
 
         for (const userTask of userTasks) {
+            userTask.user_username = decrypt(userTask.user_username);
             const taskResponse = await Task.getTaskById(userTask.task_id);
 
             if (taskResponse.status === 200) {
+                taskResponse.data.name = decrypt(taskResponse.data.name);
                 userTask.task = taskResponse.data;
                 delete userTask.task_id;
 
                 const categoryResponse = await CategoryTask.getCategoryTaskById(userTask.task.category_task_id);
 
                 if (categoryResponse.status === 200) {
+                    categoryResponse.data.name = decrypt(categoryResponse.data.name);
                     userTask.task.category_task = categoryResponse.data;
                     delete userTask.task.category_task_id;
                 }
@@ -30,6 +35,7 @@ async function getAlluserTask(req, res) {
 
             const statusResponse = await Status.getStatusById(userTask.status_id);
             if (statusResponse.status === 200) {
+                statusResponse.data.name = decrypt(statusResponse.data.name);
                 userTask.status = statusResponse.data;
                 delete userTask.status_id;
             }
@@ -61,15 +67,19 @@ async function getUserTaskById(req, res) {
             return res.status(404).json({ error: 'User Task not found' });
         }
 
+        userTask.user_username = decrypt(userTask.user_username);
+
         const taskResponse = await Task.getTaskById(userTask.task_id);
 
         if (taskResponse.status === 200) {
+            taskResponse.data.name = decrypt(taskResponse.data.name);
             userTask.task = taskResponse.data;
             delete userTask.task_id;
 
             const categoryResponse = await CategoryTask.getCategoryTaskById(userTask.task.category_task_id);
 
             if (categoryResponse.status === 200) {
+                categoryResponse.data.name = decrypt(categoryResponse.data.name);
                 userTask.task.category_task = categoryResponse.data;
                 delete userTask.task.category_task_id;
             }
@@ -77,6 +87,7 @@ async function getUserTaskById(req, res) {
 
         const statusResponse = await Status.getStatusById(userTask.status_id);
         if (statusResponse.status === 200) {
+            statusResponse.data.name = decrypt(statusResponse.data.name);
             userTask.status = statusResponse.data;
             delete userTask.status_id;
         }
@@ -109,18 +120,18 @@ async function getUserTasksByStatus(req, res) {
         const userTasksWithDetails = [];
 
         for (const userTask of userTasks) {
+            userTask.user_username = decrypt(userTask.user_username);
             const taskResponse = await Task.getTaskById(userTask.task_id);
 
             if (taskResponse.status === 200) {
-                // const secretKey = 'dataSecure';
-                // const encryptedName = decryptTaskName(taskResponse.data.name, secretKey);
-                // taskResponse.data.name = encryptedName;
+                taskResponse.data.name = decrypt(taskResponse.data.name);
                 userTask.task = taskResponse.data;
                 delete userTask.task_id;
 
                 const categoryResponse = await CategoryTask.getCategoryTaskById(userTask.task.category_task_id);
 
                 if (categoryResponse.status === 200) {
+                    categoryResponse.data.name = decrypt(categoryResponse.data.name);
                     userTask.task.category_task = categoryResponse.data;
                     delete userTask.task.category_task_id;
                 }
@@ -128,6 +139,7 @@ async function getUserTasksByStatus(req, res) {
 
             const statusResponse = await Status.getStatusById(userTask.status_id);
             if (statusResponse.status === 200) {
+                statusResponse.data.name = decrypt(statusResponse.data.name);
                 userTask.status = statusResponse.data;
                 delete userTask.status_id;
             }
@@ -160,35 +172,34 @@ async function getUserTasksByTaskId(req, res) {
             return res.status(404).json({ error: 'No user tasks found with the specified task ID' });
         }
 
-        const userTasksWithDetails = [];
+        userTasks.user_username = decrypt(userTasks.user_username);
 
-        for (const userTask of userTasks) {
-            const taskResponse = await Task.getTaskById(userTask.task_id);
+        const taskResponse = await Task.getTaskById(userTasks.task_id);
 
-            if (taskResponse.status === 200) {
-                userTask.task = taskResponse.data;
-                delete userTask.task_id;
+        if (taskResponse.status === 200) {
+            taskResponse.data.name = decrypt(taskResponse.data.name);
+            userTasks.task = taskResponse.data;
+            delete userTasks.task_id;
 
-                const categoryResponse = await CategoryTask.getCategoryTaskById(userTask.task.category_task_id);
+            const categoryResponse = await CategoryTask.getCategoryTaskById(userTasks.task.category_task_id);
 
-                if (categoryResponse.status === 200) {
-                    userTask.task.category_task = categoryResponse.data;
-                    delete userTask.task.category_task_id;
-                }
+            if (categoryResponse.status === 200) {
+                categoryResponse.data.name = decrypt(categoryResponse.data.name);
+                userTasks.task.category_task = categoryResponse.data;
+                delete userTasks.task.category_task_id;
             }
+        }
 
-            const statusResponse = await Status.getStatusById(userTask.status_id);
-            if (statusResponse.status === 200) {
-                userTask.status = statusResponse.data;
-                delete userTask.status_id;
-            }
-
-            userTasksWithDetails.push(userTask);
+        const statusResponse = await Status.getStatusById(userTasks.status_id);
+        if (statusResponse.status === 200) {
+            statusResponse.data.name = decrypt(statusResponse.data.name);
+            userTasks.status = statusResponse.data;
+            delete userTasks.status_id;
         }
 
         let response = {
-            message: 'Get user tasks by status, Successful',
-            data: userTasksWithDetails,
+            message: 'Get user tasks by task ID, Successful',
+            data: userTasks,
             status: 200
         };
         res.json(response);
@@ -203,10 +214,8 @@ async function postUserTask(req, res) {
     const task = req.body;
 
     try {
-        // const secretKey = 'dataSecure';
         const statusId = 1;
-        // const encryptedName = encryptTaskName(task.name, secretKey);
-        // task.name = encryptedName;
+        task.name = encrypt(task.name);
 
         let newTask = await Task.createTask(task);
 
@@ -253,6 +262,7 @@ async function putUserTaskStatus(req, res) {
         const taskResponse = await Task.getTaskById(taskId);
 
         if (taskResponse.status === 200) {
+            taskResponse.data.name = decrypt(taskResponse.data.name);
             responseData.data.task = taskResponse.data;
             delete responseData.data.task_id;
         }
@@ -330,17 +340,10 @@ async function countUserTasksByCategory(req, res) {
             categoryCounts[entry.category_task_id] = entry.task_count;
         });
 
-        const categories = {
-            1: 'งาน',
-            2: 'ครอบครัว',
-            3: 'โรงพยาบาล',
-            4: 'อื่นๆ'
-        };
-
         const result = [];
 
-        for (const categoryId of Object.keys(categories)) {
-            const count = categoryCounts[categoryId] || 0;
+        for (let i = 1; i <= 4; i++) {
+            const count = categoryCounts[i] || 0;
             result.push(count);
         }
 
@@ -375,17 +378,10 @@ async function countUserTasksByCategoryAndStatus(req, res) {
             categoryCounts[entry.category_task_id] = entry.task_count;
         });
 
-        const categories = {
-            1: 'งาน',
-            2: 'ครอบครัว',
-            3: 'โรงพยาบาล',
-            4: 'อื่นๆ'
-        };
-
         const result = [];
 
-        for (const categoryId of Object.keys(categories)) {
-            const count = categoryCounts[categoryId] || 0;
+        for (let i = 1; i <= 4; i++) {
+            const count = categoryCounts[i] || 0;
             result.push(count);
         }
 
@@ -396,26 +392,6 @@ async function countUserTasksByCategoryAndStatus(req, res) {
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
-    }
-}
-
-// Function to encrypt the task name
-function encryptTaskName(taskName, secretKey) {
-    const cipher = crypto.createCipher('aes-256-cbc', secretKey);
-    let encryptedName = cipher.update(taskName, 'utf8', 'hex');
-    encryptedName += cipher.final('hex');
-    return encryptedName;
-}
-
-function decryptTaskName(encryptedName, secretKey) {
-    try {
-        const decipher = crypto.createDecipher('aes-256-cbc', secretKey);
-        let decryptedName = decipher.update(encryptedName, 'hex', 'utf8');
-        decryptedName += decipher.final('utf8');
-        return decryptedName;
-    } catch (error) {
-        console.error('Error during decryption:', error);
-        return encryptedName; // Handle the error gracefully, e.g., return null or a default value.
     }
 }
 
