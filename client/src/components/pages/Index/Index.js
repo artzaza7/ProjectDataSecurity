@@ -128,7 +128,7 @@ function Index() {
                         <br />
                         {!loading ? (<>จำนวนที่ทำเสร็จสิ้น {countFinishTask[0]}</>) : ("จำนวนที่ทำเสร็จสิ้น")}
                         <br />
-                        {!loading ? (<>คิดเป็นเปอร์เซ็น {calculationPercentage(countFinishTask[0], countAllTask[0])} %</>) : ("คิดเป็นเปอร์เซ็น")}
+                        {!loading ? (<>เสร็จสิ้นทั้งหมด {calculationPercentage(countFinishTask[0], countAllTask[0])} %</>) : ("เสร็จสิ้นทั้งหมด")}
                       </p>
                     </div>
                   </div>
@@ -154,7 +154,7 @@ function Index() {
                         <br />
                         {!loading ? (<>จำนวนที่ทำเสร็จสิ้น {countFinishTask[1]}</>) : ("จำนวนที่ทำเสร็จสิ้น")}
                         <br />
-                        {!loading ? (<>คิดเป็นเปอร์เซ็น {calculationPercentage(countFinishTask[1], countAllTask[1])} %</>) : ("คิดเป็นเปอร์เซ็น")}
+                        {!loading ? (<>เสร็จสิ้นทั้งหมด {calculationPercentage(countFinishTask[1], countAllTask[1])} %</>) : ("เสร็จสิ้นทั้งหมด")}
                       </p>
                     </div>
                   </div>
@@ -182,7 +182,7 @@ function Index() {
                         <br />
                         {!loading ? (<>จำนวนที่ทำเสร็จสิ้น {countFinishTask[2]}</>) : ("จำนวนที่ทำเสร็จสิ้น")}
                         <br />
-                        {!loading ? (<>คิดเป็นเปอร์เซ็น {calculationPercentage(countFinishTask[2], countAllTask[2])} %</>) : ("คิดเป็นเปอร์เซ็น")}
+                        {!loading ? (<>เสร็จสิ้นทั้งหมด {calculationPercentage(countFinishTask[2], countAllTask[2])} %</>) : ("เสร็จสิ้นทั้งหมด")}
                       </p>
                     </div>
                   </div>
@@ -209,7 +209,7 @@ function Index() {
                         <br />
                         {!loading ? (<>จำนวนที่ทำเสร็จสิ้น {countFinishTask[3]}</>) : ("จำนวนที่ทำเสร็จสิ้น")}
                         <br />
-                        {!loading ? (<>คิดเป็นเปอร์เซ็น {calculationPercentage(countFinishTask[3], countAllTask[3])} %</>) : ("คิดเป็นเปอร์เซ็น")}
+                        {!loading ? (<>เสร็จสิ้นทั้งหมด {calculationPercentage(countFinishTask[3], countAllTask[3])} %</>) : ("เสร็จสิ้นทั้งหมด")}
                       </p>
                     </div>
                   </div>

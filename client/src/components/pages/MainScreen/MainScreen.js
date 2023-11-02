@@ -6,6 +6,7 @@ import Content from './Content';
 import Navbar from "../Navbar/Navbar";
 import { useNavigate } from 'react-router-dom';
 import './MainScreen.css';
+import { Form, InputGroup, FormControl } from 'react-bootstrap';
 
 // Import Library
 import jwtDecode from "jwt-decode"
@@ -170,6 +171,13 @@ function MainScreen() {
                         </Nav.Item>
                         <Nav.Item className="custom-nav-item">
                             <Nav.Link eventKey="third" className='h-100 d-flex justify-content-center align-items-center ' style={{ backgroundColor: activeTab === 'third' ? '#4070F4' : 'white', color: activeTab === 'third' ? 'white' : 'black' }}>กิจกรรมที่ล้มเหลว</Nav.Link>
+                        </Nav.Item>
+                        <Nav.Item className="custom-nav-item d-flex" style={{ marginLeft: 'auto' }}>
+                            <Form>
+                                <InputGroup>
+                                    <FormControl type="text" placeholder="ค้นหา" />
+                                </InputGroup>
+                            </Form>
                         </Nav.Item>
                     </Nav>
                     <Tab.Content className='d-flex justify-content-center align-items-center w-100'>

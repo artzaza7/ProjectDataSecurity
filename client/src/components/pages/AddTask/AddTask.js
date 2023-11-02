@@ -146,19 +146,30 @@ function AddTask() {
           }
         }
       }
-    }
-    if(endDate.toLocaleDateString() < currentTime.toLocaleDateString()){
-      setShowValidationDate(true);
-      console.log("4");
-      return;
-    }
-    if(endDate.toLocaleDateString() > currentTime.toLocaleDateString()){
-      if (startTime >= endTime) {
+      if(endDate.toLocaleDateString() < currentTime.toLocaleDateString()){
         setShowValidationDate(true);
-        console.log("5");
+        console.log("4");
         return;
       }
+      if(endDate.toLocaleDateString() > currentTime.toLocaleDateString()){
+        if (startTime >= endTime) {
+          setShowValidationDate(true);
+          console.log("5");
+          return;
+        }
+      }
     }
+    if(endDate.toLocaleDateString() === currentTime.toLocaleDateString()){
+      if(endTime<=currentTime.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+       }))
+      setShowValidationDate(true);
+      console.log("6");
+      return;
+    }
+    
 
     const token = localStorage.getItem("token");
     if (token) {

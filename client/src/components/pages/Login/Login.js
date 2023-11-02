@@ -42,9 +42,10 @@ function Login() {
       localStorage.setItem("token", token);
       navigate("/index");
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
       console.log("Login not successful");
-      setErrorMessage("โปรดตรวจสอบ Username และ Password");
+      if(error.message === "Request failed with status code 401")
+        setErrorMessage("โปรดตรวจสอบ Username และ Password");
       setShowErrorModal(true); // เมื่อเข้าสู่ระบบไม่สำเร็จ แสดง Modal
     }
   }
@@ -114,6 +115,17 @@ function Login() {
           </div>
         </div>
       </div>
+      <Modal show={showErrorModal} onHide={handleCloseErrorModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>เข้าสู่ระบบไม่สำเร็จ</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>{errorMessage}</Modal.Body>
+        <Modal.Footer>
+          <button className="btn btn-primary" onClick={handleCloseErrorModal}>
+            ปิด
+          </button>
+        </Modal.Footer>
+      </Modal>
       <Modal show={showErrorModal} onHide={handleCloseErrorModal}>
         <Modal.Header closeButton>
           <Modal.Title>เข้าสู่ระบบไม่สำเร็จ</Modal.Title>
