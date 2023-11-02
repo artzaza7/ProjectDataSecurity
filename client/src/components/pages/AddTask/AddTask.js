@@ -146,17 +146,17 @@ function AddTask() {
           }
         }
       }
-      if(endDate.toLocaleDateString() < currentTime.toLocaleDateString()){
+    }
+    if(endDate.toLocaleDateString() < currentTime.toLocaleDateString()){
+      setShowValidationDate(true);
+      console.log("4");
+      return;
+    }
+    if(endDate.toLocaleDateString() > currentTime.toLocaleDateString()){
+      if (startTime >= endTime) {
         setShowValidationDate(true);
-        console.log("4");
+        console.log("5");
         return;
-      }
-      if(endDate.toLocaleDateString() > currentTime.toLocaleDateString()){
-        if (startTime >= endTime) {
-          setShowValidationDate(true);
-          console.log("5");
-          return;
-        }
       }
     }
 

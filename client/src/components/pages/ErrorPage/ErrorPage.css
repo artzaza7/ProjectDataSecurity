@@ -1,0 +1,8 @@
+.bg-img {
+  background-image: url("./pagenotfound.jpg");
+  background-size: cover;
+  background-position: center;
+}
+.error-bg{
+    background-color: #EEEEEE;
+} 

@@ -15,6 +15,7 @@ import AddTask from './components/pages/AddTask/AddTask';
 import Navbar from './components/pages/Navbar/Navbar';
 import MainScreen from './components/pages/MainScreen/MainScreen';
 import UpdateTask from './components/pages/UpdateTask/UpdateTask';
+import ErrorPage from './components/pages/ErrorPage/ErrorPage';
 
 const router = createBrowserRouter([
   {
@@ -48,6 +49,10 @@ const router = createBrowserRouter([
   {
     path: "/updatetask/:id",
     element: <UpdateTask />
+  },
+  {
+    path: "*",
+    element: <ErrorPage />
   },
   
 ])
