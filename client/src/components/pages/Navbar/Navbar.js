@@ -23,6 +23,10 @@ function Navbar() {
     const token = localStorage.getItem('token')
     if (token) {
       const username = jwtDecode(token).username
+      const exp = jwtDecode(token).exp
+      if (Date.now() >= exp * 1000) {
+        navigate("/unauthorized")
+      }
       try {
         const responseUser = await getUserbyUsername(username)
         const f_name = responseUser.data.firstname + " " + responseUser.data.lastname
@@ -54,9 +58,9 @@ function Navbar() {
       <div className="container justify-content-center">
         <div className="row w-100">
           <div className="col-4 d-flex justify-content-between align-items-center">
-            <Link to="/index" className="text-white" style={{textDecoration: 'none'}}>แดชบอร์ด</Link>
-            <Link to="/addtask" className="text-white" style={{textDecoration: 'none'}}>เพิ่มกิจกรรม</Link>
-            <Link to="/mainscreen" className="text-white" style={{textDecoration: 'none'}}>ดูกิจกรรม</Link>
+            <Link to="/index" className="text-white" style={{ textDecoration: 'none' }}>แดชบอร์ด</Link>
+            <Link to="/addtask" className="text-white" style={{ textDecoration: 'none' }}>เพิ่มกิจกรรม</Link>
+            <Link to="/mainscreen" className="text-white" style={{ textDecoration: 'none' }}>ดูกิจกรรม</Link>
           </div>
           <div className="col-8 d-flex justify-content-end align-items-center">
             <i className="bi bi-person-circle bi-2x"></i>

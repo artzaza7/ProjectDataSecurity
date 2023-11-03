@@ -23,9 +23,13 @@ function ChartExample() {
 
   async function getInitData() {
     const token = localStorage.getItem('token')
-    console.log(countAllTask);
+    // console.log(countAllTask);
     if (token) {
       const username = jwtDecode(token).username
+      const exp = jwtDecode(token).exp
+        if (Date.now() >= exp * 1000) {
+            navigate("/unauthorized")
+        }
       try {
 
         // for categoties in Pie Chart
@@ -41,7 +45,7 @@ function ChartExample() {
         if(responseCount.data[0] === 0 && responseCount.data[1] === 0 && responseCount.data[2] === 0 && responseCount.data[3]=== 0 ){
           responseCount.data = [1, 1, 1, 1]
         }
-        console.log(responseCount.data);
+        // console.log(responseCount.data);
         setCountAllTask(responseCount.data)
 
         
@@ -75,7 +79,7 @@ function ChartExample() {
       },
     ],
   };
-  console.log(countAllTask)
+  // console.log(countAllTask)
 
   useEffect(() => {
     getInitData()

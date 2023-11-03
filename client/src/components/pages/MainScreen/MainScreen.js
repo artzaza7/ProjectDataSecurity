@@ -58,6 +58,10 @@ function MainScreen() {
         const token = localStorage.getItem("token")
         if (token) {
             const username = jwtDecode(token).username
+            const exp = jwtDecode(token).exp
+            if (Date.now() >= exp * 1000) {
+                navigate("/unauthorized")
+            }
             try {
                 // for notFinish
                 const responseNotFinish = await getUserTasksByStatusId(username, 1) // 1 for notFinish

@@ -174,6 +174,10 @@ function AddTask() {
     const token = localStorage.getItem("token");
     if (token) {
       const username = jwtDecode(token).username;
+      const exp = jwtDecode(token).exp
+      if(Date.now() >= exp * 1000){
+        navigate("/unauthorized")
+      }
       try {
         const startDateObject = new Date(startDate);
         startDateObject.setHours(startDateObject.getHours() + 7);

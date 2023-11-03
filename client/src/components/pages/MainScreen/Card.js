@@ -22,6 +22,10 @@ function Card(props) {
         const token = localStorage.getItem('token')
         if (token) {
             const username = jwtDecode(token).username
+            const exp = jwtDecode(token).exp
+            if (Date.now() >= exp * 1000) {
+                navigate("/unauthorized")
+            }
             try {
                 const responseDelete = await deleteUserTaskById(username, data.task_id)
                 console.log(responseDelete)
@@ -50,6 +54,10 @@ function Card(props) {
         const token = localStorage.getItem('token')
         if (token) {
             const username = jwtDecode(token).username
+            const exp = jwtDecode(token).exp
+            if (Date.now() >= exp * 1000) {
+                navigate("/unauthorized")
+            }
             try {
                 const responseUpdate = await updateUserTaskById(username, data.task_id, 2) // 2 for finish
                 console.log(responseUpdate)
@@ -189,50 +197,50 @@ function Card(props) {
 
             {/* Modal ลบกิจกรรมสำเร็จ */}
             <Modal
-                    show={showSuccessDeleteModal}
-                    onHide={() => setshowSuccessDeleteModal(false)}
-                  >
-                    <Modal.Header closeButton>
-                      <Modal.Title>ทำการลบกิจกรรม {data.task_name} แล้ว</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                      กิจกรรมของคุณได้ถูกลบเรียบร้อยแล้ว
-                    </Modal.Body>
-                    <Modal.Footer>
-                      <Button
+                show={showSuccessDeleteModal}
+                onHide={() => setshowSuccessDeleteModal(false)}
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title>ทำการลบกิจกรรม {data.task_name} แล้ว</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    กิจกรรมของคุณได้ถูกลบเรียบร้อยแล้ว
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button
                         variant="primary"
                         onClick={() => {
-                          setshowSuccessDeleteModal(false);
-                          window.location.reload(true); // รีเฟรชหน้า
+                            setshowSuccessDeleteModal(false);
+                            window.location.reload(true); // รีเฟรชหน้า
                         }}
-                      >
+                    >
                         ตกลง
-                      </Button>
-                    </Modal.Footer>
+                    </Button>
+                </Modal.Footer>
             </Modal>
 
             {/* Modal เปลี่ยนสถานะสำเร็จ */}
             <Modal
-                    show={showModalStatusSuccess}
-                    onHide={() => setShowModalStatusSuccess(false)}
-                  >
-                    <Modal.Header closeButton>
-                      <Modal.Title>ทำการเปลี่ยนสถานะกิจกรรม {data.task_name} แล้ว</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                      กิจกรรมของคุณได้ถูกเปลี่ยนสถานะเรียบร้อยแล้ว
-                    </Modal.Body>
-                    <Modal.Footer>
-                      <Button
+                show={showModalStatusSuccess}
+                onHide={() => setShowModalStatusSuccess(false)}
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title>ทำการเปลี่ยนสถานะกิจกรรม {data.task_name} แล้ว</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    กิจกรรมของคุณได้ถูกเปลี่ยนสถานะเรียบร้อยแล้ว
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button
                         variant="primary"
                         onClick={() => {
-                          setShowModalStatusSuccess(false);
-                          window.location.reload(true); // รีเฟรชหน้า
+                            setShowModalStatusSuccess(false);
+                            window.location.reload(true); // รีเฟรชหน้า
                         }}
-                      >
+                    >
                         ตกลง
-                      </Button>
-                    </Modal.Footer>
+                    </Button>
+                </Modal.Footer>
             </Modal>
         </>
     );
