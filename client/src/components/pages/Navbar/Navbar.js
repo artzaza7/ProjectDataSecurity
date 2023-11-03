@@ -11,6 +11,7 @@ import jwtDecode from 'jwt-decode'
 
 // import API
 import { getUserbyUsername } from '../../../services/UserService'
+import { tokenVerify } from "../../../services/UserService"
 
 function Navbar() {
   // useNavigate
@@ -20,14 +21,21 @@ function Navbar() {
   const [loading, setLoading] = useState(true)
 
   function logout() {
-     // Back to Login Page
-     navigate("/")
+    // Back to Login Page
+    navigate("/")
   }
 
   useEffect(() => {
     async function init() {
       const token = localStorage.getItem('token')
       if (token) {
+        try {
+          await tokenVerify(token)
+        }
+        catch (error) {
+          console.log(error.message)
+          window.location.href = 'http://localhost:3000/unauthorized'
+        }
         const username = jwtDecode(token).username
         const exp = jwtDecode(token).exp
         if (Date.now() >= exp * 1000) {

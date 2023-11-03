@@ -5,6 +5,7 @@ import Modal from 'react-bootstrap/Modal';
 
 // Import API
 import { deleteUserTaskById, updateUserTaskById } from "../../../services/UserTaskService"
+import { tokenVerify } from "../../../services/UserService"
 
 // Import Library
 import jwtDecode from "jwt-decode"
@@ -21,6 +22,13 @@ function Card(props) {
     async function handleChangeDelete() {
         const token = localStorage.getItem('token')
         if (token) {
+            try {
+                await tokenVerify(token)
+            }
+            catch (error) {
+                console.log(error.message)
+                window.location.href = 'http://localhost:3000/unauthorized'
+            }
             const username = jwtDecode(token).username
             const exp = jwtDecode(token).exp
             if (Date.now() >= exp * 1000) {
@@ -49,6 +57,13 @@ function Card(props) {
     async function handleChangeStatus() {
         const token = localStorage.getItem('token')
         if (token) {
+            try {
+                await tokenVerify(token)
+            }
+            catch (error) {
+                console.log(error.message)
+                window.location.href = 'http://localhost:3000/unauthorized'
+            }
             const username = jwtDecode(token).username
             const exp = jwtDecode(token).exp
             if (Date.now() >= exp * 1000) {
@@ -72,7 +87,7 @@ function Card(props) {
     const handleShowModalStatus = () => setShowModalStatus(true);
 
     // setting mode
-    const { mode, data , searchValue,searchType } = props;
+    const { mode, data, searchValue, searchType } = props;
     const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
 
     const dateStringStart = data.task_startDay;
@@ -82,7 +97,7 @@ function Card(props) {
     const dateStringEnd = data.task_endDay;
     const dateEnd = new Date(dateStringEnd);
     const formattedDateEnd = dateEnd.toLocaleDateString('th-TH', options);
-    
+
     let isMatching = false;
 
     if (searchType === 'task_name') {
@@ -95,7 +110,7 @@ function Card(props) {
         // ค้นหาตามวันสิ้นสุด
         isMatching = formattedDateEnd.includes(searchValue);
     }
-    
+
     return (
         <>{isMatching ? (
             <div className="card mb-3">
@@ -143,17 +158,17 @@ function Card(props) {
                         {mode === "Fail" ? <div className="col-12 my-1 d-flex justify-content-center align-items-center">
                             <h6 className="my-0 badge rounded-pill bg-primary px-3 py-2">ล้มเหลว</h6>
                         </div> : <></>}
-                        
+
                         <div className="col-12 my-1 d-flex justify-content-evenly align-items-center ">
                             {mode === "notFinish" ?
-                            <Link to={`/updatetask/${data.userTask_id}`}><button type="button" className="btn btn-warning">UPDATE</button>
-                            </Link> : <></>}
+                                <Link to={`/updatetask/${data.userTask_id}`}><button type="button" className="btn btn-warning">UPDATE</button>
+                                </Link> : <></>}
                             <button type="button" className="btn btn-danger btn-delete" onClick={handleShowModalDelete}>DELETE</button>
-                        </div> 
+                        </div>
                     </div>
 
                 </div>
-            </div> ) : null}
+            </div>) : null}
 
             {/* Modal เปลี่ยนสถานะ */}
             <Modal show={showModalStatus} onHide={handleCloseModalStatus}>

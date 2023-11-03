@@ -11,9 +11,8 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import jwtDecode from "jwt-decode"
 
 // Import API
-import { getUserTasksCount, getUserTasksCountFinish } from "../../../services/UserTaskService"
-import { getUserTasksCountProgress } from "../../../services/UserTaskService"
-import { getUserTasksCountFail } from "../../../services/UserTaskService"
+import { getUserTasksCount, getUserTasksCountFinish, getUserTasksCountProgress, getUserTasksCountFail } from "../../../services/UserTaskService"
+import { tokenVerify } from "../../../services/UserService"
 import { getAllCategoryTasks } from "../../../services/CategoryTaskService"
 
 function Index() {
@@ -40,9 +39,17 @@ function Index() {
       const token = localStorage.getItem('token')
       const exp = jwtDecode(token).exp
       if (Date.now() >= exp * 1000) {
-          window.location.href = 'http://localhost:3000/unauthorized'
+        window.location.href = 'http://localhost:3000/unauthorized'
       }
       if (token) {
+        try {
+          await tokenVerify(token)
+        }
+        catch (error) {
+          console.log(error.message)
+          window.location.href = 'http://localhost:3000/unauthorized'
+        }
+
         const username = jwtDecode(token).username
         try {
           // for count All UserTask in Pie Chart

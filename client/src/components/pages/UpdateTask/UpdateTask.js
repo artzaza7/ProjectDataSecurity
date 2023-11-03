@@ -16,6 +16,7 @@ import { parseISO } from "date-fns"; // เรียกใช้ parseISO จา
 // Import API
 import { getAllCategoryTasks } from "../../../services/CategoryTaskService";
 import { getTaskById, editTaskById } from "../../../services/TaskService";
+import { tokenVerify } from "../../../services/UserService"
 
 function UpdateTask() {
   const { id } = useParams();
@@ -49,7 +50,7 @@ function UpdateTask() {
     const timer = setInterval(() => {
       setCurrentTime(new Date());
     }, 1000); // 1000 มิลลิวินาทีหรือ 1 วินาที
-  
+
     // คืนค่าฟังก์ชันที่จะทำการล้างตัวจับเวลาเมื่อ component unmount
     return () => {
       clearInterval(timer);
@@ -61,19 +62,19 @@ function UpdateTask() {
       try {
         const responseTask = await getTaskById(id);
         const data = responseTask.data;
-  
+
         setName(data.name);
-  
+
         const dateObjectStartDate = parseISO(data.startDay);
         setStartDate(dateObjectStartDate);
-  
+
         const dateObjectEndDate = parseISO(data.endDay);
         setEndDate(dateObjectEndDate);
-  
+
         setStartTime(data.startHour);
-  
+
         setEndTime(data.endHour);
-  
+
         setCategory_task_id(data.category_task.id);
         // category
         const responseCategory = await getAllCategoryTasks();
@@ -108,7 +109,7 @@ function UpdateTask() {
       return;
     }
     if ((startDate >= endDate && startDate <= endDate)) {
-      if(endDate.toLocaleDateString() === currentTime.toLocaleDateString()){
+      if (endDate.toLocaleDateString() === currentTime.toLocaleDateString()) {
         if (startTime >= endTime) {
           setShowValidationDate(true);
           return;
@@ -116,9 +117,9 @@ function UpdateTask() {
           if (
             endTime <=
             currentTime.toLocaleTimeString([], {
-             hour: "2-digit",
-             minute: "2-digit",
-             hour12: false,
+              hour: "2-digit",
+              minute: "2-digit",
+              hour12: false,
             })
           ) {
             setShowValidationDate(true);
@@ -126,11 +127,11 @@ function UpdateTask() {
           }
         }
       }
-      if(endDate.toLocaleDateString() < currentTime.toLocaleDateString()){
+      if (endDate.toLocaleDateString() < currentTime.toLocaleDateString()) {
         setShowValidationDate(true);
         return;
       }
-      if(endDate.toLocaleDateString() > currentTime.toLocaleDateString()){
+      if (endDate.toLocaleDateString() > currentTime.toLocaleDateString()) {
         if (startTime >= endTime) {
           setShowValidationDate(true);
           return;
@@ -150,6 +151,13 @@ function UpdateTask() {
 
     const token = localStorage.getItem("token");
     if (token) {
+      try {
+        await tokenVerify(token)
+      }
+      catch (error) {
+        console.log(error.message)
+        window.location.href = 'http://localhost:3000/unauthorized'
+      }
       try {
         const startDateObject = new Date(startDate);
         startDateObject.setHours(startDateObject.getHours() + 7);

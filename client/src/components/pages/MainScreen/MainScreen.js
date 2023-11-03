@@ -13,6 +13,7 @@ import jwtDecode from "jwt-decode"
 
 // import API
 import { getUserTasksByStatusId } from "../../../services/UserTaskService"
+import { tokenVerify } from "../../../services/UserService"
 
 const minHieghtTab = {
     minHeight: '5vh'
@@ -56,6 +57,13 @@ function MainScreen() {
         async function init() {
             const token = localStorage.getItem("token")
             if (token) {
+                try {
+                    await tokenVerify(token)
+                }
+                catch (error) {
+                    console.log(error.message)
+                    window.location.href = 'http://localhost:3000/unauthorized'
+                }
                 const username = jwtDecode(token).username
                 const exp = jwtDecode(token).exp
                 if (Date.now() >= exp * 1000) {
@@ -163,7 +171,7 @@ function MainScreen() {
         <div>
             <Navbar />
             <div className="container min-vh-100">
-                
+
 
                 {/* Tabs */}
                 <Tab.Container className="custom-nav-item" defaultActiveKey="first" onSelect={handleTabSelect}>
@@ -211,19 +219,19 @@ function MainScreen() {
                     <Tab.Content className='d-flex justify-content-center align-items-center w-100'>
                         <Tab.Pane eventKey="first" className='w-100'>
 
-                            {!loading ? <Content mode="notFinish" data={dataNotFinish} searchValue={searchValue} searchType={searchType}/> : <div>LOADING</div>}
+                            {!loading ? <Content mode="notFinish" data={dataNotFinish} searchValue={searchValue} searchType={searchType} /> : <div>LOADING</div>}
 
                         </Tab.Pane>
 
                         <Tab.Pane eventKey="second" className='w-100'>
 
-                            {!loading ? <Content mode="Finish" data={dataFinish} searchValue={searchValue} searchType={searchType}/> : <div>LOADING</div>}
+                            {!loading ? <Content mode="Finish" data={dataFinish} searchValue={searchValue} searchType={searchType} /> : <div>LOADING</div>}
 
                         </Tab.Pane>
 
                         <Tab.Pane eventKey="third" className='w-100'>
 
-                            {!loading ? <Content mode="Fail" data={dataFail} searchValue={searchValue} searchType={searchType}/> : <div>LOADING</div>}
+                            {!loading ? <Content mode="Fail" data={dataFail} searchValue={searchValue} searchType={searchType} /> : <div>LOADING</div>}
 
                         </Tab.Pane>
                     </Tab.Content>

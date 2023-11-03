@@ -18,6 +18,7 @@ import jwtDecode from "jwt-decode";
 // Import API
 import { getAllCategoryTasks } from "../../../services/CategoryTaskService";
 import { createUserTask } from "../../../services/UserTaskService";
+import { tokenVerify } from "../../../services/UserService"
 
 function AddTask() {
   const [name, setName] = useState("");
@@ -154,6 +155,14 @@ function AddTask() {
 
     const token = localStorage.getItem("token");
     if (token) {
+      try {
+        await tokenVerify(token)
+      }
+      catch (error) {
+        console.log(error.message)
+        window.location.href = 'http://localhost:3000/unauthorized'
+      }
+
       const username = jwtDecode(token).username;
       const exp = jwtDecode(token).exp
       if(Date.now() >= exp * 1000){
