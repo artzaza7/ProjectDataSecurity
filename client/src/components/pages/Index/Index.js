@@ -1,7 +1,7 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import React from "react";
 import ChartExample from "./ChartExample";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "./Index.css";
 import Navbar from "../Navbar/Navbar";
 import { useState, useEffect } from "react";
@@ -14,65 +14,76 @@ import jwtDecode from "jwt-decode"
 import { getUserTasksCount, getUserTasksCountFinish } from "../../../services/UserTaskService"
 import { getUserTasksCountProgress } from "../../../services/UserTaskService"
 import { getUserTasksCountFail } from "../../../services/UserTaskService"
+import { getAllCategoryTasks } from "../../../services/CategoryTaskService"
 
 function Index() {
   // useNavigate
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   // for call API
   const [loading, setLoading] = useState(true)
-  const [countAllTask, setCountAllTask] = useState([0, 0, 0, 0])
-  const [countFinishTask, setCountFinishTask] = useState([0, 0, 0, 0])
-  const [countProgressTask, setCountProgressTask] = useState([0, 0, 0, 0])
-  const [countFailTask, setCountFailTask] = useState([0, 0, 0, 0])
+  const [countAllTask, setCountAllTask] = useState([99, 99, 99, 99])
+  const [countFinishTask, setCountFinishTask] = useState([99, 99, 99, 99])
+  const [countProgressTask, setCountProgressTask] = useState([99, 99, 99, 99])
+  const [countFailTask, setCountFailTask] = useState([99, 99, 99, 99])
+  const [categoryTasks, setCategoryTasks] = useState([])
 
   // Calculation %
   function calculationPercentage(numFinish, numAll) {
-    if(numAll === 0){
+    if (numAll === 0) {
       numAll = 1;
     }
     let result = (numFinish * 100) / numAll;
     return result.toFixed(2)
   }
 
-  async function getInitData() {
-    const token = localStorage.getItem('token')
-
-    if (token) {
-      const username = jwtDecode(token).username
-      try {
-        // for count All UserTask in Pie Chart
-        const responseCount = await getUserTasksCount(username)
-        setCountAllTask(responseCount.data)
-
-        // for count Finish UserTask in Pie Chart
-        const responseCountFinish = await getUserTasksCountFinish(username)
-        setCountFinishTask(responseCountFinish.data)
-
-        // for count Progress UserTask in Pie Chart
-        const responseCountProgress = await getUserTasksCountProgress(username)
-        setCountProgressTask(responseCountProgress.data)
-
-        // for count Fail UserTask in Pie Chart
-        const responseCountFail = await getUserTasksCountFail(username)
-        setCountFailTask(responseCountFail.data)
-
-        // Finish Call API
-        setLoading(false)
-      }
-      catch (error) {
-        console.log(error.message)
-      }
-    }
-    else {
-      console.log("Don't have token")
-      navigate("/")
-    }
-  }
-
   useEffect(() => {
-    getInitData();
-  }, [loading])
+    async function getData() {
+      const token = localStorage.getItem('token')
+      if (token) {
+        const username = jwtDecode(token).username
+        try {
+          // for count All UserTask in Pie Chart
+          const responseCount = await getUserTasksCount(username)
+          setCountAllTask(responseCount.data)
+
+          // for count Finish UserTask in Pie Chart
+          const responseCountFinish = await getUserTasksCountFinish(username)
+          setCountFinishTask(responseCountFinish.data)
+
+          // for count Progress UserTask in Pie Chart
+          const responseCountProgress = await getUserTasksCountProgress(username)
+          setCountProgressTask(responseCountProgress.data)
+
+          // for count Fail UserTask in Pie Chart
+          const responseCountFail = await getUserTasksCountFail(username)
+          setCountFailTask(responseCountFail.data)
+
+          // for categoties in Pie Chart
+          const responseCategory = await getAllCategoryTasks();
+          const categoriesName = []
+          for (let i = 0; i < responseCategory.data.length; i++) {
+            categoriesName.push(responseCategory.data[i].name)
+          }
+          setCategoryTasks(categoriesName)
+
+          // Finish Call API
+          setLoading(false)
+        }
+        catch (error) {
+          console.log(error.message)
+        }
+      }
+      else {
+        console.log("Don't have token")
+        // navigate("/")
+      }
+    }
+
+    return () => {
+      getData()
+    }
+  }, [])
 
   const divStyle = {
     backgroundColor: "#EEEEEE",
@@ -84,14 +95,13 @@ function Index() {
     textDecoration: "none",
     color: "#FFFFFF",
   };
-
   return (
     <div>
       <Navbar />
       <div className="container vh-100" style={divStyle}>
         <div className="row p-5">
           <div className="col-5 p-5 container" style={divStyle2}>
-            <ChartExample />
+            {!loading ? <ChartExample countAllTask={countAllTask} categoryTasks={categoryTasks} /> : <>Loading</>}
             <div className="p-3 mt-5 d-flex justify-content-center align-items-center">
               <button type="button" className="btn btn-warning  px-5 mx-2">
                 <Link to="/mainscreen" style={colorTextLink}>
@@ -115,7 +125,7 @@ function Index() {
                       งาน
                     </div>
                     <div className="card-body text-center">
-                      
+
                       <h5 className="card-title">
                         {!loading ? (<>จำนวนงานทั้งหมด {countAllTask[0]}</>) : ("จำนวนงานทั้งหมด")}
                       </h5>
@@ -138,11 +148,11 @@ function Index() {
                 <div className="container">
                   <div className="card btn-type2 text-center">
                     <div className="card-header bg-transparent btn-type2 text-center">
-                    <i className="bi bi-person-heart"></i>
+                      <i className="bi bi-person-heart"></i>
                       ครอบครัว
                     </div>
                     <div className="card-body">
-                      
+
                       <h5 className="card-title">
                         {!loading ? (<>จำนวนงานทั้งหมด {countAllTask[1]}</>) : ("จำนวนงานทั้งหมด")}
                       </h5>
@@ -166,11 +176,11 @@ function Index() {
                 <div className="container">
                   <div className="card btn-type3 text-center">
                     <div className="card-header bg-transparent btn-type3 text-center">
-                    <i className="bi bi-person-wheelchair"></i>
+                      <i className="bi bi-person-wheelchair"></i>
                       โรงพยาบาล
                     </div>
                     <div className="card-body">
-                      
+
                       <h5 className="card-title">
                         {!loading ? (<>จำนวนงานทั้งหมด {countAllTask[2]}</>) : ("จำนวนงานทั้งหมด")}
                       </h5>
@@ -192,14 +202,14 @@ function Index() {
                 <div className="container">
                   <div className="card btn-type4 text-center ">
                     <div className="card-header bg-transparent btn-type4 text-center">
-                    <i className="bi bi-person-walking"></i>
+                      <i className="bi bi-person-walking"></i>
                       อื่นๆ
                     </div>
                     <div className="card-body">
-                      
+
                       <h5 className="card-title">
                         {!loading ? (<>จำนวนงานทั้งหมด {countAllTask[3]}</>) : ("จำนวนงานทั้งหมด")}
-                       
+
                       </h5>
                       <br />
                       <p className="card-text">
