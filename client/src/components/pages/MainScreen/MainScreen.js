@@ -9,6 +9,7 @@ import './MainScreen.css';
 import { Form, InputGroup, FormControl } from 'react-bootstrap';
 import React, { Component } from 'react';
 import Button from 'react-bootstrap/Button';
+import Dropdown from 'react-bootstrap/Dropdown';
 // Import Library
 import jwtDecode from "jwt-decode"
 
@@ -51,10 +52,7 @@ function MainScreen() {
     const [loading, setLoading] = useState(true)
 
     const [searchValue, setSearchValue] = useState('');
-
-    const handleSearch = () => {
-        console.log(searchValue);
-    };
+    const [searchType, setSearchType] = useState('task_name');
     // initFunction
     async function init() {
         const token = localStorage.getItem("token")
@@ -166,11 +164,13 @@ function MainScreen() {
         <div>
             <Navbar />
             <div className="container min-vh-100">
+                
+
                 {/* Tabs */}
                 <Tab.Container className="custom-nav-item" defaultActiveKey="first" onSelect={handleTabSelect}>
-                    <Nav className="custom-nav-item" variant="pills" style={minHieghtTab}>
+                    <Nav className="custom-nav-item" variant="pills" style={minHieghtTab} >
                         <Nav.Item className="custom-nav-item">
-                            <Nav.Link eventKey="first" className='h-100 d-flex justify-content-center align-items-center' style={{ backgroundColor: activeTab === 'first' ? '#4070F4' : 'white' , color: activeTab === 'first' ? 'white' : 'black'}} >กิจกรรมที่ยังไม่เสร็จ</Nav.Link>
+                            <Nav.Link eventKey="first" className='h-100 d-flex justify-content-center align-items-center' style={{ backgroundColor: activeTab === 'first' ? '#4070F4' : 'white', color: activeTab === 'first' ? 'white' : 'black' }} >กิจกรรมที่ยังไม่เสร็จ</Nav.Link>
                         </Nav.Item>
                         <Nav.Item className="custom-nav-item">
                             <Nav.Link eventKey="second" className='h-100 d-flex justify-content-center align-items-center ' style={{ backgroundColor: activeTab === 'second' ? '#4070F4' : 'white', color: activeTab === 'second' ? 'white' : 'black' }}>กิจกรรมที่เสร็จสิ้นแล้ว</Nav.Link>
@@ -178,35 +178,53 @@ function MainScreen() {
                         <Nav.Item className="custom-nav-item">
                             <Nav.Link eventKey="third" className='h-100 d-flex justify-content-center align-items-center ' style={{ backgroundColor: activeTab === 'third' ? '#4070F4' : 'white', color: activeTab === 'third' ? 'white' : 'black' }}>กิจกรรมที่ล้มเหลว</Nav.Link>
                         </Nav.Item>
-                        <Nav.Item className="custom-nav-item d-flex" style={{ marginLeft: 'auto' }}>
-                            <Form>
-                                <InputGroup>
-                                    <FormControl
-                                        type="text"
-                                        placeholder="ค้นหา"
-                                        value={searchValue}
-                                        onChange={(e) => setSearchValue(e.target.value)}
-                                    />
-                                </InputGroup>
-                            </Form>
-                        </Nav.Item>
+                        <Tab.Container className="custom-nav-item2" >
+                            <Nav className="custom-nav-item2" variant="pills" style={{ ...minHieghtTab, marginLeft: 'auto' }}>
+                                <Nav.Item className="custom-nav-item2 d-flex" style={{ marginLeft: 'auto' }}>
+                                    <Form>
+                                        <InputGroup>
+                                            <FormControl
+                                                type="text"
+                                                placeholder="ค้นหา"
+                                                value={searchValue}
+                                                onChange={(e) => setSearchValue(e.target.value)}
+                                            />
+                                        </InputGroup>
+                                    </Form>
+                                </Nav.Item>
+                                <Nav.Item className="custom-nav-item2 d-flex">
+                                    <Dropdown onSelect={(eventKey) => { setSearchType(eventKey); setSearchValue(''); }}>
+                                        <Dropdown.Toggle variant="success" id="dropdown-basic">
+                                            {searchType === 'task_name' ? 'ค้นหาตามชื่องาน' :
+                                                searchType === 'dateStart' ? 'ค้นหาตามวันเริ่ม' :
+                                                    searchType === 'dateEnd' ? 'ค้นหาตามวันสิ้นสุด' : 'เลือกประเภทการค้นหา'}
+                                        </Dropdown.Toggle>
+                                        <Dropdown.Menu>
+                                            <Dropdown.Item eventKey="task_name">ค้นหาตามชื่องาน</Dropdown.Item>
+                                            <Dropdown.Item eventKey="dateStart">ค้นหาตามวันเริ่ม</Dropdown.Item>
+                                            <Dropdown.Item eventKey="dateEnd">ค้นหาตามวันสิ้นสุด</Dropdown.Item>
+                                        </Dropdown.Menu>
+                                    </Dropdown>
+                                </Nav.Item>
+                            </Nav>
+                        </Tab.Container>
                     </Nav>
                     <Tab.Content className='d-flex justify-content-center align-items-center w-100'>
                         <Tab.Pane eventKey="first" className='w-100'>
 
-                            {!loading ? <Content mode="notFinish" data={dataNotFinish} searchValue={searchValue}/> : <div>LOADING</div>}
+                            {!loading ? <Content mode="notFinish" data={dataNotFinish} searchValue={searchValue} searchType={searchType}/> : <div>LOADING</div>}
 
                         </Tab.Pane>
 
                         <Tab.Pane eventKey="second" className='w-100'>
 
-                            {!loading ? <Content mode="Finish" data={dataFinish} searchValue={searchValue}/> : <div>LOADING</div>}
+                            {!loading ? <Content mode="Finish" data={dataFinish} searchValue={searchValue} searchType={searchType}/> : <div>LOADING</div>}
 
                         </Tab.Pane>
 
                         <Tab.Pane eventKey="third" className='w-100'>
 
-                            {!loading ? <Content mode="Fail" data={dataFail} searchValue={searchValue} /> : <div>LOADING</div>}
+                            {!loading ? <Content mode="Fail" data={dataFail} searchValue={searchValue} searchType={searchType}/> : <div>LOADING</div>}
 
                         </Tab.Pane>
                     </Tab.Content>

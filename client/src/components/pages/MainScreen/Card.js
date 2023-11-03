@@ -72,7 +72,7 @@ function Card(props) {
     const handleShowModalStatus = () => setShowModalStatus(true);
 
     // setting mode
-    const { mode, data , searchValue } = props;
+    const { mode, data , searchValue,searchType } = props;
     const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
 
     const dateStringStart = data.task_startDay;
@@ -82,9 +82,22 @@ function Card(props) {
     const dateStringEnd = data.task_endDay;
     const dateEnd = new Date(dateStringEnd);
     const formattedDateEnd = dateEnd.toLocaleDateString('th-TH', options);
-    const isMatching = data.task_name.includes(searchValue);
+    
+    let isMatching = false;
+
+    if (searchType === 'task_name') {
+        // ค้นหาตามชื่องาน
+        isMatching = data.task_name.includes(searchValue);
+    } else if (searchType === 'dateStart') {
+        // ค้นหาตามวันเริ่ม
+        isMatching = formattedDateStart.includes(searchValue);
+    } else if (searchType === 'dateEnd') {
+        // ค้นหาตามวันสิ้นสุด
+        isMatching = formattedDateEnd.includes(searchValue);
+    }
+    
     return (
-        <>{isMatching || searchValue === '' ?
+        <>{isMatching ? (
             <div className="card mb-3">
                 <div className="card-body">
                     {/* Topic 1 */}
@@ -131,19 +144,16 @@ function Card(props) {
                             <h6 className="my-0 badge rounded-pill bg-primary px-3 py-2">ล้มเหลว</h6>
                         </div> : <></>}
                         
-                        <div className="col-12 my-1 d-flex justify-content-evenly align-items-center">
-                            {mode === "Finish" || mode === "notFinish" ?
+                        <div className="col-12 my-1 d-flex justify-content-evenly align-items-center ">
+                            {mode === "notFinish" ?
                             <Link to={`/updatetask/${data.userTask_id}`}><button type="button" className="btn btn-warning">UPDATE</button>
                             </Link> : <></>}
-                            {mode === "Fail" ?
-                            <button type="button" className="btn btn-secondary">UPDATE</button>
-                             : <></>}
-                            <button type="button" className="btn btn-danger" onClick={handleShowModalDelete}>DELETE</button>
+                            <button type="button" className="btn btn-danger btn-delete" onClick={handleShowModalDelete}>DELETE</button>
                         </div> 
                     </div>
 
                 </div>
-            </div> : <></>}
+            </div> ) : null}
 
             {/* Modal เปลี่ยนสถานะ */}
             <Modal show={showModalStatus} onHide={handleCloseModalStatus}>

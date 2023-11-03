@@ -6,7 +6,7 @@ const hieghtContent = {
 }
 
 function Content(props) {
-    const { mode, data , searchValue } = props
+    const { mode, data , searchValue, searchType } = props
     // console.log(data)
 
     // Data for each Column
@@ -90,13 +90,13 @@ function Content(props) {
         <div className='container-fluid' style={hieghtContent}>
             <div className='row h-100'>
 
-                <Column textNumber={`งาน [${countData[0]}]`} bgColor="bg-primary" searchValue={searchValue} mode={mode} data={type_1} dataLength={type_1.length}/>
+                <Column textNumber={`งาน [${countData[0]}]`} bgColor="bg-primary" searchType={searchType} searchValue={searchValue} mode={mode} data={type_1} dataLength={type_1.length}/>
 
-                <Column textNumber={`ครอบครัว [${countData[1]}]`} count2 bgColor="bg-info" searchValue={searchValue} mode={mode} data={type_2} dataLength={type_2.length}/>
+                <Column textNumber={`ครอบครัว [${countData[1]}]`} count2 bgColor="bg-info" searchType={searchType} searchValue={searchValue} mode={mode} data={type_2} dataLength={type_2.length}/>
 
-                <Column textNumber={`โรงพยาบาล [${countData[2]}]`} count3 bgColor="bg-warning" searchValue={searchValue} mode={mode} data={type_3} dataLength={type_3.length}/>
+                <Column textNumber={`โรงพยาบาล [${countData[2]}]`} count3 bgColor="bg-warning" searchType={searchType} searchValue={searchValue} mode={mode} data={type_3} dataLength={type_3.length}/>
 
-                <Column textNumber={`อื่นๆ [${countData[3]}]`} count4 bgColor="bg-danger"searchValue={searchValue} mode={mode} data={type_4} dataLength={type_4.length}/>
+                <Column textNumber={`อื่นๆ [${countData[3]}]`} count4 bgColor="bg-danger" searchType={searchType} searchValue={searchValue} mode={mode} data={type_4} dataLength={type_4.length}/>
 
 
             </div>
