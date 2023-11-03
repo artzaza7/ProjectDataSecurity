@@ -4,7 +4,6 @@ import Nav from 'react-bootstrap/Nav';
 import Tab from 'react-bootstrap/Tab';
 import Content from './Content';
 import Navbar from "../Navbar/Navbar";
-import { useNavigate } from 'react-router-dom';
 import './MainScreen.css';
 import { Form, InputGroup, FormControl } from 'react-bootstrap';
 import React, { Component } from 'react';
@@ -42,9 +41,6 @@ function MainScreen() {
         setActiveTab(selectedTab);
     };
 
-    // useNavigate
-    const navigate = useNavigate();
-
     // for Data
     const [dataFinish, setDataFinish] = useState([])
     const [dataNotFinish, setDataNotFinish] = useState([])
@@ -53,116 +49,119 @@ function MainScreen() {
 
     const [searchValue, setSearchValue] = useState('');
     const [searchType, setSearchType] = useState('task_name');
-    // initFunction
-    async function init() {
-        const token = localStorage.getItem("token")
-        if (token) {
-            const username = jwtDecode(token).username
-            const exp = jwtDecode(token).exp
-            if (Date.now() >= exp * 1000) {
-                navigate("/unauthorized")
-            }
-            try {
-                // for notFinish
-                const responseNotFinish = await getUserTasksByStatusId(username, 1) // 1 for notFinish
-                // console.log(responseNotFinish)
-
-                let tasks = []
-                // loop for collect notFinish
-                for (let i = 0; i < responseNotFinish.data.length; i++) {
-                    // for each of type data
-                    const item = responseNotFinish.data[i]
-                    const task = item.task
-                    const category = task.category_task
-
-                    const userTask_id = item.id
-                    const task_id = task.id
-                    const task_name = task.name
-                    const task_startDay = task.startDay
-                    const task_startHour = task.startHour
-                    const task_endDay = task.endDay
-                    const task_endHour = task.endHour
-                    const category_id = category.id
-                    const category_name = category.name
-
-                    // create Class task
-                    const taskClass = new Task(userTask_id, task_id, task_name, task_startDay, task_startHour, task_endDay, task_endHour, category_id, category_name)
-                    tasks.push(taskClass)
-                }
-                setDataNotFinish(tasks)
-
-                // reset tasks
-                tasks = []
-
-                // for finish
-                const responseFinish = await getUserTasksByStatusId(username, 2) // 2 for finish
-
-                for (let i = 0; i < responseFinish.data.length; i++) {
-                    // for each of type data
-                    const item = responseFinish.data[i]
-                    const task = item.task
-                    const category = task.category_task
-
-                    const userTask_id = item.id
-                    const task_id = task.id
-                    const task_name = task.name
-                    const task_startDay = task.startDay
-                    const task_startHour = task.startHour
-                    const task_endDay = task.endDay
-                    const task_endHour = task.endHour
-                    const category_id = category.id
-                    const category_name = category.name
-
-                    // create Class task
-                    const taskClass = new Task(userTask_id, task_id, task_name, task_startDay, task_startHour, task_endDay, task_endHour, category_id, category_name)
-                    tasks.push(taskClass)
-                }
-                setDataFinish(tasks)
-
-                // reset tasks
-                tasks = []
-
-                // for fail
-                const responseFail = await getUserTasksByStatusId(username, 3) // 3 for fail
-
-                for (let i = 0; i < responseFail.data.length; i++) {
-                    // for each of type data
-                    const item = responseFail.data[i]
-                    const task = item.task
-                    const category = task.category_task
-
-                    const userTask_id = item.id
-                    const task_id = task.id
-                    const task_name = task.name
-                    const task_startDay = task.startDay
-                    const task_startHour = task.startHour
-                    const task_endDay = task.endDay
-                    const task_endHour = task.endHour
-                    const category_id = category.id
-                    const category_name = category.name
-
-                    // create Class task
-                    const taskClass = new Task(userTask_id, task_id, task_name, task_startDay, task_startHour, task_endDay, task_endHour, category_id, category_name)
-                    tasks.push(taskClass)
-                }
-                setDataFail(tasks)
-
-                setLoading(false)
-            }
-            catch (error) {
-                console.log(error)
-            }
-        }
-        else {
-            console.log("Don't have token")
-            navigate("/")
-        }
-    }
 
     // init Render
     useEffect(() => {
-        init()
-    }, [loading])
+
+        // initFunction
+        async function init() {
+            const token = localStorage.getItem("token")
+            if (token) {
+                const username = jwtDecode(token).username
+                const exp = jwtDecode(token).exp
+                if (Date.now() >= exp * 1000) {
+                    window.location.href = 'http://localhost:3000/unauthorized'
+                }
+                try {
+                    // for notFinish
+                    const responseNotFinish = await getUserTasksByStatusId(username, 1) // 1 for notFinish
+                    // console.log(responseNotFinish)
+
+                    let tasks = []
+                    // loop for collect notFinish
+                    for (let i = 0; i < responseNotFinish.data.length; i++) {
+                        // for each of type data
+                        const item = responseNotFinish.data[i]
+                        const task = item.task
+                        const category = task.category_task
+
+                        const userTask_id = item.id
+                        const task_id = task.id
+                        const task_name = task.name
+                        const task_startDay = task.startDay
+                        const task_startHour = task.startHour
+                        const task_endDay = task.endDay
+                        const task_endHour = task.endHour
+                        const category_id = category.id
+                        const category_name = category.name
+
+                        // create Class task
+                        const taskClass = new Task(userTask_id, task_id, task_name, task_startDay, task_startHour, task_endDay, task_endHour, category_id, category_name)
+                        tasks.push(taskClass)
+                    }
+                    setDataNotFinish(tasks)
+
+                    // reset tasks
+                    tasks = []
+
+                    // for finish
+                    const responseFinish = await getUserTasksByStatusId(username, 2) // 2 for finish
+
+                    for (let i = 0; i < responseFinish.data.length; i++) {
+                        // for each of type data
+                        const item = responseFinish.data[i]
+                        const task = item.task
+                        const category = task.category_task
+
+                        const userTask_id = item.id
+                        const task_id = task.id
+                        const task_name = task.name
+                        const task_startDay = task.startDay
+                        const task_startHour = task.startHour
+                        const task_endDay = task.endDay
+                        const task_endHour = task.endHour
+                        const category_id = category.id
+                        const category_name = category.name
+
+                        // create Class task
+                        const taskClass = new Task(userTask_id, task_id, task_name, task_startDay, task_startHour, task_endDay, task_endHour, category_id, category_name)
+                        tasks.push(taskClass)
+                    }
+                    setDataFinish(tasks)
+
+                    // reset tasks
+                    tasks = []
+
+                    // for fail
+                    const responseFail = await getUserTasksByStatusId(username, 3) // 3 for fail
+
+                    for (let i = 0; i < responseFail.data.length; i++) {
+                        // for each of type data
+                        const item = responseFail.data[i]
+                        const task = item.task
+                        const category = task.category_task
+
+                        const userTask_id = item.id
+                        const task_id = task.id
+                        const task_name = task.name
+                        const task_startDay = task.startDay
+                        const task_startHour = task.startHour
+                        const task_endDay = task.endDay
+                        const task_endHour = task.endHour
+                        const category_id = category.id
+                        const category_name = category.name
+
+                        // create Class task
+                        const taskClass = new Task(userTask_id, task_id, task_name, task_startDay, task_startHour, task_endDay, task_endHour, category_id, category_name)
+                        tasks.push(taskClass)
+                    }
+                    setDataFail(tasks)
+
+                    setLoading(false)
+                }
+                catch (error) {
+                    console.log(error)
+                }
+            }
+            else {
+                console.log("Don't have token")
+                window.location.href = 'http://localhost:3000/unauthorized'
+            }
+        }
+        return () => {
+            init()
+        }
+    }, [])
 
     return (
         <div>

@@ -19,40 +19,39 @@ function Navbar() {
   const [fullname, setFullname] = useState('')
   const [loading, setLoading] = useState(true)
 
-  async function init() {
-    const token = localStorage.getItem('token')
-    if (token) {
-      const username = jwtDecode(token).username
-      const exp = jwtDecode(token).exp
-      if (Date.now() >= exp * 1000) {
-        navigate("/unauthorized")
-      }
-      try {
-        const responseUser = await getUserbyUsername(username)
-        const f_name = responseUser.data.firstname + " " + responseUser.data.lastname
-        setFullname(f_name)
-        setLoading(false)
-      }
-      catch (error) {
-        console.log(error)
-      }
-    }
-    else {
-      console.log("Don't have token")
-      navigate("/")
-    }
-  }
-
   function logout() {
-    // Clearing Item
-    localStorage.removeItem("token")
-
-    // Back to Login Page
-    navigate("/")
+     // Back to Login Page
+     navigate("/")
   }
+
   useEffect(() => {
-    init()
-  }, [loading])
+    async function init() {
+      const token = localStorage.getItem('token')
+      if (token) {
+        const username = jwtDecode(token).username
+        const exp = jwtDecode(token).exp
+        if (Date.now() >= exp * 1000) {
+          window.location.href = 'http://localhost:3000/unauthorized'
+        }
+        try {
+          const responseUser = await getUserbyUsername(username)
+          const f_name = responseUser.data.firstname + " " + responseUser.data.lastname
+          setFullname(f_name)
+          setLoading(false)
+        }
+        catch (error) {
+          console.log(error)
+        }
+      }
+      else {
+        console.log("Don't have token")
+        window.location.href = 'http://localhost:3000/unauthorized'
+      }
+    }
+    return () => {
+      init()
+    }
+  }, [])
   return (
     <nav className="navbar">
       <div className="container justify-content-center">

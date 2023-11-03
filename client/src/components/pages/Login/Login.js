@@ -7,7 +7,7 @@ import './Modal.css';
 
 // import library
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { login } from "../../../services/UserService";
 import { Modal } from "react-bootstrap";
 
@@ -49,6 +49,15 @@ function Login() {
       setShowErrorModal(true); // เมื่อเข้าสู่ระบบไม่สำเร็จ แสดง Modal
     }
   }
+
+  useEffect(() => {
+    // Clearing Item
+    localStorage.removeItem("token")
+    return () => {
+      
+    }
+  }, [])
+  
 
   return (
     <div className="login-bg">

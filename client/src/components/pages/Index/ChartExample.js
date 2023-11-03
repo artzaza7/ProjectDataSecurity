@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import Chart from "chart.js/auto";
 
 function ChartExample(props) {
@@ -50,7 +50,7 @@ function ChartExample(props) {
         chartInstance.current.destroy();
       }
     };
-  }, []); // กำหนด dependencies เป็น 'data' เนื่องจากมีการใช้ใน config
+  }, [countAllTask, categoryTasks]); // กำหนด dependencies เป็น 'data' เนื่องจากมีการใช้ใน config
 
 
   function handleHover(evt, item, legend) {

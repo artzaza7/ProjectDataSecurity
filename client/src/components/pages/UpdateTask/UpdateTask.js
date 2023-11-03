@@ -25,7 +25,6 @@ function UpdateTask() {
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
   const [category_task_id, setCategory_task_id] = useState(1);
-  const [loading, setLoading] = useState(true);
   const [show, setShow] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showValidationModal, setShowValidationModal] = useState(false);
@@ -46,35 +45,6 @@ function UpdateTask() {
   // useNavigate
   const navigate = useNavigate();
 
-  async function getInitData() {
-    try {
-      const responseTask = await getTaskById(id);
-      // console.log(responseTask)
-      const data = responseTask.data;
-
-      setName(data.name);
-
-      const dateObjectStartDate = parseISO(data.startDay);
-      setStartDate(dateObjectStartDate);
-
-      const dateObjectEndDate = parseISO(data.endDay);
-      setEndDate(dateObjectEndDate);
-
-      setStartTime(data.startHour);
-
-      setEndTime(data.endHour);
-
-      setCategory_task_id(data.category_task.id);
-      // category
-      const responseCategory = await getAllCategoryTasks();
-      setCategoryTasks(responseCategory.data);
-
-      setLoading(false);
-    } catch (error) {
-      console.log(error.message);
-    }
-  }
-
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(new Date());
@@ -87,8 +57,36 @@ function UpdateTask() {
   }, []);
 
   useEffect(() => {
-    getInitData();
-  }, [loading]);
+    async function getInitData() {
+      try {
+        const responseTask = await getTaskById(id);
+        // console.log(responseTask)
+        const data = responseTask.data;
+  
+        setName(data.name);
+  
+        const dateObjectStartDate = parseISO(data.startDay);
+        setStartDate(dateObjectStartDate);
+  
+        const dateObjectEndDate = parseISO(data.endDay);
+        setEndDate(dateObjectEndDate);
+  
+        setStartTime(data.startHour);
+  
+        setEndTime(data.endHour);
+  
+        setCategory_task_id(data.category_task.id);
+        // category
+        const responseCategory = await getAllCategoryTasks();
+        setCategoryTasks(responseCategory.data);
+        } catch (error) {
+        console.log(error.message);
+      }
+    }
+    return () => {
+      getInitData();
+    }
+  }, [id]);
 
   async function submitUpdateTask(e) {
     if (e) {

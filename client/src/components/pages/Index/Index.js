@@ -17,8 +17,6 @@ import { getUserTasksCountFail } from "../../../services/UserTaskService"
 import { getAllCategoryTasks } from "../../../services/CategoryTaskService"
 
 function Index() {
-  // useNavigate
-  // const navigate = useNavigate();
 
   // for call API
   const [loading, setLoading] = useState(true)
@@ -40,6 +38,10 @@ function Index() {
   useEffect(() => {
     async function getData() {
       const token = localStorage.getItem('token')
+      const exp = jwtDecode(token).exp
+      if (Date.now() >= exp * 1000) {
+          window.location.href = 'http://localhost:3000/unauthorized'
+      }
       if (token) {
         const username = jwtDecode(token).username
         try {
@@ -76,7 +78,7 @@ function Index() {
       }
       else {
         console.log("Don't have token")
-        // navigate("/")
+        window.location.href = 'http://localhost:3000/unauthorized'
       }
     }
 
