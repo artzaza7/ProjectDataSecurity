@@ -74,7 +74,7 @@ function ForgotPassword() {
         setMissingUser(true);
         checkUsername = 1;
       }
-      if(checkUsername != 1){
+      if(checkUsername !== 1){
         setShowSuccessModal(true);
       }
     } else {
