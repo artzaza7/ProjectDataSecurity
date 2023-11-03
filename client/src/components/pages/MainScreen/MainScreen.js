@@ -6,8 +6,7 @@ import Content from './Content';
 import Navbar from "../Navbar/Navbar";
 import './MainScreen.css';
 import { Form, InputGroup, FormControl } from 'react-bootstrap';
-import React, { Component } from 'react';
-import Button from 'react-bootstrap/Button';
+import React from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 // Import Library
 import jwtDecode from "jwt-decode"
