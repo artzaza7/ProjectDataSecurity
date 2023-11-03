@@ -84,7 +84,7 @@ async function loginUser(req, res) {
         } else if (responseData.status === 401) {
             return res.status(401).json({ error: responseData.message });
         } else if (responseData.status === 202) {
-            return res.status(202).json({ error: responseData.message });
+            return res.status(202).json({ message: responseData.message });
         }
 
         const usernameData = responseData.data.username;
