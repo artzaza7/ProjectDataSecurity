@@ -77,6 +77,7 @@ async function loginUser(req, res) {
     const { username, password } = req.body;
 
     try {
+        await User.checkAndResetLoginStatus();
         const responseData = await User.login(encrypt(username), password);
         if (responseData.status === 404) {
             return res.status(404).json({ error: responseData.message });
@@ -106,10 +107,13 @@ async function resetPassword(req, res) {
     const { username, email, password } = req.body;
 
     try {
+        await User.checkAndResetLoginStatus();
         const resetResult = await User.resetPassword(encrypt(username), encrypt(email), password);
 
         if (resetResult.status === 200) {
             return res.status(200).json({ message: 'Password reset successful' });
+        } else if (resetResult.status === 401) {
+            return res.status(404).json({ error: resetResult.message });
         } else if (resetResult.status === 404) {
             return res.status(404).json({ error: 'User not found' });
         } else if (resetResult.status === 400) {
