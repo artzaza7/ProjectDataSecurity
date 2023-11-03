@@ -72,8 +72,7 @@ function Card(props) {
     const handleShowModalStatus = () => setShowModalStatus(true);
 
     // setting mode
-    const { mode, data } = props;
-
+    const { mode, data , searchValue } = props;
     const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
 
     const dateStringStart = data.task_startDay;
@@ -83,8 +82,9 @@ function Card(props) {
     const dateStringEnd = data.task_endDay;
     const dateEnd = new Date(dateStringEnd);
     const formattedDateEnd = dateEnd.toLocaleDateString('th-TH', options);
+    const isMatching = data.task_name.includes(searchValue);
     return (
-        <>
+        <>{isMatching || searchValue === '' ?
             <div className="card mb-3">
                 <div className="card-body">
                     {/* Topic 1 */}
@@ -143,7 +143,7 @@ function Card(props) {
                     </div>
 
                 </div>
-            </div>
+            </div> : <></>}
 
             {/* Modal เปลี่ยนสถานะ */}
             <Modal show={showModalStatus} onHide={handleCloseModalStatus}>

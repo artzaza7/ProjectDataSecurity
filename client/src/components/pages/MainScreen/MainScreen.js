@@ -7,7 +7,8 @@ import Navbar from "../Navbar/Navbar";
 import { useNavigate } from 'react-router-dom';
 import './MainScreen.css';
 import { Form, InputGroup, FormControl } from 'react-bootstrap';
-
+import React, { Component } from 'react';
+import Button from 'react-bootstrap/Button';
 // Import Library
 import jwtDecode from "jwt-decode"
 
@@ -49,6 +50,11 @@ function MainScreen() {
     const [dataFail, setDataFail] = useState([])
     const [loading, setLoading] = useState(true)
 
+    const [searchValue, setSearchValue] = useState('');
+
+    const handleSearch = () => {
+        console.log(searchValue);
+    };
     // initFunction
     async function init() {
         const token = localStorage.getItem("token")
@@ -175,7 +181,12 @@ function MainScreen() {
                         <Nav.Item className="custom-nav-item d-flex" style={{ marginLeft: 'auto' }}>
                             <Form>
                                 <InputGroup>
-                                    <FormControl type="text" placeholder="ค้นหา" />
+                                    <FormControl
+                                        type="text"
+                                        placeholder="ค้นหา"
+                                        value={searchValue}
+                                        onChange={(e) => setSearchValue(e.target.value)}
+                                    />
                                 </InputGroup>
                             </Form>
                         </Nav.Item>
@@ -183,19 +194,19 @@ function MainScreen() {
                     <Tab.Content className='d-flex justify-content-center align-items-center w-100'>
                         <Tab.Pane eventKey="first" className='w-100'>
 
-                            {!loading ? <Content mode="notFinish" data={dataNotFinish} /> : <div>LOADING</div>}
+                            {!loading ? <Content mode="notFinish" data={dataNotFinish} searchValue={searchValue}/> : <div>LOADING</div>}
 
                         </Tab.Pane>
 
                         <Tab.Pane eventKey="second" className='w-100'>
 
-                            {!loading ? <Content mode="Finish" data={dataFinish} /> : <div>LOADING</div>}
+                            {!loading ? <Content mode="Finish" data={dataFinish} searchValue={searchValue}/> : <div>LOADING</div>}
 
                         </Tab.Pane>
 
                         <Tab.Pane eventKey="third" className='w-100'>
 
-                            {!loading ? <Content mode="Fail" data={dataFail} /> : <div>LOADING</div>}
+                            {!loading ? <Content mode="Fail" data={dataFail} searchValue={searchValue} /> : <div>LOADING</div>}
 
                         </Tab.Pane>
                     </Tab.Content>

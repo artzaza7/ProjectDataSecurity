@@ -6,7 +6,7 @@ const hieghtContent = {
 }
 
 function Content(props) {
-    const { mode, data } = props
+    const { mode, data , searchValue } = props
     // console.log(data)
 
     // Data for each Column
@@ -20,6 +20,7 @@ function Content(props) {
         // notFinish
         for (let i = 0; i < data.length; i++) {
             const item = data[i]
+            
             const category_id = item.category_id
             if (category_id === 1) {
                 type_1.push(item)
@@ -85,19 +86,17 @@ function Content(props) {
             }
         }
     }
-        console.log(countData);
     return (
         <div className='container-fluid' style={hieghtContent}>
-
             <div className='row h-100'>
 
-                <Column textNumber={`งาน [${countData[0]}]`} bgColor="bg-primary" mode={mode} data={type_1} dataLength={type_1.length}/>
+                <Column textNumber={`งาน [${countData[0]}]`} bgColor="bg-primary" searchValue={searchValue} mode={mode} data={type_1} dataLength={type_1.length}/>
 
-                <Column textNumber={`ครอบครัว [${countData[1]}]`} count2 bgColor="bg-info" mode={mode} data={type_2} dataLength={type_2.length}/>
+                <Column textNumber={`ครอบครัว [${countData[1]}]`} count2 bgColor="bg-info" searchValue={searchValue} mode={mode} data={type_2} dataLength={type_2.length}/>
 
-                <Column textNumber={`โรงพยาบาล [${countData[2]}]`} count3 bgColor="bg-warning" mode={mode} data={type_3} dataLength={type_3.length}/>
+                <Column textNumber={`โรงพยาบาล [${countData[2]}]`} count3 bgColor="bg-warning" searchValue={searchValue} mode={mode} data={type_3} dataLength={type_3.length}/>
 
-                <Column textNumber={`อื่นๆ [${countData[3]}]`} count4 bgColor="bg-danger" mode={mode} data={type_4} dataLength={type_4.length}/>
+                <Column textNumber={`อื่นๆ [${countData[3]}]`} count4 bgColor="bg-danger"searchValue={searchValue} mode={mode} data={type_4} dataLength={type_4.length}/>
 
 
             </div>
