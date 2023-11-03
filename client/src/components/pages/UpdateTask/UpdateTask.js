@@ -227,7 +227,11 @@ function UpdateTask() {
                       className="form-control py-2"
                       placeholder="กรุณากรอกชื่อกิจกรรม"
                       value={name}
-                      onChange={(e) => setName(e.target.value)}
+                      onChange={(e) => {
+                        if (e.target.value.length <= 35) {
+                          setName(e.target.value);
+                        }
+                      }}
                     />
                   </div>
                 </div>

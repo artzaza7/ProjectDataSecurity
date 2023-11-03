@@ -240,7 +240,11 @@ function AddTask() {
                       type="text"
                       className="form-control py-2 input-group has-validation"
                       placeholder="กรุณากรอกชื่อกิจกรรม"
-                      onChange={(e) => setName(e.target.value)}
+                      onChange={(e) => {
+                        if (e.target.value.length <= 35) {
+                          setName(e.target.value);
+                        }
+                      }}
                     />
                   </div>
                 </div>
