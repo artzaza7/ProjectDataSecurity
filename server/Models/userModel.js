@@ -231,7 +231,7 @@ class User {
             if (
                 user.login_count === 10
             ) {
-                return { message: 'Account is locked. Please try again tomorrow.', data: null, status: 401 };
+                return { message: 'Username is locked. Please try again tomorrow.', data: null, status: 202 };
             }
 
             const passwordMatch = await bcrypt.compare(password, user.password);
@@ -283,10 +283,13 @@ class User {
 
                     // Check if either forgot_name_count, or forgot_email_count is already 10; if so, prevent password reset
                     if (
-                        existingUser.data.forgot_name_count === 10 ||
+                        existingUser.data.forgot_name_count === 10
+                    ) {
+                        return { message: 'Username is locked. Please try again tomorrow.', data: null, status: 202 };
+                    } else if (
                         existingUser.data.forgot_email_count === 10
                     ) {
-                        return { message: 'Account is locked. Please try again tomorrow.', data: null, status: 401 };
+                        return { message: 'Email is locked. Please try again tomorrow.', data: null, status: 202 };
                     }
 
                     if (existingUser.data.forgot_email_count < 10) {
@@ -309,7 +312,7 @@ class User {
                             user.forgot_name_count === 10 ||
                             user.forgot_email_count === 10
                         ) {
-                            return { message: 'Account is locked. Please try again tomorrow.', data: null, status: 401 };
+                            return { message: 'Account is locked. Please try again tomorrow.', data: null, status: 202 };
                         }
 
                         if (user.forgot_name_count < 10) {
@@ -330,12 +333,15 @@ class User {
                 return { message, data, status: statusCode };
             }
 
-            // Check if either login_count, forgot_name_count, or forgot_email_count is already 10; if so, prevent password reset
+            // Check if either login_count, forgot_name_count, or forgot_email_count is already 10; if so, prevent password reset return { message: 'Email is locked. Please try again tomorrow.', data: null, status: 202 };
             if (
-                existingUser.data.forgot_name_count === 10 ||
+                existingUser.data.forgot_name_count === 10
+            ) {
+                return { message: 'Username is locked. Please try again tomorrow.', data: null, status: 202 };
+            } else if (
                 existingUser.data.forgot_email_count === 10
             ) {
-                return { message: 'Account is locked. Please try again tomorrow.', data: null, status: 401 };
+                return { message: 'Email is locked. Please try again tomorrow.', data: null, status: 202 };
             }
 
             // Hash the new password

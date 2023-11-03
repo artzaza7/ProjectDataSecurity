@@ -83,7 +83,10 @@ async function loginUser(req, res) {
             return res.status(404).json({ error: responseData.message });
         } else if (responseData.status === 401) {
             return res.status(401).json({ error: responseData.message });
+        } else if (responseData.status === 202) {
+            return res.status(202).json({ error: responseData.message });
         }
+
         const usernameData = responseData.data.username;
         // create Secret 
         const secret = 'DataSecuritySystem'
@@ -112,8 +115,10 @@ async function resetPassword(req, res) {
 
         if (resetResult.status === 200) {
             return res.status(200).json({ message: 'Password reset successful' });
+        } else if (resetResult.status === 202) {
+            return res.status(202).json({ message: resetResult.message });
         } else if (resetResult.status === 401) {
-            return res.status(404).json({ error: resetResult.message });
+            return res.status(401).json({ error: resetResult.message });
         } else if (resetResult.status === 404) {
             return res.status(404).json({ error: 'User not found' });
         } else if (resetResult.status === 400) {
