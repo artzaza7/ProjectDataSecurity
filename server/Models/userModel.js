@@ -292,38 +292,40 @@ class User {
                         return { message: 'Email is locked. Please try again tomorrow.', data: null, status: 202 };
                     }
 
-                    if (existingUser.data.forgot_email_count < 10) {
-                        const newForgotEmailCount = existingUser.data.forgot_email_count + 1;
-                        const updateForgotEmailCountQuery = 'UPDATE users SET forgot_email_count = ? WHERE username = ?';
+                    if (existingUser.data.forgot_name_count < 10) {
+                        const newForgotEmailCount = existingUser.data.forgot_name_count + 1;
+                        const updateForgotEmailCountQuery = 'UPDATE users SET forgot_name_count = ? WHERE username = ?';
                         await conn.query(updateForgotEmailCountQuery, [newForgotEmailCount, existingUser.data.username]);
                         const tomorrow = new Date();
                         tomorrow.setDate(tomorrow.getDate() + 1);
-                        const updateForgotEmailDateQuery = 'UPDATE users SET forgot_email_date = ? WHERE username = ?';
+                        const updateForgotEmailDateQuery = 'UPDATE users SET name = ? WHERE username = ?';
                         await conn.query(updateForgotEmailDateQuery, [tomorrow, existingUser.data.username]);
-                        message += ' Account locked due to too many incorrect attempts.';
                     }
                 } else {
-                    const result = await conn.query('SELECT username, forgot_name_count, forgot_name_date FROM users WHERE email = ?', [email]);
+                    const result = await conn.query('SELECT username, forgot_name_count, forgot_email_count, forgot_email_date FROM users WHERE email = ?', [email]);
                     if (result[0].length === 1) {
                         const user = result[0][0];
+                        console.log(user)
 
                         // Check if either login_count, forgot_name_count, or forgot_email_count is already 10; if so, prevent password reset
                         if (
-                            user.forgot_name_count === 10 ||
+                            user.forgot_name_count === 10
+                        ) {
+                            return { message: 'Username is locked. Please try again tomorrow.', data: null, status: 202 };
+                        } else if (
                             user.forgot_email_count === 10
                         ) {
-                            return { message: 'Account is locked. Please try again tomorrow.', data: null, status: 202 };
+                            return { message: 'Email is locked. Please try again tomorrow.', data: null, status: 202 };
                         }
 
-                        if (user.forgot_name_count < 10) {
-                            const newForgotNameCount = user.forgot_name_count + 1;
-                            const updateForgotNameCountQuery = 'UPDATE users SET forgot_name_count = ? WHERE username = ?';
+                        if (user.forgot_email_count < 10) {
+                            const newForgotNameCount = user.forgot_email_count + 1;
+                            const updateForgotNameCountQuery = 'UPDATE users SET forgot_email_count = ? WHERE username = ?';
                             await conn.query(updateForgotNameCountQuery, [newForgotNameCount, user.username]);
                             const tomorrow = new Date();
                             tomorrow.setDate(tomorrow.getDate() + 1);
-                            const updateForgotNameDateQuery = 'UPDATE users SET forgot_name_date = ? WHERE username = ?';
+                            const updateForgotNameDateQuery = 'UPDATE users SET forgot_email_date = ? WHERE username = ?';
                             await conn.query(updateForgotNameDateQuery, [tomorrow, user.username]);
-                            message += ' Account locked due to too many incorrect attempts.';
                         }
                     }
                 }
