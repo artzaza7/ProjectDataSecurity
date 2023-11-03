@@ -305,7 +305,6 @@ class User {
                     const result = await conn.query('SELECT username, forgot_name_count, forgot_email_count, forgot_email_date FROM users WHERE email = ?', [email]);
                     if (result[0].length === 1) {
                         const user = result[0][0];
-                        console.log(user)
 
                         // Check if either login_count, forgot_name_count, or forgot_email_count is already 10; if so, prevent password reset
                         if (

@@ -7,7 +7,6 @@ const hieghtContent = {
 
 function Content(props) {
     const { mode, data , searchValue, searchType } = props
-    // console.log(data)
 
     // Data for each Column
     const type_1 = []

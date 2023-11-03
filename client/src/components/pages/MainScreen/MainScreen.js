@@ -64,7 +64,6 @@ function MainScreen() {
                 try {
                     // for notFinish
                     const responseNotFinish = await getUserTasksByStatusId(username, 1) // 1 for notFinish
-                    // console.log(responseNotFinish)
 
                     let tasks = []
                     // loop for collect notFinish
@@ -149,11 +148,9 @@ function MainScreen() {
                     setLoading(false)
                 }
                 catch (error) {
-                    console.log(error)
                 }
             }
             else {
-                console.log("Don't have token")
                 window.location.href = 'http://localhost:3000/unauthorized'
             }
         }

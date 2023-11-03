@@ -35,10 +35,32 @@ function Register() {
   const [missingFields, setMissingFields] = useState([]);
   const [missingPassword, setMissingPassword] = useState(false);
   const [missingUser, setMissingUser] = useState(false);
+  const [isValidEmail, setIsValidEmail] = useState(true);
+  const [isValidPassword, setIsValidPassword] = useState(true);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
+  const divStyle = {
+    fontSize: '0.7rem', 
+    color: "red",
+  };
+
+  const checkPasswordValidity = (inputValue) => {
+    if (
+      inputValue.length >= 8 &&
+      /[a-z]/.test(inputValue) && 
+      /[A-Z]/.test(inputValue) && 
+      /\d/.test(inputValue) &&    
+      /[!@#$%^&*]/.test(inputValue) 
+    )
+    return inputValue;
+  };
+  const checkEmailValidity = (input) => {
+    // Regular Expression for a valid email
+    const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    return emailPattern.test(input);
+  };
   // useNavigate
   const navigate = useNavigate();
 
@@ -69,30 +91,23 @@ function Register() {
         firstname,
         lastname,
       };
-      // console.log(data);
 
       var checkUsername = 0;
-      
+
 
       try {
         const response = await register(data);
-        // console.log(response);
         // Success
-        console.log("Register successful : " + response.message);
+        if(response.message === "User registration successful"){
+          setShowSuccessModal(true);
+        }
         // Success Register
       } catch (error) {
-        console.log(error.response.data.message);
-        console.log("Register1 not successful");
         setMissingUser(true);
-        checkUsername = 1;
       }
-      if(checkUsername !== 1){
-        setShowSuccessModal(true);
-      }
+      
     } else {
       // Invalid (cPassword !== password)
-      console.log("cPassword !== password");
-      console.log("Register not successful");
       setMissingPassword(true);
     }
   }
@@ -118,7 +133,23 @@ function Register() {
                       type="text"
                       className="form-control w-75 py-2"
                       placeholder="Username"
-                      onChange={(e) => setUsername(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (username.length >= 35 && e.key !== 'Backspace' && e.key !== 'Delete') {
+                          e.preventDefault();
+                        }
+                      }}
+                      onPaste={(e) => {
+                        const pastedText = e.clipboardData.getData('text');
+                        if (pastedText.length + username.length > 35) {
+                          e.preventDefault();
+                        }
+                      }}
+                      onChange={(e) => {
+                        const inputValue = e.target.value;
+                        if (inputValue.length <= 35) {
+                          setUsername(inputValue);
+                        }
+                      }}
                     />
                   </div>
                   <div className="col-12 my-2 d-flex justify-content-center align-items-center">
@@ -127,29 +158,92 @@ function Register() {
                       type="password"
                       className="form-control w-75 py-2"
                       placeholder="Password"
-                      onChange={(e) => setPassword(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (password.length >= 35 && e.key !== 'Backspace' && e.key !== 'Delete') {
+                          e.preventDefault();
+                        }
+                      }}
+                      onPaste={(e) => {
+                        const pastedText = e.clipboardData.getData('text');
+                        if (pastedText.length + password.length > 35) {
+                          e.preventDefault();
+                        }
+                      }}
+                      onChange={(e) => {
+                        const inputValue = e.target.value;
+                        if (inputValue.length <= 35) {
+                          setPassword(inputValue);
+                        }
+                        setIsValidPassword(checkPasswordValidity(inputValue));
+                      }}
+                      
                     />
                   </div>
+                  <div style={divStyle} className="d-flex justify-content-center align-items-start">**รหัสต้องมีตัวพิมพ์เล็ก พิมพ์ใหญ่ ตัวเลข ตัวอักษรพิเศษและรวมมากว่า 8 ตัว เช่น Aa@1bbbb**</div>
+                  {!isValidPassword && (
+                      <div className="invalid-feedback d-flex justify-content-center align-items-start">
+                        รูปแบบรหัสผ่านไม่ถูกต้อง
+                      </div>
+                    )}
                   <div className="col-12 my-2 d-flex justify-content-center align-items-center">
                     {/* C_Password */}
                     <input
                       type="password"
                       className="form-control w-75 py-2"
                       placeholder="Confirm password"
-                      onChange={(e) => setCPassword(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (cPassword.length >= 35 && e.key !== 'Backspace' && e.key !== 'Delete') {
+                          e.preventDefault();
+                        }
+                      }}
+                      onPaste={(e) => {
+                        const pastedText = e.clipboardData.getData('text');
+                        if (pastedText.length + cPassword.length > 35) {
+                          e.preventDefault();
+                        }
+                      }}
+                      onChange={(e) => {
+                        const inputValue = e.target.value;
+                        if (inputValue.length <= 35) {
+                          setCPassword(inputValue);
+                        }
+                      }}
                     />
                   </div>
                   <div className="col-12 my-2 d-flex justify-content-center align-items-center">
                     {/* Email */}
                     <input
                       type="email"
-                      className="form-control w-75 py-2"
+                      className={`form-control w-75 py-2 ${isValidEmail ? "" : "is-invalid"}`}
                       placeholder="Email"
-                      onChange={(e) => setEmail(e.target.value)}
+                      value={email}
+                      onKeyDown={(e) => {
+                        if (email.length >= 35 && e.key !== 'Backspace' && e.key !== 'Delete') {
+                          e.preventDefault();
+                        }
+                      }}
+                      onPaste={(e) => {
+                        const pastedText = e.clipboardData.getData('text');
+                        if (pastedText.length + email.length > 35) {
+                          e.preventDefault();
+                        }
+                      }}
+                      onChange={(e) => {
+                        const inputValue = e.target.value;
+                        if (inputValue.length <= 35) {
+                          setEmail(inputValue);
+                        }
+                        setIsValidEmail(checkEmailValidity(inputValue));
+                      }}
                     />
-                  </div>
+                    </div>
+                    {!isValidEmail && (
+                      <div className="invalid-feedback d-flex justify-content-center align-items-start">
+                        รูปแบบอีเมลไม่ถูกต้อง
+                      </div>
+                    )}
                   <div className="col-12 my-2 d-flex justify-content-center align-items-center">
-                    {/* Email */}
+                    
                     <div className="row w-75">
                       <div className="col-6 ps-0 d-flex justify-content-center align-items-center">
                         {/* Firstname */}
@@ -157,7 +251,23 @@ function Register() {
                           type="text"
                           className="form-control py-2"
                           placeholder="Firstname"
-                          onChange={(e) => setFirstname(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (firstname.length >= 35 && e.key !== 'Backspace' && e.key !== 'Delete') {
+                              e.preventDefault();
+                            }
+                          }}
+                          onPaste={(e) => {
+                            const pastedText = e.clipboardData.getData('text');
+                            if (pastedText.length + firstname.length > 35) {
+                              e.preventDefault();
+                            }
+                          }}
+                          onChange={(e) => {
+                            const inputValue = e.target.value;
+                            if (inputValue.length <= 35) {
+                              setFirstname(inputValue);
+                            }
+                          }}
                         />
                       </div>
                       <div className="col-6 pe-0 d-flex justify-content-center align-items-center">
@@ -166,7 +276,23 @@ function Register() {
                           type="text"
                           className="form-control py-2"
                           placeholder="Lastname"
-                          onChange={(e) => setLastname(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (lastname.length >= 35 && e.key !== 'Backspace' && e.key !== 'Delete') {
+                              e.preventDefault();
+                            }
+                          }}
+                          onPaste={(e) => {
+                            const pastedText = e.clipboardData.getData('text');
+                            if (pastedText.length + lastname.length > 35) {
+                              e.preventDefault();
+                            }
+                          }}
+                          onChange={(e) => {
+                            const inputValue = e.target.value;
+                            if (inputValue.length <= 35) {
+                              setLastname(inputValue);
+                            }
+                          }}
                         />
                       </div>
                     </div>

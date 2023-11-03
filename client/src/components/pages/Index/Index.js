@@ -73,11 +73,9 @@ function Index() {
           setLoading(false)
         }
         catch (error) {
-          console.log(error.message)
         }
       }
       else {
-        console.log("Don't have token")
         window.location.href = 'http://localhost:3000/unauthorized'
       }
     }

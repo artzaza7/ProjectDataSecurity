@@ -16,6 +16,11 @@ const colorTextLink = {
   color: "#0094FF",
 };
 
+const divStyle = {
+  fontSize: '0.7rem', 
+  color: "red",
+};
+
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -37,16 +42,22 @@ function Login() {
 
     try {
       const response = await login(data);
-      console.log("Login successful: " + response.message);
+      if(response.message === "Username is locked. Please try again tomorrow."){
+        setErrorMessage("ยูสเซอร์ไอดีนี้ถูกล็อก กรุณารอ 24 ชั่วโมงเพื่อล็อกอินใหม่อีกครั้ง");
+        setShowErrorModal(true);
+      }
       const token = response.data.token;
       localStorage.setItem("token", token);
       navigate("/index");
     } catch (error) {
-      console.log(error.message);
-      console.log("Login not successful");
-      if(error.message === "Request failed with status code 401")
-        setErrorMessage("โปรดตรวจสอบ Username และ Password");
-      setShowErrorModal(true); // เมื่อเข้าสู่ระบบไม่สำเร็จ แสดง Modal
+      if(error.message === "Request failed with status code 404"){
+        setErrorMessage("ไม่พบยูสเซอร์ไอดีนี้");
+        setShowErrorModal(true); // เมื่อเข้าสู่ระบบไม่สำเร็จ แสดง Modal
+      }else if(error.message === "Request failed with status code 401"){
+        setErrorMessage("รหัสผ่านไม่ถูกต้อง โปรดตรวจสอบรหัสผ่านใหม่อีกครั้งหากใส่รหัสผ่านผิดครบ 10 ครั้งไอดีนี้ถูกล็อกเป็นเวลา 24 ชั่วโมง");
+        setShowErrorModal(true); // เมื่อเข้าสู่ระบบไม่สำเร็จ แสดง Modal
+      }
+        
     }
   }
 
@@ -92,6 +103,7 @@ function Login() {
                       onChange={(e) => setPassword(e.target.value)}
                     />
                   </div>
+                  <div style={divStyle} className="d-flex justify-content-center align-items-start">**รหัสต้องมีตัวพิมพ์เล็ก พิมพ์ใหญ่ ตัวเลข ตัวอักษรพิเศษและรวมมากว่า 8 ตัว เช่น Aa@1bbbb**</div>
                   <div className="col-12 my-2 d-flex justify-content-center align-items-center">
                     {/* Link */}
                     <h6 className="my-0">
@@ -124,17 +136,6 @@ function Login() {
           </div>
         </div>
       </div>
-      <Modal show={showErrorModal} onHide={handleCloseErrorModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>เข้าสู่ระบบไม่สำเร็จ</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>{errorMessage}</Modal.Body>
-        <Modal.Footer>
-          <button className="btn btn-primary" onClick={handleCloseErrorModal}>
-            ปิด
-          </button>
-        </Modal.Footer>
-      </Modal>
       <Modal show={showErrorModal} onHide={handleCloseErrorModal}>
         <Modal.Header closeButton>
           <Modal.Title>เข้าสู่ระบบไม่สำเร็จ</Modal.Title>

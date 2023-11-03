@@ -28,19 +28,15 @@ function Card(props) {
             }
             try {
                 const responseDelete = await deleteUserTaskById(username, data.task_id)
-                console.log(responseDelete)
-                console.log("Delete")
                 setShowModalDelete(false)
                 setshowSuccessDeleteModal(true)
                 // Refresh page
                 // window.location.reload();
             }
             catch (error) {
-                console.log(error)
             }
         }
         else {
-            console.log("Don't have token")
             navigate("/")
         }
     }
@@ -60,19 +56,15 @@ function Card(props) {
             }
             try {
                 const responseUpdate = await updateUserTaskById(username, data.task_id, 2) // 2 for finish
-                console.log(responseUpdate)
-                console.log("Change Status")
                 setShowModalStatus(false)
                 setShowModalStatusSuccess(true)
                 // Refresh page
                 // window.location.reload();
             }
             catch (error) {
-                console.log(error)
             }
         }
         else {
-            console.log("Don't have token")
             navigate("/")
         }
     }

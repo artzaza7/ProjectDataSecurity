@@ -10,7 +10,11 @@ const port = process.env.PORT || 8000; // Use the PORT environment variable if a
 
 // Middleware
 app.use(bodyParser.json());
-app.use(cors());
+app.use(cors())
+// app.use(cors({
+//   credentials:true,
+//   origin: ['http://localhost:3000/']
+// }));
 
 // Middleware to handle MySQL database connections
 app.use(async (req, res, next) => {

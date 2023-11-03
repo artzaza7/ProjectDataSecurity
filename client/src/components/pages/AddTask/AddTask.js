@@ -55,7 +55,6 @@ function AddTask() {
       const response = await getAllCategoryTasks();
       setCategoryTasks(response.data);
     } catch (error) {
-      console.log(error.message);
     }
   }
 
@@ -69,7 +68,6 @@ function AddTask() {
       clearInterval(timer);
     };
   }, []);
-  //console.log(currentTime);
 
   useEffect(() => {
     getInitData();
@@ -77,11 +75,6 @@ function AddTask() {
 
   async function submitCreateTask(e) {
     // ตรวจสอบ e และเรียก preventDefault ถ้าเป็นไปได้
-    console.log(currentTime.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-     }));
      let formattedTime = currentTime.toLocaleTimeString([], {
       hour: "2-digit",
       minute: "2-digit",
@@ -96,7 +89,6 @@ function AddTask() {
       const adjustedHours = hours % 24;
       formattedTime = `${adjustedHours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
     }
-    console.log(formattedTime);
 
     if (e) {
       e.preventDefault();
@@ -116,14 +108,12 @@ function AddTask() {
     // check date and time
     if (startDate > endDate) {
       setShowValidationDate(true);
-      console.log("1");
       return;
     }
     if ((startDate >= endDate && startDate <= endDate)) {
       if(endDate.toLocaleDateString() === currentTime.toLocaleDateString()){
         if (startTime >= endTime) {
           setShowValidationDate(true);
-          console.log("2");
           return;
         } else if (startTime < endTime) {
           if (
@@ -135,26 +125,17 @@ function AddTask() {
             })
           ) {
             setShowValidationDate(true);
-            console.log(endTime);
-            console.log(currentTime.toLocaleTimeString([], {
-              hour: "2-digit",
-              minute: "2-digit",
-              hour12: false,
-             }));
-            console.log("3");
             return;
           }
         }
       }
       if(endDate.toLocaleDateString() < currentTime.toLocaleDateString()){
         setShowValidationDate(true);
-        console.log("4");
         return;
       }
       if(endDate.toLocaleDateString() > currentTime.toLocaleDateString()){
         if (startTime >= endTime) {
           setShowValidationDate(true);
-          console.log("5");
           return;
         }
       }
@@ -164,10 +145,10 @@ function AddTask() {
         hour: "2-digit",
         minute: "2-digit",
         hour12: false,
-       }))
-      setShowValidationDate(true);
-      console.log("6");
-      return;
+       })){
+        setShowValidationDate(true);
+        return;
+       }
     }
     
 
@@ -196,13 +177,10 @@ function AddTask() {
           category_task_id: Number(category_task_id),
         };
         const response = await createUserTask(username, data);
-        console.log(response);
         setShowSuccessModal(true);
       } catch (error) {
-        console.log(error.message);
       }
     } else {
-      console.log("Don't have token");
       navigate("/");
     }
   }
@@ -240,9 +218,21 @@ function AddTask() {
                       type="text"
                       className="form-control py-2 input-group has-validation"
                       placeholder="กรุณากรอกชื่อกิจกรรม"
+                      onKeyDown={(e) => {
+                        if (name.length >= 35 && e.key !== 'Backspace' && e.key !== 'Delete') {
+                          e.preventDefault();
+                        }
+                      }}
+                      onPaste={(e) => {
+                        const pastedText = e.clipboardData.getData('text');
+                        if (pastedText.length + name.length > 35) {
+                          e.preventDefault();
+                        }
+                      }}
                       onChange={(e) => {
-                        if (e.target.value.length <= 35) {
-                          setName(e.target.value);
+                        const inputValue = e.target.value;
+                        if (inputValue.length <= 35) {
+                          setName(inputValue);
                         }
                       }}
                     />
