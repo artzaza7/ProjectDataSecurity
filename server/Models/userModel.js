@@ -298,7 +298,7 @@ class User {
                         await conn.query(updateForgotEmailCountQuery, [newForgotEmailCount, existingUser.data.username]);
                         const tomorrow = new Date();
                         tomorrow.setDate(tomorrow.getDate() + 1);
-                        const updateForgotEmailDateQuery = 'UPDATE users SET name = ? WHERE username = ?';
+                        const updateForgotEmailDateQuery = 'UPDATE users SET forgot_name_date = ? WHERE username = ?';
                         await conn.query(updateForgotEmailDateQuery, [tomorrow, existingUser.data.username]);
                     }
                 } else {
