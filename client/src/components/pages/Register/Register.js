@@ -38,12 +38,19 @@ function Register() {
   const [isValidEmail, setIsValidEmail] = useState(true);
   const [isValidPassword, setIsValidPassword] = useState(true);
 
+  const [showErrorModal, setShowErrorModal] = useState(false); 
+  const [errorMessage, setErrorMessage] = useState("");
+
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
   const divStyle = {
     fontSize: '0.7rem', 
     color: "red",
+  };
+
+  const handleCloseErrorModal = () => {
+    setShowErrorModal(false);
   };
 
   const checkPasswordValidity = (inputValue) => {
@@ -92,7 +99,16 @@ function Register() {
         lastname,
       };
 
-      var checkUsername = 0;
+      if(!isValidPassword){
+        setErrorMessage("รหัสผ่านมีลักษณะไม่ถูกต้อง กรุณาตรวจสอบใหม่อีกครั้ง");
+        setShowErrorModal(true);
+        return;
+      }
+      if(!isValidEmail){
+        setErrorMessage("อีเมลมีลักษณะไม่ถูกต้อง กรุณาตรวจสอบใหม่อีกครั้ง");
+        setShowErrorModal(true);
+        return;
+      }
 
 
       try {
@@ -408,7 +424,7 @@ function Register() {
                       <Modal.Title>สมัครไม่สำเร็จ</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                      บัญชีผู้ใช้นี้มีอยู่แล้วกรุณาใช้ตรวจสอบใหม่อีกครั้ง
+                      บัญชีผู้ใช้หรืออีเมลนี้มีอยู่แล้วกรุณาใช้ตรวจสอบใหม่อีกครั้ง
                     </Modal.Body>
                     <Modal.Footer>
                       <Button
@@ -417,6 +433,17 @@ function Register() {
                       >
                         ปิด
                       </Button>
+                    </Modal.Footer>
+                  </Modal>
+                  <Modal show={showErrorModal} onHide={handleCloseErrorModal}>
+                    <Modal.Header closeButton>
+                      <Modal.Title>สมัครไม่สำเร็จ</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>{errorMessage}</Modal.Body>
+                    <Modal.Footer>
+                      <button className="btn btn-primary" onClick={handleCloseErrorModal}>
+                        ปิด
+                      </button>
                     </Modal.Footer>
                   </Modal>
                 </div>

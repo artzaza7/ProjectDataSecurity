@@ -88,8 +88,11 @@ function ForgotPassword() {
         email,
         password,
       };
-      
-      var checkUsername = 0;
+      if(!isValidPassword){
+        setErrorMessage("รหัสผ่านมีลักษณะไม่ถูกต้อง กรุณาตรวจสอบใหม่อีกครั้ง");
+        setShowErrorModal(true);
+        return;
+      }
 
       try {
         const response = await reset(data);
