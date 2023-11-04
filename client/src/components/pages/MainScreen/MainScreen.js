@@ -177,7 +177,7 @@ function MainScreen() {
                 <Tab.Container className="custom-nav-item" defaultActiveKey="first" onSelect={handleTabSelect}>
                     <Nav className="custom-nav-item" variant="pills" style={minHieghtTab} >
                         <Nav.Item className="custom-nav-item">
-                            <Nav.Link eventKey="first" className='h-100 d-flex justify-content-center align-items-center' style={{ backgroundColor: activeTab === 'first' ? '#4070F4' : 'white', color: activeTab === 'first' ? 'white' : 'black' }} >กิจกรรมที่ยังไม่เสร็จ</Nav.Link>
+                            <Nav.Link eventKey="first" className='h-100 d-flex justify-content-center align-items-center' style={{ backgroundColor: activeTab === 'first' ? '#4070F4' : 'white', color: activeTab === 'first' ? 'white' : 'black' }} >กิจกรรมที่กำลังดำเนินการ</Nav.Link>
                         </Nav.Item>
                         <Nav.Item className="custom-nav-item">
                             <Nav.Link eventKey="second" className='h-100 d-flex justify-content-center align-items-center ' style={{ backgroundColor: activeTab === 'second' ? '#4070F4' : 'white', color: activeTab === 'second' ? 'white' : 'black' }}>กิจกรรมที่เสร็จสิ้นแล้ว</Nav.Link>

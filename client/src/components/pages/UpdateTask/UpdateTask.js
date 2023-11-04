@@ -12,6 +12,7 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import "./Modal.css";
 import { parseISO } from "date-fns"; // เรียกใช้ parseISO จาก date-fns
+import { format } from 'date-fns';
 
 // Import API
 import { getAllCategoryTasks } from "../../../services/CategoryTaskService";
@@ -104,12 +105,19 @@ function UpdateTask() {
     }
 
     // check date and time
+    const formattedDateNow = format(currentTime, 'dd/MM/yyyy');
+    const formattedEndDate = format(endDate, 'dd/MM/yyyy');
+
+    if (formattedEndDate < formattedDateNow) {
+      setShowValidationDate(true);
+      return;
+    }
     if (startDate > endDate) {
       setShowValidationDate(true);
       return;
     }
     if ((startDate >= endDate && startDate <= endDate)) {
-      if (endDate.toLocaleDateString() === currentTime.toLocaleDateString()) {
+      if (formattedEndDate === formattedDateNow) {
         if (startTime >= endTime) {
           setShowValidationDate(true);
           return;
@@ -127,18 +135,18 @@ function UpdateTask() {
           }
         }
       }
-      if (endDate.toLocaleDateString() < currentTime.toLocaleDateString()) {
+      if (formattedEndDate < formattedDateNow) {
         setShowValidationDate(true);
         return;
       }
-      if (endDate.toLocaleDateString() > currentTime.toLocaleDateString()) {
+      if (formattedEndDate > formattedDateNow) {
         if (startTime >= endTime) {
           setShowValidationDate(true);
           return;
         }
       }
     }
-    if (endDate.toLocaleDateString() === currentTime.toLocaleDateString()) {
+    if (formattedEndDate === formattedDateNow) {
       if (endTime <= currentTime.toLocaleTimeString([], {
         hour: "2-digit",
         minute: "2-digit",

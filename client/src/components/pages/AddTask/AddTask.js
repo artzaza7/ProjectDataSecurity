@@ -11,6 +11,7 @@ import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import "./Modal.css";
+import { format } from 'date-fns';
 
 // Import Library
 import jwtDecode from "jwt-decode";
@@ -76,20 +77,6 @@ function AddTask() {
 
   async function submitCreateTask(e) {
     // ตรวจสอบ e และเรียก preventDefault ถ้าเป็นไปได้
-     let formattedTime = currentTime.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    });
-    
-    if (formattedTime > "24:00") {
-      const timeParts = formattedTime.split(":");
-      const hours = parseInt(timeParts[0]);
-      const minutes = parseInt(timeParts[1]);
-    
-      const adjustedHours = hours % 24;
-      formattedTime = `${adjustedHours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
-    }
 
     if (e) {
       e.preventDefault();
@@ -107,12 +94,19 @@ function AddTask() {
     }
     
     // check date and time
+    const formattedDateNow = format(currentTime, 'dd/MM/yyyy');
+    const formattedEndDate = format(endDate, 'dd/MM/yyyy');
+
+    if (formattedEndDate < formattedDateNow) {
+      setShowValidationDate(true);
+      return;
+    }
     if (startDate > endDate) {
       setShowValidationDate(true);
       return;
     }
     if ((startDate >= endDate && startDate <= endDate)) {
-      if(endDate.toLocaleDateString() === currentTime.toLocaleDateString()){
+      if (formattedEndDate === formattedDateNow) {
         if (startTime >= endTime) {
           setShowValidationDate(true);
           return;
@@ -120,9 +114,9 @@ function AddTask() {
           if (
             endTime <=
             currentTime.toLocaleTimeString([], {
-             hour: "2-digit",
-             minute: "2-digit",
-             hour12: false,
+              hour: "2-digit",
+              minute: "2-digit",
+              hour12: false,
             })
           ) {
             setShowValidationDate(true);
@@ -130,26 +124,26 @@ function AddTask() {
           }
         }
       }
-      if(endDate.toLocaleDateString() < currentTime.toLocaleDateString()){
+      if (formattedEndDate < formattedDateNow) {
         setShowValidationDate(true);
         return;
       }
-      if(endDate.toLocaleDateString() > currentTime.toLocaleDateString()){
+      if (formattedEndDate > formattedDateNow) {
         if (startTime >= endTime) {
           setShowValidationDate(true);
           return;
         }
       }
     }
-    if(endDate.toLocaleDateString() === currentTime.toLocaleDateString()){
-      if(endTime<=currentTime.toLocaleTimeString([], {
+    if (formattedEndDate === formattedDateNow) {
+      if (endTime <= currentTime.toLocaleTimeString([], {
         hour: "2-digit",
         minute: "2-digit",
         hour12: false,
-       })){
+      })) {
         setShowValidationDate(true);
         return;
-       }
+      }
     }
     
 
@@ -159,7 +153,6 @@ function AddTask() {
         await tokenVerify(token)
       }
       catch (error) {
-        console.log(error.message)
         window.location.href = 'http://localhost:3000/unauthorized'
       }
 
