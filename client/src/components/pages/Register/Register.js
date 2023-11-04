@@ -59,7 +59,7 @@ function Register() {
       /[a-z]/.test(inputValue) && 
       /[A-Z]/.test(inputValue) && 
       /\d/.test(inputValue) &&    
-      /[!@#$%^&*]/.test(inputValue) 
+      /[!@#$%^&*()_+[\]{};:"'<>,.?~\\/\-|=]/.test(inputValue) 
     )
     return inputValue;
   };
