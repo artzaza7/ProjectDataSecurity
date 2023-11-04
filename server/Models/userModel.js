@@ -172,12 +172,46 @@ class User {
         }
     }
 
+    static async getUserByEmail(email) {
+        const conn = await initMySQL();
+        try {
+            const query = 'SELECT * FROM users WHERE email = ?';
+            const results = await conn.query(query, [email]);
+
+            if (results[0].length === 0) {
+                const message = 'Email not found';
+                const data = null;
+                const statusCode = 404;
+                return { message, data, status: statusCode };
+            }
+
+            const user = results[0][0];
+            const message = 'Get user by email, Successful';
+            const data = user;
+            const statusCode = 200;
+            return { message, data, status: statusCode };
+        } catch (error) {
+            console.error(error);
+            const message = error.message;
+            const data = null;
+            const statusCode = 500;
+            return { message, data, status: statusCode };
+        } finally {
+            conn.end();
+        }
+    }
+
     static async registerUser(username, password, email, firstname, lastname) {
         const conn = await initMySQL();
         try {
             const existingUser = await this.getUserByUsername(username);
             if (existingUser.status === 200) {
                 return { message: 'Username already exists', data: null, status: 400 };
+            }
+
+            const existingEmail = await this.getUserByEmail(email);
+            if(existingEmail.status === 200) {
+                return { message: 'Email already exists', data: null, status: 400 };
             }
 
             const hashedPassword = await bcrypt.hash(password, 10);
