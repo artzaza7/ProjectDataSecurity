@@ -5,29 +5,23 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./swagger');
 const { initMySQL } = require('./Config/database');
 const dotenv = require('dotenv');
+const rateLimit = require('express-rate-limit');
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 8000; // Use the PORT environment variable if available
+const port = process.env.PORT || 8000;
 
 // Middleware
 app.use(bodyParser.json());
-app.use(cors())
-// app.use(cors({
-//   credentials:true,
-//   origin: ['http://localhost:3000/']
-// }));
+app.use(cors());
 
-// Middleware to handle MySQL database connections
-app.use(async (req, res, next) => {
-  try {
-    const conn = await initMySQL();
-    req.conn = conn;
-    next();
-  } catch (error) {
-    next(error);
-  }
+// Rate limiting middleware
+const limiter = rateLimit({
+  windowMs: 1 * 60 * 1000,
+  max: 1000,
+  message: 'Too many requests from this IP, please try again later.',
 });
+app.use('/api/', limiter); // Apply to all routes under /api
 
 // Routes
 const userRouter = require('./Routes/userRoute');
