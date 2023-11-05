@@ -11,7 +11,9 @@ const createUserTask = async (username, data) => {
             "decrypt_task": encrypt_data,
         }
         const response = await axios.post(`${API_BASE_URL}/users/${username}/tasks`, dataJson);
-        return response.data;
+        const decrypt_data = decryption(response.data)
+        const dataJjson = JSON.parse(decrypt_data)
+        return dataJjson;
     } catch (error) {
         console.error('เกิดข้อผิดพลาดในการเรียก API');
         throw error;
@@ -25,7 +27,7 @@ const getUserTasksCount = async (username) => {
                 user_username: username,
             }
         });
-        const decrypt_data = decryption(response.data) 
+        const decrypt_data = decryption(response.data)
         const dataJson = JSON.parse(decrypt_data)
         return dataJson;
     } catch (error) {
@@ -42,7 +44,7 @@ const getUserTasksCountFinish = async (username) => {
                 statusId: 2
             }
         });
-        const decrypt_data = decryption(response.data) 
+        const decrypt_data = decryption(response.data)
         const dataJson = JSON.parse(decrypt_data)
         return dataJson;
     } catch (error) {
@@ -58,7 +60,7 @@ const getUserTasksCountProgress = async (username) => {
                 statusId: 1
             }
         });
-        const decrypt_data = decryption(response.data) 
+        const decrypt_data = decryption(response.data)
         const dataJson = JSON.parse(decrypt_data)
         return dataJson;
     } catch (error) {
@@ -74,7 +76,7 @@ const getUserTasksCountFail = async (username) => {
                 statusId: 3
             }
         });
-        const decrypt_data = decryption(response.data) 
+        const decrypt_data = decryption(response.data)
         const dataJson = JSON.parse(decrypt_data)
         return dataJson;
     } catch (error) {
@@ -91,7 +93,7 @@ const getUserTasksByStatusId = async (username, status_id) => {
                 statusId: status_id
             }
         });
-        const decrypt_data = decryption(response.data) 
+        const decrypt_data = decryption(response.data)
         const dataJson = JSON.parse(decrypt_data)
         return dataJson;
     } catch (error) {
@@ -115,7 +117,7 @@ const deleteUserTaskById = async (username, taskId) => {
         const response = await axios.delete(`${API_BASE_URL}/users/${username}/tasks/${taskId}`, {
             params: {
                 user_username: username,
-                taskId : taskId
+                taskId: taskId
             }
         });
         return response.data;
@@ -128,7 +130,9 @@ const deleteUserTaskById = async (username, taskId) => {
 const updateUserTaskById = async (user_username, taskId, statusId) => {
     try {
         const response = await axios.put(`${API_BASE_URL}/users/${user_username}/tasks/${taskId}/status/${statusId}`);
-        return response.data;
+        const decrypt_data = decryption(response.data)
+        const dataJson = JSON.parse(decrypt_data)
+        return dataJson;
     } catch (error) {
         console.error('เกิดข้อผิดพลาดในการเรียก API');
         throw error;
@@ -137,4 +141,4 @@ const updateUserTaskById = async (user_username, taskId, statusId) => {
 
 
 
-export { createUserTask, getUserTasksCount, getUserTasksCountFinish, getUserTasksCountProgress,getUserTasksCountFail,getUserTasksByStatusId, getUserTaskById, deleteUserTaskById, updateUserTaskById };
+export { createUserTask, getUserTasksCount, getUserTasksCountFinish, getUserTasksCountProgress, getUserTasksCountFail, getUserTasksByStatusId, getUserTaskById, deleteUserTaskById, updateUserTaskById };

@@ -27,7 +27,9 @@ const editTaskById = async (task_id, data) => {
                 taskId : task_id
             }
         });
-        return response.data;
+        const decrypt_data = decryption(response.data) 
+        const dataJjson = JSON.parse(decrypt_data)
+        return dataJjson;
     } catch (error) {
         console.error('เกิดข้อผิดพลาดในการเรียก API');
         throw error;

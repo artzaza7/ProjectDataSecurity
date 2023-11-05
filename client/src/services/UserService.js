@@ -8,7 +8,12 @@ const tokenVerify = async (token) => {
     "token": token
   }
   try {
-    const response = await axios.post(`${API_BASE_URL}/verifyToken`, data);
+    const jsonString = JSON.stringify(data);
+    const encrypt_data = encryption(jsonString)
+    var dataJson = {
+      "decrypt_data": encrypt_data
+    }
+    const response = await axios.post(`${API_BASE_URL}/verifyToken`, dataJson);
     return response.data;
   } catch (error) {
     console.error('เกิดข้อผิดพลาดในการเรียก API');
@@ -18,8 +23,15 @@ const tokenVerify = async (token) => {
 
 const register = async (data) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/register`, data);
-    return response.data;
+    const jsonString = JSON.stringify(data);
+    const encrypt_data = encryption(jsonString)
+    var dataJson = {
+      "decrypt_data": encrypt_data,
+    }
+    const response = await axios.post(`${API_BASE_URL}/register`, dataJson);
+    const decrypt_data = decryption(response.data)
+    const dataJjson = JSON.parse(decrypt_data)
+    return dataJjson;
   } catch (error) {
     console.error('เกิดข้อผิดพลาดในการเรียก API');
     throw error;
@@ -28,8 +40,15 @@ const register = async (data) => {
 
 const login = async (data) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/login`, data);
-    return response.data;
+    const jsonString = JSON.stringify(data);
+    const encrypt_data = encryption(jsonString)
+    var dataJson = {
+      "decrypt_data": encrypt_data,
+    }
+    const response = await axios.post(`${API_BASE_URL}/login`, dataJson);
+    const decrypt_data = decryption(response.data)
+    const dataJjson = JSON.parse(decrypt_data)
+    return dataJjson;
   } catch (error) {
     console.error('เกิดข้อผิดพลาดในการเรียก API');
     throw error;
@@ -38,7 +57,12 @@ const login = async (data) => {
 
 const reset = async (data) => {
   try {
-    const response = await axios.put(`${API_BASE_URL}/resetPassword`, data);
+    const jsonString = JSON.stringify(data);
+    const encrypt_data = encryption(jsonString)
+    var dataJson = {
+      "decrypt_data": encrypt_data,
+    }
+    const response = await axios.put(`${API_BASE_URL}/resetPassword`, dataJson);
     return response.data;
   } catch (error) {
     console.error('เกิดข้อผิดพลาดในการเรียก API');

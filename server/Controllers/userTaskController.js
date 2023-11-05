@@ -246,10 +246,14 @@ async function postUserTask(req, res) {
             delete responseData.data.status_id;
         }
 
-        res.status(responseData.status).json({
+        let response = {
             message: responseData.message,
             data: responseData.data,
-        });
+            status: responseData.status
+        }
+        var jsonString = JSON.stringify(response);
+        var encrypt_data = encryption(jsonString)
+        res.json(encrypt_data);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
@@ -284,10 +288,14 @@ async function putUserTaskStatus(req, res) {
             delete responseData.data.task.category_task_id;
         }
 
-        res.status(responseData.status).json({
+        let response = {
             message: responseData.message,
             data: responseData.data,
-        });
+            status: responseData.status
+        }
+        var jsonString = JSON.stringify(response);
+        var encrypt_data = encryption(jsonString)
+        res.json(encrypt_data);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });

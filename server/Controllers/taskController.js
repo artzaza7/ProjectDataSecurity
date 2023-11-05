@@ -101,7 +101,9 @@ async function putTaskByTaskId(req, res) {
             status: responseData.status
         };
 
-        res.json(response);
+        var jsonString = JSON.stringify(response);
+        var encrypt_data = encryption(jsonString)
+        res.json(encrypt_data);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });

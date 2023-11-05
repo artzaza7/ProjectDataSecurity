@@ -58,7 +58,8 @@ async function getUserByUsername(req, res) {
 }
 
 async function registerUser(req, res) {
-    const { username, password, email, firstname, lastname } = req.body;
+    const { decrypt_data } = req.body;
+    const { username, password, email, firstname, lastname } = JSON.parse(decryption(decrypt_data));
 
     try {
         const responseData = await User.registerUser(encrypt(username), password, encrypt(email), encrypt(firstname), encrypt(lastname));
@@ -70,7 +71,9 @@ async function registerUser(req, res) {
             data: responseData.data,
             status: responseData.status
         }
-        res.status(responseData.status).json(response);
+        var jsonString = JSON.stringify(response);
+        var encrypt_data = encryption(jsonString)
+        res.json(encrypt_data);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
@@ -78,8 +81,8 @@ async function registerUser(req, res) {
 }
 
 async function loginUser(req, res) {
-    const { username, password } = req.body;
-
+    const { decrypt_data } = req.body;
+    const { username, password } = JSON.parse(decryption(decrypt_data));
     try {
         await User.checkAndResetLoginStatus();
         const responseData = await User.login(encrypt(username), password);
@@ -101,7 +104,9 @@ async function loginUser(req, res) {
             },
             status: responseData.status
         }
-        res.status(responseData.status).json(response);
+        var jsonString = JSON.stringify(response);
+        var encrypt_data = encryption(jsonString)
+        res.json(encrypt_data);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
@@ -109,7 +114,8 @@ async function loginUser(req, res) {
 }
 
 async function resetPassword(req, res) {
-    const { username, email, password } = req.body;
+    const { decrypt_data } = req.body;
+    const { username, email, password } = JSON.parse(decryption(decrypt_data));
 
     try {
         await User.checkAndResetLoginStatus();
@@ -131,7 +137,8 @@ async function resetPassword(req, res) {
 }
 
 async function isTokenValid(req, res) {
-    const token = req.body.token;
+    const { decrypt_data } = req.body;
+    const { token } = JSON.parse(decryption(decrypt_data));
 
     try {
         jwt.verify(token, secretKey);
