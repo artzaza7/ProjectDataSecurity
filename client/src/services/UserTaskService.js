@@ -1,10 +1,16 @@
 import axios from 'axios';
+import { encryption, decryption } from "../utils/encryption"
 
 const API_BASE_URL = 'http://localhost:8000/api/userTasks';
 
 const createUserTask = async (username, data) => {
     try {
-        const response = await axios.post(`${API_BASE_URL}/users/${username}/tasks`, data);
+        const jsonString = JSON.stringify(data);
+        const encrypt_data = encryption(jsonString)
+        var dataJson = {
+            "decrypt_task": encrypt_data,
+        }
+        const response = await axios.post(`${API_BASE_URL}/users/${username}/tasks`, dataJson);
         return response.data;
     } catch (error) {
         console.error('เกิดข้อผิดพลาดในการเรียก API');
@@ -19,7 +25,9 @@ const getUserTasksCount = async (username) => {
                 user_username: username,
             }
         });
-        return response.data;
+        const decrypt_data = decryption(response.data) 
+        const dataJson = JSON.parse(decrypt_data)
+        return dataJson;
     } catch (error) {
         console.error('เกิดข้อผิดพลาดในการเรียก API');
         throw error;
@@ -34,7 +42,9 @@ const getUserTasksCountFinish = async (username) => {
                 statusId: 2
             }
         });
-        return response.data;
+        const decrypt_data = decryption(response.data) 
+        const dataJson = JSON.parse(decrypt_data)
+        return dataJson;
     } catch (error) {
         console.error('เกิดข้อผิดพลาดในการเรียก API');
         throw error;
@@ -48,7 +58,9 @@ const getUserTasksCountProgress = async (username) => {
                 statusId: 1
             }
         });
-        return response.data;
+        const decrypt_data = decryption(response.data) 
+        const dataJson = JSON.parse(decrypt_data)
+        return dataJson;
     } catch (error) {
         console.error('เกิดข้อผิดพลาดในการเรียก API');
         throw error;
@@ -62,7 +74,9 @@ const getUserTasksCountFail = async (username) => {
                 statusId: 3
             }
         });
-        return response.data;
+        const decrypt_data = decryption(response.data) 
+        const dataJson = JSON.parse(decrypt_data)
+        return dataJson;
     } catch (error) {
         console.error('เกิดข้อผิดพลาดในการเรียก API');
         throw error;
@@ -77,7 +91,9 @@ const getUserTasksByStatusId = async (username, status_id) => {
                 statusId: status_id
             }
         });
-        return response.data;
+        const decrypt_data = decryption(response.data) 
+        const dataJson = JSON.parse(decrypt_data)
+        return dataJson;
     } catch (error) {
         console.error('เกิดข้อผิดพลาดในการเรียก API');
         throw error;

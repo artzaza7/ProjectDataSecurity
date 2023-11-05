@@ -3,6 +3,7 @@ const CategoryTask = require("../Models/categoryTaskModel")
 
 //USING ENCRYPT AND DECRYPT
 const {decrypt} = require("../Utils/cryptoUtils")
+const { encryption, decryption } = require('../Utils/encryption')
 
 async function getAllCategoryTasks(req, res) {
     try {
@@ -16,7 +17,9 @@ async function getAllCategoryTasks(req, res) {
             data: responseData.data,
             status: responseData.status
         }
-        res.json(response);
+        var jsonString = JSON.stringify(response);
+        encrypt_data = encryption(jsonString)
+        res.json(encrypt_data);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });

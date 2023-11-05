@@ -6,6 +6,7 @@ const Status = require("../Models/statusModel");
 
 //USING ENCRYPT AND DECRYPT
 const { encrypt, decrypt } = require("../Utils/cryptoUtils")
+const { encryption, decryption } = require('../Utils/encryption')
 
 async function getAlluserTask(req, res) {
     await UserTask.updateTaskStatusIfNeeded();
@@ -152,7 +153,9 @@ async function getUserTasksByStatus(req, res) {
             data: userTasksWithDetails,
             status: 200
         };
-        res.json(response);
+        var jsonString = JSON.stringify(response);
+        encrypt_data = encryption(jsonString)
+        res.json(encrypt_data);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
@@ -211,8 +214,8 @@ async function getUserTasksByTaskId(req, res) {
 
 async function postUserTask(req, res) {
     const { user_username } = req.params;
-    const task = req.body;
-
+    const { decrypt_task } = req.body;
+    const task = JSON.parse(decryption(decrypt_task))
     try {
         const statusId = 1;
         task.name = encrypt(task.name);
@@ -346,11 +349,13 @@ async function countUserTasksByCategory(req, res) {
             const count = categoryCounts[i] || 0;
             result.push(count);
         }
-
-        res.status(countResponse.status).json({
+        var data = {
             message: countResponse.message,
             data: result,
-        });
+        }
+        var jsonString = JSON.stringify(data);
+        encrypt_data = encryption(jsonString)
+        res.status(countResponse.status).json(encrypt_data);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
@@ -384,11 +389,13 @@ async function countUserTasksByCategoryAndStatus(req, res) {
             const count = categoryCounts[i] || 0;
             result.push(count);
         }
-
-        res.status(countResponse.status).json({
+        var data = {
             message: countResponse.message,
             data: result,
-        });
+        }
+        var jsonString = JSON.stringify(data);
+        encrypt_data = encryption(jsonString)
+        res.status(countResponse.status).json(encrypt_data);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });

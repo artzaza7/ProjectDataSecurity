@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { encryption, decryption } from "../utils/encryption"
 
 const API_BASE_URL = 'http://localhost:8000/api/users';
 
@@ -37,12 +38,12 @@ const login = async (data) => {
 
 const reset = async (data) => {
   try {
-    const response = await axios.put(`${API_BASE_URL}/resetPassword`,data);
+    const response = await axios.put(`${API_BASE_URL}/resetPassword`, data);
     return response.data;
-} catch (error) {
+  } catch (error) {
     console.error('เกิดข้อผิดพลาดในการเรียก API');
     throw error;
-}
+  }
 };
 
 const getUserbyUsername = async (username) => {
@@ -52,11 +53,13 @@ const getUserbyUsername = async (username) => {
         username: username
       }
     });
-    return response.data;
+    const decrypt_data = decryption(response.data)
+    const dataJson = JSON.parse(decrypt_data)
+    return dataJson;
   } catch (error) {
     console.error('เกิดข้อผิดพลาดในการเรียก API');
     throw error;
   }
 }
 
-export { tokenVerify, register, login, getUserbyUsername, reset};
+export { tokenVerify, register, login, getUserbyUsername, reset };
