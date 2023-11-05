@@ -119,12 +119,8 @@ async function resetPassword(req, res) {
             return res.status(200).json({ message: 'Password reset successful' });
         } else if (resetResult.status === 202) {
             return res.status(202).json({ message: resetResult.message });
-        } else if (resetResult.status === 401) {
-            return res.status(401).json({ error: resetResult.message });
-        } else if (resetResult.status === 404) {
-            return res.status(404).json({ error: 'User not found' });
         } else if (resetResult.status === 400) {
-            return res.status(400).json({ error: 'Email does not match user record' });
+            return res.status(400).json({ error: resetResult.message });
         } else {
             return res.status(500).json({ error: 'Failed to reset password' });
         }

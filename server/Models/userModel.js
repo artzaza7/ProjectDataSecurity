@@ -364,7 +364,7 @@ class User {
                 }
 
                 const data = null;
-                const statusCode = 401;
+                const statusCode = 400;
                 return { message, data, status: statusCode };
             }
 
