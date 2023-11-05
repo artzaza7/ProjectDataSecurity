@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import Chart from "chart.js/auto";
+import Chart, {  } from "chart.js/auto";
 
 function ChartExample(props) {
   const { countAllTask, categoryTasks } = props
@@ -24,6 +24,24 @@ function ChartExample(props) {
         },
       ],
     };
+    const noData = {
+      id: 'noData',
+      afterDatasetsDraw: ((chart, args, plugins) => {
+        const { ctx, data, chartArea: { top, left, width, height } } = chart;
+        console.log(data.datasets[0].data[0])
+
+        ctx.save();
+        if (data.datasets[0].data[0] === 0 && data.datasets[0].data[1] === 0 && data.datasets[0].data[2] === 0 && data.datasets[0].data[3] === 0) {
+          ctx.fillStyle = 'rgba(102, 102, 102, 0.5)';
+          ctx.fillRect(left, top, width, height)
+
+          ctx.font = 'bold 20px sans-serif'
+          ctx.fillStyle = 'black'
+          ctx.textAlign = 'center'
+          ctx.fillText('No Data Available', left + width / 2, top + height / 2)
+        }
+      })
+    };
     const config = {
       type: "pie",
       data: data,
@@ -35,6 +53,7 @@ function ChartExample(props) {
           },
         },
       },
+      plugins: [noData]
     };
 
     if (chartInstance.current) {
