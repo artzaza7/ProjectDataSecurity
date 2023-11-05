@@ -26,22 +26,34 @@ function ChartExample(props) {
     };
     const noData = {
       id: 'noData',
-      afterDatasetsDraw: ((chart, args, plugins) => {
+      afterDatasetsDraw: (chart, args, plugins) => {
         const { ctx, data, chartArea: { top, left, width, height } } = chart;
-        console.log(data.datasets[0].data[0])
-
+    
         ctx.save();
+    
         if (data.datasets[0].data[0] === 0 && data.datasets[0].data[1] === 0 && data.datasets[0].data[2] === 0 && data.datasets[0].data[3] === 0) {
-          ctx.fillStyle = 'rgba(102, 102, 102, 0.5)';
-          ctx.fillRect(left, top, width, height)
-
-          ctx.font = 'bold 20px sans-serif'
-          ctx.fillStyle = 'black'
-          ctx.textAlign = 'center'
-          ctx.fillText('No Data Available', left + width / 2, top + height / 2)
+          const centerX = left + width / 2;
+          const centerY = top + height / 2;
+          const radius = Math.min(width, height) / 2;
+    
+          ctx.strokeStyle = 'black';
+          ctx.lineWidth = 0.5;
+          ctx.fillStyle = 'rgba(255,255,255, 0.5)';
+          ctx.beginPath();
+          ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+          ctx.font = 'bold 20px ibm plex sans thai';
+          ctx.fillStyle = 'black';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('ยังไม่พบข้อมูลงาน', centerX, centerY);
         }
-      })
+    
+        ctx.restore();
+      }
     };
+    
     const config = {
       type: "pie",
       data: data,
