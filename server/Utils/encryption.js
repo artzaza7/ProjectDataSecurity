@@ -1,5 +1,5 @@
 const CryptoJS = require('crypto-js');
-const secretKey = "my-secret-key";
+const secretKey = process.env.SECRET_KEY;
 
 function encryption(plaintext) {
     const encryptedData = CryptoJS.AES.encrypt(plaintext, secretKey).toString();

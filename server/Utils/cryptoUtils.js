@@ -1,5 +1,5 @@
 const crypto = require('crypto');
-const secretKey = 'dataSecure';
+const secretKey = process.env.SECRET_KEY;
 
 function encrypt(text) {
     try {

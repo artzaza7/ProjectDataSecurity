@@ -7,6 +7,7 @@ const jwt = require("jsonwebtoken")
 //USING ENCRYPT AND DECRYPT
 const { encrypt, decrypt } = require("../Utils/cryptoUtils")
 const { encryption, decryption } = require('../Utils/encryption')
+const secretKey = process.env.SECRET_KEY;
 
 async function getAllUsers(req, res) {
     try {
@@ -91,10 +92,8 @@ async function loginUser(req, res) {
         }
 
         const usernameData = responseData.data.username;
-        // create Secret 
-        const secret = 'DataSecuritySystem'
         // create token
-        const token = jwt.sign({ username: usernameData }, secret, { expiresIn: '2h' })
+        const token = jwt.sign({ username: usernameData }, secretKey, { expiresIn: '2h' })
         let response = {
             message: responseData.message,
             data: {
@@ -139,8 +138,7 @@ async function isTokenValid(req, res) {
     const token = req.body.token;
 
     try {
-        const secret = 'DataSecuritySystem';
-        jwt.verify(token, secret);
+        jwt.verify(token, secretKey);
         const response = {
             message: 'Token is valid',
             status: 200
