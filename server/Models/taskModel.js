@@ -135,7 +135,8 @@ class Task {
     static async createTask(taskData) {
         const conn = await initMySQL();
         try {
-            const [insertResult] = await conn.query('INSERT INTO tasks SET ?', taskData);
+            const query = 'INSERT INTO tasks SET ?';
+            const [insertResult] = await conn.query(query, taskData);
 
             if (insertResult.affectedRows === 1) {
                 const message = 'Task created successfully';
@@ -189,7 +190,8 @@ class Task {
     static async deleteTask(taskId) {
         const conn = await initMySQL();
         try {
-            const [deleteResult] = await conn.query('DELETE FROM tasks WHERE id = ?', [taskId]);
+            const query = 'DELETE FROM tasks WHERE id = ?';
+            const [deleteResult] = await conn.query(query, [taskId]);
 
             if (deleteResult.affectedRows === 1) {
                 const message = 'Task deleted successfully';

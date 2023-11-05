@@ -210,7 +210,7 @@ class User {
             }
 
             const existingEmail = await this.getUserByEmail(email);
-            if(existingEmail.status === 200) {
+            if (existingEmail.status === 200) {
                 return { message: 'Email already exists', data: null, status: 400 };
             }
 
@@ -336,7 +336,8 @@ class User {
                         await conn.query(updateForgotEmailDateQuery, [tomorrow, existingUser.data.username]);
                     }
                 } else {
-                    const result = await conn.query('SELECT username, forgot_name_count, forgot_email_count, forgot_email_date FROM users WHERE email = ?', [email]);
+                    const query = 'SELECT username, forgot_name_count, forgot_email_count, forgot_email_date FROM users WHERE email = ?';
+                    const result = await conn.query(query, [email]);
                     if (result[0].length === 1) {
                         const user = result[0][0];
 

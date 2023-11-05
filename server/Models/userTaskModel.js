@@ -226,7 +226,8 @@ class UserTask {
     static async createUserTask(userTaskData) {
         const conn = await initMySQL();
         try {
-            const [insertResult] = await conn.query('INSERT INTO user_task SET ?', userTaskData);
+            const query = 'INSERT INTO user_task SET ?';
+            const [insertResult] = await conn.query(query, userTaskData);
 
             if (insertResult.affectedRows === 1) {
                 const message = 'User task created successfully';
@@ -253,7 +254,8 @@ class UserTask {
     static async updateUserTaskStatus(userTaskStatus, username, taskId) {
         const conn = await initMySQL();
         try {
-            const [updateResult] = await conn.query('UPDATE user_task SET status_id = ? WHERE user_username = ? AND task_id = ?', [userTaskStatus, username, taskId]);
+            const query = 'UPDATE user_task SET status_id = ? WHERE user_username = ? AND task_id = ?';
+            const [updateResult] = await conn.query(query, [userTaskStatus, username, taskId]);
 
             if (updateResult.affectedRows === 1) {
                 const userTaskData = await UserTask.getUserTasksByTaskId(username, taskId); // Corrected method call
@@ -281,7 +283,8 @@ class UserTask {
     static async deleteUserTask(username, taskId) {
         const conn = await initMySQL();
         try {
-            const [deleteResult] = await conn.query('DELETE FROM user_task WHERE user_username = ? AND task_id = ?', [username, taskId]);
+            const query = 'DELETE FROM user_task WHERE user_username = ? AND task_id = ?';
+            const [deleteResult] = await conn.query(query, [username, taskId]);
 
             if (deleteResult.affectedRows === 1) {
                 const message = 'User task deleted successfully';
