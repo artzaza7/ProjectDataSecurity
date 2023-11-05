@@ -441,9 +441,11 @@ function Register() {
                     </Modal.Header>
                     <Modal.Body>{errorMessage}</Modal.Body>
                     <Modal.Footer>
-                      <button className="btn btn-primary" onClick={handleCloseErrorModal}>
+                      <Button
+                        variant="danger"
+                        onClick={handleCloseErrorModal}>
                         ปิด
-                      </button>
+                      </Button>
                     </Modal.Footer>
                   </Modal>
                 </div>

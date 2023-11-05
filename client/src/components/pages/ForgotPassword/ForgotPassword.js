@@ -108,16 +108,11 @@ function ForgotPassword() {
         }
         // Success reset
       } catch (error) {
-        if(error.message === "Request failed with status code 404"){
-          setErrorMessage("ไม่พบยูสเซอร์ไอดีนี้");
-          setShowErrorModal(true);
-        }else if(error.message === "Request failed with status code 401"){
-          setErrorMessage("ยูสเซอร์ไอดีหรืออีเมลไม่ถูกต้อง กรุณาตรวจสอบใหม่อีกครั้ง");
-          setShowErrorModal(true); 
-        }else if(error.message === "Request failed with status code 400"){
-          setErrorMessage("โปรดตรวจสอบอีเมลใหม่อีกครั้งหากใส่อีเมลผิดครบ 10 ครั้งไอดีนี้ถูกล็อกเป็นเวลา 24 ชั่วโมง");
+        if(error.message === "Request failed with status code 400"){
+          setErrorMessage("ยูสเซอร์ไอดีหรืออีเมลไม่ถูกต้องกรุณาตรวจสอบใหม่อีกครั้งหากใส่ผิดครบ 10 ครั้งจะถูกล็อกเป็นเวลา 24 ชั่วโมง");
           setShowErrorModal(true); 
         }
+        console.log(error.message)
       }
       
     } else {
@@ -278,7 +273,7 @@ function ForgotPassword() {
                   </div>
                   <Modal show={show} onHide={handleClose}>
                     <Modal.Header closeButton>
-                      <Modal.Title>ยืนยันการรีเซ็ทรหัสผ่าน</Modal.Title>
+                      <Modal.Title>ยืนยันการรีเซ็ตรหัสผ่าน</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>ต้องการรีเซ็ทรหัสผ่านใช่หรือไม่</Modal.Body>
                     <Modal.Footer>
@@ -323,13 +318,16 @@ function ForgotPassword() {
                   </Modal>
                   <Modal show={showErrorModal} onHide={handleCloseErrorModal}>
                     <Modal.Header closeButton>
-                      <Modal.Title>รีเซ็ทรหัสผ่านไม่สำเร็จ</Modal.Title>
+                      <Modal.Title>รีเซ็ตรหัสผ่านไม่สำเร็จ</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>{errorMessage}</Modal.Body>
                     <Modal.Footer>
-                      <button className="btn btn-primary" onClick={handleCloseErrorModal}>
+                      <Button
+                        variant="danger"
+                        onClick={handleCloseErrorModal}
+                      >
                         ปิด
-                      </button>
+                      </Button>
                     </Modal.Footer>
                   </Modal>
                   <Modal
@@ -337,10 +335,10 @@ function ForgotPassword() {
                     onHide={() => setShowSuccessModal(false)}
                   >
                     <Modal.Header closeButton>
-                      <Modal.Title>ทำการรีเซ็ทรหัสผ่านเสร็จสิ้น</Modal.Title>
+                      <Modal.Title>ทำการรีเซ็ตรหัสผ่านเสร็จสิ้น</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                      คุณได้ทำการีเซ็ทรหัสผ่านแล้ว
+                      คุณได้ทำการีเซ็ตรหัสผ่านแล้ว
                     </Modal.Body>
                     <Modal.Footer>
                       <Button

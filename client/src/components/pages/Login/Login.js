@@ -9,7 +9,7 @@ import './Modal.css';
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { login } from "../../../services/UserService";
-import { Modal } from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
 
 const colorTextLink = {
   textDecoration: "none",
@@ -142,9 +142,12 @@ function Login() {
         </Modal.Header>
         <Modal.Body>{errorMessage}</Modal.Body>
         <Modal.Footer>
-          <button className="btn btn-primary" onClick={handleCloseErrorModal}>
+          <Button
+          variant="danger"
+          onClick={handleCloseErrorModal}
+          >
             ปิด
-          </button>
+          </Button>
         </Modal.Footer>
       </Modal>
     </div>

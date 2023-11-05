@@ -40,6 +40,10 @@ function UpdateTask() {
     textDecoration: "none",
     color: "#FFFFFF",
   };
+  const divStyle = {
+    fontSize: '0.7rem', 
+    color: "red",
+  };
 
   // for call API
   const [categoryTasks, setCategoryTasks] = useState([]);
@@ -309,6 +313,7 @@ function UpdateTask() {
                       maxTime="23:59"
                     />
                   </div>
+                  <div style={divStyle} className="d-flex justify-content-start align-items-start">**วันและเวลาที่จบต้องมากกว่าวันและเวลาปัจจุบันเสมอ**</div>
                 </div>
                 <div className="row">
                   <p>ประเภทกิจกรรม</p>
